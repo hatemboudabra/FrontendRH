@@ -1,56 +1,49 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
 import { LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, icons } from 'lucide-angular';
-import { Register } from '../../store/Authentication/authentication.actions';
-
+import { AuthenticationService } from '../../core/services/auth.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [LucideAngularModule, ReactiveFormsModule, FormsModule],
   templateUrl: './register.component.html',
-  styles: ``,
-  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
-
+  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }],
+  standalone: true,
+  imports: [LucideAngularModule, ReactiveFormsModule,FormsModule,RouterLink],
 })
-export class RegisterComponent {
-
-  // Login Form
-  signupForm!: UntypedFormGroup;
+export class RegisterComponent implements OnInit {
+  registerForm!: UntypedFormGroup;
   submitted = false;
-  successmsg = false;
-  error = '';
-  // set the current year
-  year: number = new Date().getFullYear();
 
-  fieldTextType!: boolean;
+  // Define available roles
+  roles: string[] = ['CHEF', 'RESPONSABLE_RH', 'COLLABORATEUR'];
 
-  constructor(private formBuilder: UntypedFormBuilder, public store: Store) { }
+  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthenticationService) {}
 
   ngOnInit(): void {
-    /**
-     * Form Validatyion
-     */
-    this.signupForm = this.formBuilder.group({
+    this.registerForm = this.formBuilder.group({
+      username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      name: ['', [Validators.required]],
       password: ['', Validators.required],
+      role: ['', Validators.required], 
     });
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.signupForm.controls; }
-
-  onSubmit() {
-    this.submitted = true;
-
-    const email = this.f['email'].value;
-    const name = this.f['name'].value;
-    const password = this.f['password'].value;
-
-    //Dispatch Action
-    this.store.dispatch(Register({ email: email, username: name, password: password }));
+  get f() {
+    return this.registerForm.controls;
   }
 
+  onSubmit(): void {
+    this.submitted = true;
+
+    // If the form is invalid, stop further execution
+    if (this.registerForm.invalid) return;
+
+    const user = this.registerForm.value;
+    this.authService.register(user).subscribe({
+      next: () => alert('User registered successfully'),
+      error: (err) => alert('Registration failed: ' + err),
+    });
+  }
 }
+

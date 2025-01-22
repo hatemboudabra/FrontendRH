@@ -225,112 +225,8 @@ export const MENU: MenuItem[] = [
         
         ]
     },
-
-    {
-        id: 4,
-        label: 'pages',
-        icon: 'codesandbox',
-        subItems: [
-            {
-                id: 4.1,
-                label: 'account',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.2,
-                label: 'settings',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.3,
-                label: 'pricing',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.4,
-                label: 'faqs',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.5,
-                label: 'contact-us',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.6,
-                label: 'coming-soon',
-                link: '/',
-                parentId: 4
-            },
-            {
-                id: 4.5,
-                label: 'error-pages',
-                parentId: 4,
-                subItems: [
-                    {
-                        id: 4.6,
-                        label: '404-error',
-                        link: '/',
-                        parentId: 4.5
-                    },
-                    {
-                        id: 4.7,
-                        label: 'offline',
-                        link: '/',
-                        parentId: 4.5
-                    },
-                ]
-            },
-            {
-                id: 4.8,
-                label: 'maintenance',
-                link: '/',
-                parentId: 4
-            },
-        ]
-    },
-
-
-   
-    {
-        id: 7,
-        label: 'navigation',
-        icon: "locate-fixed",
-        link: '/',
-        subItems: [
-            {
-                id: 7.1,
-                label: 'navbar',
-                link: '/',
-                parentId: 7
-            },
-            {
-                id: 7.2,
-                label: 'tabs',
-                link: '/',
-                parentId: 7
-            },
-            {
-                id: 7.3,
-                label: 'breadcrumb',
-                link: '/',
-                parentId: 7
-            },
-            {
-                id: 7.4,
-                label: 'pagination',
-                link: '/',
-                parentId: 7
-            }
-        ]
-    },
   
-   
+
     {
         id: 10,
         label: 'apexcharts',
@@ -404,27 +300,6 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 10
             },
-        ]
-    },
-
-    {
-        id: 12,
-        label: 'maps',
-        icon: 'map',
-        subItems: [
-            {
-                id: 12.1,
-                label: 'google',
-                link: '/',
-                parentId: 12
-            },
-
-            {
-                id: 12.2,
-                label: 'leaflet',
-                link: '/',
-                parentId: 12
-            }
         ]
     },
  

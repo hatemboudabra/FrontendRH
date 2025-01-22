@@ -1,90 +1,46 @@
-import { Injectable, Inject } from '@angular/core';
+// authentication.effects.ts
+import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, switchMap, catchError, exhaustMap, tap, first } from 'rxjs/operators';
-import { from, of } from 'rxjs';
-import { AuthenticationService } from '../../core/services/auth.service';
-import { login, loginSuccess, loginFailure, logout, logoutSuccess, Register, RegisterSuccess, RegisterFailure } from './authentication.actions';
+import { of } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { environment } from '../../../environments/environment';
-import { AuthfakeauthenticationService } from '../../core/services/authfake.service';
-import { UserProfileService } from '../../core/services/user.service';
-@Injectable()
-export class AuthenticationEffects {
+import * as AuthActions from './authentication.actions';
+import { AuthenticationService } from '../../core/services/auth.service';
 
-  Register$ = createEffect(() =>
+@Injectable()
+export class AuthEffects {
+  login$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(Register),
-      exhaustMap(({ email, username, password }) => {
-        if (environment.defaultauth === 'fakebackend') {
-          return this.userService.register({ email, username, password }).pipe(
-            map((user) => {
-              this.router.navigate(['/auth/login']);
-              return RegisterSuccess({ user })
-            }),
-            catchError((error) => of(RegisterFailure({ error })))
-          );
-        } else {
-          return this.AuthenticationService.register( email, username, password).pipe(
-            map((user) => {
-              this.router.navigate(['/auth/login']);
-              return RegisterSuccess({ user })
-            })
-          )
-        }
-      })
+      ofType(AuthActions.login),
+      switchMap(({ credentials }) =>
+        this.authService.login(credentials.username, credentials.password).pipe(
+          map(user => AuthActions.loginSuccess({ user })),
+          catchError(error => of(AuthActions.loginFailure({ error: error.error?.message || 'Login failed' })))
+        )
+      )
     )
   );
 
-
-
-  login$ = createEffect(() =>
-  this.actions$.pipe(
-    ofType(login),
-    exhaustMap(({ email, password }) => {
-      if (environment.defaultauth === "fakebackend") {
-        return this.AuthfakeService.login(email, password).pipe(
-          map((user) => {
-            if (user) {
-              sessionStorage.setItem('currentUser', JSON.stringify(user));
-              sessionStorage.setItem('token', user.token);
-              this.router.navigate(['/']);
-            }
-            return loginSuccess({ user });
-          }),
-          catchError((error) => of(loginFailure({ error })))
-        );
-      } else if (environment.defaultauth === "firebase") {
-        return this.AuthenticationService.login(email, password).pipe(
-          map((user) => {
-            this.router.navigate(['/']);
-            return loginSuccess({ user });
-          }),
-          catchError((error) => of(loginFailure({ error })))
-        );
-      }
-
-      // Handle the case where none of the conditions match
-      return of(loginFailure({ error: 'Unsupported authentication method' }));
-    })
-  )
-);
-
+  loginSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginSuccess),
+      tap(() => this.router.navigate(['/dashboard']))
+    ), { dispatch: false }
+  );
 
   logout$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(logout),
+      ofType(AuthActions.logout),
       tap(() => {
-        // Perform any necessary cleanup or side effects before logging out
-      }),
-      exhaustMap(() => of(logoutSuccess()))
-    )
+        this.authService.logout();
+        this.router.navigate(['/login']);
+      })
+    ), { dispatch: false }
   );
 
   constructor(
-    @Inject(Actions) private actions$: Actions,
-    private AuthenticationService: AuthenticationService,
-    private AuthfakeService: AuthfakeauthenticationService,
-    private userService: UserProfileService,
-    private router: Router) { }
-
+    private actions$: Actions,
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
 }

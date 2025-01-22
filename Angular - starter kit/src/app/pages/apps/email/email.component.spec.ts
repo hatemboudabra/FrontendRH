@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreatePassBoxedComponent } from './create-pass-boxed.component';
+import { EmailComponent } from './email.component';
 
-describe('CreatePassBoxedComponent', () => {
-  let component: CreatePassBoxedComponent;
-  let fixture: ComponentFixture<CreatePassBoxedComponent>;
+describe('EmailComponent', () => {
+  let component: EmailComponent;
+  let fixture: ComponentFixture<EmailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreatePassBoxedComponent]
+      imports: [EmailComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CreatePassBoxedComponent);
+    fixture = TestBed.createComponent(EmailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

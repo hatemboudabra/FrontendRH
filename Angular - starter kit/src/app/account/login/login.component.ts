@@ -1,77 +1,48 @@
+// login.component.ts
 import { Component } from '@angular/core';
-import { LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, icons } from 'lucide-angular';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { login } from '../../store/Authentication/authentication.actions';
 import { AuthenticationService } from '../../core/services/auth.service';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [LucideAngularModule, FormsModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styles: ``,
-  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
-
+  //styleUrls: ['./login.component.css'],
+  standalone: true,
+    imports: [ ReactiveFormsModule,FormsModule,RouterLink,RouterLinkActive,LucideAngularModule],
 })
-export class LoginComponent {
-  // Login Form
-  loginForm!: UntypedFormGroup;
+export class LoginComponent  {
+  loginForm!: FormGroup;
   submitted = false;
-  fieldTextType!: boolean;
-  error = '';
-  returnUrl!: string;
-  a: any = 10;
-  b: any = 20;
-  toast!: false;
 
-  // set the current year
-  year: number = new Date().getFullYear();
+  constructor(private fb: FormBuilder, private authService: AuthenticationService) {}
 
-  // tslint:disable-next-line: max-line-length
-  constructor(private formBuilder: UntypedFormBuilder,
-    private router: Router,
-    private store: Store,
-    private authenticationService: AuthenticationService
-  ) {
-    if (this.authenticationService.user) {
-      this.router.navigate(['/']);
-    }
-  }
   ngOnInit(): void {
-    if (sessionStorage.getItem('currentUser')) {
-      this.router.navigate(['/']);
-    }
-    /**
-     * Form Validatyion
-     */
-    this.loginForm = this.formBuilder.group({
-      email: ['admin@themesbrand.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required]],
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required],
     });
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
-
-  /**
-   * Form submit
-   */
-  onSubmit() {
-    this.submitted = true;
-
-    const email = this.f['email'].value; // Get the username from the form
-    const password = this.f['password'].value; // Get the password from the form
-
-    // Login Api
-    this.store.dispatch(login({ email: email, password: password }));
+  get f() {
+    return this.loginForm.controls;
   }
 
-  /**
-   * Password Hide/Show
-   */
+  onSubmit(): void {
+    this.submitted = true;
+    if (this.loginForm.invalid) return;
+
+    const { username, password } = this.loginForm.value;
+    this.authService.login(username, password).subscribe({
+      next: (response) => alert('Login successful: ' + response.token),
+      error: (err) => alert('Login failed: ' + err),
+    });
+  }
+  fieldTextType: boolean = false;
+
   toggleFieldTextType() {
     this.fieldTextType = !this.fieldTextType;
   }

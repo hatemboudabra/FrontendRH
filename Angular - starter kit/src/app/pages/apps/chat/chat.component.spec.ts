@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreatePassCoverComponent } from './create-pass-cover.component';
+import { ChatComponent } from './chat.component';
 
-describe('CreatePassCoverComponent', () => {
-  let component: CreatePassCoverComponent;
-  let fixture: ComponentFixture<CreatePassCoverComponent>;
+describe('ChatComponent', () => {
+  let component: ChatComponent;
+  let fixture: ComponentFixture<ChatComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreatePassCoverComponent]
+      imports: [ChatComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CreatePassCoverComponent);
+    fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

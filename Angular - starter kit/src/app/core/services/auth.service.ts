@@ -1,68 +1,64 @@
 import { Injectable } from '@angular/core';
-
-import { from, map } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { User } from '../../store/Authentication/auth.models';
-import { getFirebaseBackend } from '../../authUtils';
-
 
 @Injectable({ providedIn: 'root' })
-
 export class AuthenticationService {
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser$: Observable<User | null>;
+  private tokenKey = 'auth_token';
 
-    user!: User;
+  constructor(private http: HttpClient) {
+    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+    this.currentUser$ = this.currentUserSubject.asObservable();
+  }
 
-    constructor() {
-    }
+  private getUserFromStorage(): User | null {
+    const userStr = localStorage.getItem('currentUser');
+    return userStr ? JSON.parse(userStr) : null;
+  }
 
-    /**
-     * Returns the current user
-     */
-    public currentUser(): User {
-        return getFirebaseBackend().getAuthenticatedUser();
-    }
+  public get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
+  }
 
+  public get token(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
 
-    /**
-     * Performs the auth
-     * @param email email of user
-     * @param password password of user
-     */
-    login(email: string, password: string) {
-        return from(getFirebaseBackend().loginUser(email, password).then(user => {
-            return user;
-        })
-        );
-    }
+  login(username: string, password: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/login`, { username, password }).pipe(
+      map(response => {
+        if (response?.token) {
+          localStorage.setItem(this.tokenKey, response.token);
+          const user: User = {
+            id: response.id,
+            username: response.username,
+            email: response.email,
+            roles: response.roles,
+          };
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+        }
+        return response;
+      })
+    );
+  }
 
-    /**
-     * Performs the register
-     * @param email email
-     * @param password password
-     */
-    register(email:any,username:any,password:any) {
-        return from(getFirebaseBackend().registerUser(email,username,password).then((response: any) => {
-            const user = response;
-            return user;
-        }));
-    }
+  register(user: User): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/register`, user);
+  }
 
-    /**
-     * Reset password
-     * @param email email
-     */
-    resetPassword(email: string) {
-        return getFirebaseBackend().forgetPassword(email).then((response: any) => {
-            const message = response.data;
-            return message;
-        });
-    }
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+  }
 
-    /**
-     * Logout the user
-     */
-    logout() {
-        // logout the user
-        getFirebaseBackend().logout();
-    }
+  isAuthenticated(): boolean {
+    return !!this.token && !!this.currentUserValue;
+  }
 }
-

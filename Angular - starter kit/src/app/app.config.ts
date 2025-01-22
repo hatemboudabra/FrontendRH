@@ -29,17 +29,11 @@ import { FakeBackendInterceptor } from './core/helpers/fake-backend';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { environment } from '../environments/environment.prod';
-import { AuthenticationEffects } from './store/Authentication/authentication.effects';
+//import { AuthenticationEffects } from './store/Authentication/authentication.effects';
 import { provideToastr } from 'ngx-toastr';
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, 'assets/i18n/');
-}
-
-if (environment.defaultauth === 'firebase') {
-  initFirebaseBackend(environment.firebaseConfig);
-} else {
-  FakeBackendInterceptor;
 }
 
 const scrollConfig: InMemoryScrollingOptions = {
@@ -55,7 +49,7 @@ export const appConfig: ApplicationConfig = {
   { provide: HTTP_INTERCEPTORS, useClass: FakeBackendInterceptor, multi: true },
   provideClientHydration(),
   provideStore(rootReducer),
-  provideEffects(EcommerceEffects, HRManagementEffects, NotesEffects, SocialEffects, UserEffects, CalendarEffects, AuthenticationEffects),
+  provideEffects(EcommerceEffects, HRManagementEffects, NotesEffects, SocialEffects, UserEffects, CalendarEffects),
   provideToastr({
     timeOut: 10000,
     positionClass: 'toast-bottom-right',

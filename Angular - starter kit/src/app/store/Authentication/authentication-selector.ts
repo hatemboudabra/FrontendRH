@@ -1,19 +1,23 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AuthenticationState } from './authentication.reducer';
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AuthenticationService } from '../../core/services/auth.service';
 
-export const getLayoutState = createFeatureSelector<AuthenticationState>('auth');
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
+    constructor(private authService: AuthenticationService) {}
 
-export const getUser = createSelector(
-    getLayoutState,
-    (state: AuthenticationState) => state.user
-);
+    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        const currentUser = this.authService.currentUserValue;
+        
+ /*       if (currentUser && currentUser.token) {
+            request = request.clone({
+                setHeaders: {
+                    Authorization: `Bearer ${currentUser.token}`
+                }
+            });
+        }*/
 
-export const getisLoggedIn = createSelector(
-    getLayoutState,
-    (state: AuthenticationState) => state.isLoggedIn
-);
-
-export const getError = createSelector(
-    getLayoutState,
-    (state: AuthenticationState) => state.error
-);
+        return next.handle(request);
+    }
+}
