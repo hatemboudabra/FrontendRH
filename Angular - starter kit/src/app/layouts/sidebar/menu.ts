@@ -117,13 +117,13 @@ export const MENU: MenuItem[] = [
                 subItems: [
                     {
                         id: 2.27,
-                        label: 'attendance-hr',
+                        label: 'List Candidat',
                         link: '/',
                         parentId: 2.26
                     },
                     {
                         id: 2.28,
-                        label: 'main-attendance',
+                        label: 'attestation',
                         link: '/',
                         parentId: 2.26
                     },
