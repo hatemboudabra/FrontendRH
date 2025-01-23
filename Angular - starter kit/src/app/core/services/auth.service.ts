@@ -61,4 +61,7 @@ export class AuthenticationService {
   isAuthenticated(): boolean {
     return !!this.token && !!this.currentUserValue;
   }
+  getall(){
+    return this.http.get<any[]>(`${environment.apiUrl}/all`)
+  }
 }
