@@ -41,13 +41,19 @@ export const MENU: MenuItem[] = [
     },
     {
         id: 2.3,
-        label: 'calendar',
+        label: 'Tache',
         icon: 'calendar-days',
         parentId: 2,
         subItems: [
             {
                 id: 2.4,
-                label: 'default',
+                label: 'add Tache',
+                link: '/',
+                parentId: 2.3
+            },
+            {
+                id: 2.5,
+                label: 'List Tache',
                 link: '/',
                 parentId: 2.3
             },
@@ -69,44 +75,44 @@ export const MENU: MenuItem[] = [
             },
             {
                 id: 2.20,
-                label: 'holidays',
+                label: 'Demande',
                 link: '/',
                 parentId: 2.18
             },
             {
                 id: 2.21,
-                label: 'leaves-manage',
+                label: 'Demande',
                 parentId: 2.18,
                 subItems: [
                     {
                         id: 2.22,
-                        label: 'by-employee',
+                        label: 'Avance',
                         link: '/',
                         parentId: 2.21
                     },
-                    {
-                        id: 2.23,
-                        label: 'add-leave-employee',
-                        link: '/',
-                        parentId: 2.21
-                    },
-                    {
-                        id: 2.24,
-                        label: 'by-hr',
-                        link: '/',
-                        parentId: 2.21
-                    },
-                    {
-                        id: 2.25,
-                        label: 'add-leave-hr',
-                        link: '/',
-                        parentId: 2.21
-                    },
+                     {
+                         id: 2.23,
+                        label: 'Prêts',
+                         link: '/',
+                         parentId: 2.21
+                     },
+                    // {
+                    //     id: 2.24,
+                    //     label: 'by-hr',
+                    //     link: '/',
+                    //     parentId: 2.21
+                    // },
+                    // {
+                    //     id: 2.25,
+                    //     label: 'add-leave-hr',
+                    //     link: '/',
+                    //     parentId: 2.21
+                    // },
                 ]
             },
             {
                 id: 2.26,
-                label: 'attendance',
+                label: 'Cadidature',
                 parentId: 2,
                 subItems: [
                     {

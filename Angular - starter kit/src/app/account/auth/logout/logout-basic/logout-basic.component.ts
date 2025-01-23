@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, icons } from 'lucide-angular';
 import { AuthenticationService } from '../../../../core/services/auth.service';
-import { environment } from '../../../../../environments/environment';
-import { AuthfakeauthenticationService } from '../../../../core/services/authfake.service';
 
 @Component({
   selector: 'app-logout-basic',
@@ -15,16 +13,11 @@ import { AuthfakeauthenticationService } from '../../../../core/services/authfak
 })
 export class LogoutBasicComponent {
 
-  constructor( private authService: AuthenticationService,public router:Router, private authFackservice: AuthfakeauthenticationService){}
-   /**
-   * Logout the user
-   */
+  constructor( private authService: AuthenticationService,public router:Router){}
+  
    logout() {
-    if (environment.defaultauth === 'firebase') {
+    localStorage.removeItem('authToken'); 
       this.authService.logout();
-    } else {
-      this.authFackservice.logout();
-    }
-    this.router.navigate(['/account-login']);
+      this.router.navigate(['/account-login']);
   }
 }

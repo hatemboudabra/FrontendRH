@@ -34,7 +34,7 @@ export const routes: Routes = [
         path: '', 
         component: LayoutComponent, 
         loadChildren: () => import('./pages/pages.route').then(mod => mod.PAGE_ROUTES), 
-     //   canActivate: [AuthGuard] 
+       canActivate: [AuthGuard] 
     },
     { path: 'account-login', component: LoginComponent },
     {path: '', redirectTo:'account-login', pathMatch: 'full'},

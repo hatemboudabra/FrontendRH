@@ -15,7 +15,7 @@ export class RegisterComponent implements OnInit {
   registerForm!: UntypedFormGroup;
   submitted = false;
 
-  // Define available roles
+  
   roles: string[] = ['CHEF', 'RESPONSABLE_RH', 'COLLABORATEUR'];
 
   constructor(private formBuilder: UntypedFormBuilder, private authService: AuthenticationService) {}
@@ -36,7 +36,6 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
 
-    // If the form is invalid, stop further execution
     if (this.registerForm.invalid) return;
 
     const user = this.registerForm.value;

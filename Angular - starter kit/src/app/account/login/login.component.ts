@@ -1,49 +1,69 @@
-// login.component.ts
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Store } from '@ngrx/store';
-import { login } from '../../store/Authentication/authentication.actions';
 import { AuthenticationService } from '../../core/services/auth.service';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  //styleUrls: ['./login.component.css'],
   standalone: true,
-    imports: [ ReactiveFormsModule,FormsModule,RouterLink,RouterLinkActive,LucideAngularModule],
+  imports: [ 
+    ReactiveFormsModule, 
+    FormsModule, 
+    RouterLink, 
+    RouterLinkActive, 
+    LucideAngularModule, 
+    CommonModule
+  ],
 })
-export class LoginComponent  {
+export class LoginComponent {
   loginForm!: FormGroup;
   submitted = false;
+  fieldTextType = false;
 
-  constructor(private fb: FormBuilder, private authService: AuthenticationService) {}
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required],
+      username: ['', [Validators.required]],
+      password: ['', [
+        Validators.required, 
+       // Validators.minLength(8), 
+       // Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)/)
+      ]]
     });
   }
 
-  get f() {
-    return this.loginForm.controls;
+  get f() { 
+    return this.loginForm.controls; 
   }
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.loginForm.invalid) return;
+    
+    if (this.loginForm.invalid) {
+      return;
+    }
 
     const { username, password } = this.loginForm.value;
     this.authService.login(username, password).subscribe({
-      next: (response) => alert('Login successful: ' + response.token),
-      error: (err) => alert('Login failed: ' + err),
+      next: (response) => {
+        document.getElementById('successAlert')?.classList.remove('hidden');
+        this.router.navigate(['']);
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+      }
     });
   }
-  fieldTextType: boolean = false;
 
-  toggleFieldTextType() {
+  toggleFieldTextType(): void {
     this.fieldTextType = !this.fieldTextType;
   }
 }
