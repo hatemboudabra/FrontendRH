@@ -61,7 +61,11 @@ export class AuthenticationService {
   isAuthenticated(): boolean {
     return !!this.token && !!this.currentUserValue;
   }
-  getall(){
-    return this.http.get<any[]>(`${environment.apiUrl}/all`)
-  }
+  getByRole() {
+    return this.http.get<any[]>(`${environment.apiUrl}/users-by-roles`);
+}
+exportJasper(): Observable<Blob> {
+  const url = `${environment.apiUrl}/users/jasper`;
+  return this.http.get(url, { responseType: 'blob' });
+}
 }

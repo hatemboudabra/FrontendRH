@@ -45,7 +45,7 @@ export class EmployeesComponent implements OnInit {
     { name: 'ID', prop: 'id' },
     { name: 'Username', prop: 'username' },
     { name: 'Email', prop: 'email' },
-    {name: 'Role', prop:'role'},
+    {name: 'Roles', prop:'roles'},
     { name: 'Action', prop: 'action' }
   ];
 
@@ -58,7 +58,7 @@ export class EmployeesComponent implements OnInit {
   fetchAllUsers(): void {
     this.isLoading = true;
     this.errorMessage = null;
-    this.authService.getall().subscribe({
+    this.authService.getByRole().subscribe({
       next: (data) => {
         this.allemployee = data;
         this.totalItems = data.length;
@@ -86,5 +86,20 @@ export class EmployeesComponent implements OnInit {
     this.startIndex = (this.currentPage - 1) * this.itemsPerPage;
     this.endIndex = this.startIndex + this.itemsPerPage;
     this.employes = this.allemployee.slice(this.startIndex, this.endIndex);
+  }
+  exportToJasper() {
+    this.authService.exportJasper().subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'employee_report.pdf'; 
+        link.click();
+      },
+      error: (error) => {
+        this.errorMessage = 'Failed to export report. Please try again later.';
+        console.error(error);
+      }
+    });
   }
 }
