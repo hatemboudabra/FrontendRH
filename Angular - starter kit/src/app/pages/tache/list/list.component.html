@@ -1,0 +1,73 @@
+<div class="task-list-container">
+    <div class="flex items-center gap-2 mb-2">
+      <h6 class="text-sm grow">Tasks (<b>{{ taches.length }}</b>)</h6>
+      <div class="shrink-0">
+        <!-- <a href="javascript:void(0);" class="btn btn-sm bg-custom-500 text-white">
+          <span class="align-middle">Add Task</span>
+        </a> -->
+      </div>
+    </div>
+  
+    <div class="-mx-2 overflow-x-auto">
+      <ngx-datatable 
+        class="datatable"
+        [rows]="taches"
+        [columns]="columns"
+        [loadingIndicator]="isLoading"
+        [columnMode]="'force'"
+        [headerHeight]="36"
+        [footerHeight]="36"
+        [rowHeight]="'auto'"
+      >
+        <ngx-datatable-column name="Title" prop="title" [width]="150">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <div class="flex items-center">
+              <div>
+                <h6 class="text-xs">{{ row.title }}</h6>
+                <p class="text-slate-500 text-xxs">{{ row.description }}</p>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+  
+        <ngx-datatable-column name="Status" prop="statusTache" [width]="100">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="status-badge text-xs {{ getStatusClass(value) }}">
+              {{ getStatusLabel(value) }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+  
+        <ngx-datatable-column name="Complexity" prop="complexite" [width]="100">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="complexity-badge text-xs {{ getComplexityClass(value) }}">
+              {{ getComplexityLabel(value) }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+  
+        <ngx-datatable-column name="Start Date" prop="dateDebut" [width]="100">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            {{ value | date:'shortDate' }}
+          </ng-template>
+        </ngx-datatable-column>
+  
+        <ngx-datatable-column name="End Date" prop="dateFin" [width]="100">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            {{ value | date:'shortDate' }}
+          </ng-template>
+        </ngx-datatable-column>
+  
+        <ngx-datatable-column name="Actions" [width]="150">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <div class="flex gap-1">
+              <a class="btn btn-xs btn-soft-info">View</a>
+              <a class="btn btn-xs btn-soft-warning">Edit</a>
+              <a class="btn btn-xs btn-soft-danger">Delete</a>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+  

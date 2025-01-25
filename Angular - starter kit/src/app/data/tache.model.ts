@@ -1,7 +1,10 @@
 export enum ComplexiteTache {
     SIMPLE = 'SIMPLE',
     INTERMEDIAIRE = 'INTERMEDIAIRE',
-    AVANCEE = 'AVANCEE'
+    AVANCEE = 'AVANCEE',
+    MEDIUM = "MEDIUM",
+    LOW = "LOW",
+    HIGH = "HIGH"
   }
   
   export enum StatusTache {
