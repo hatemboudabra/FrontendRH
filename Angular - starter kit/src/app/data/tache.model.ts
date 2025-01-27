@@ -8,8 +8,9 @@ export enum ComplexiteTache {
   }
   
   export enum StatusTache {
+    NOT_ASSIGNED = 'NOT_ASSIGNED',
     ASSIGNED = 'ASSIGNED',
-    IN_PROGRESS = 'IN_PROGRESS',
+    INPROGRESS = 'INPROGRESS',
     COMPLETED = 'COMPLETED'
   }
   

@@ -1,7 +1,8 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Tache } from "../../data/tache.model";
+import { an } from "@fullcalendar/core/internal-common";
 
 @Injectable({ providedIn: 'root' })
 export class TacheService {
@@ -11,7 +12,18 @@ export class TacheService {
 getTachesByChef(chefId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}by-chef/${chefId}`);
   }
-// getTacheById(id:number):Observable<Tache[]>{
-//   return this.http.get<Tache[]>(`${this.baseUrl}/${id}`);
-// }
+ getTacheById(id:number):Observable<Tache[]>{
+   return this.http.get<Tache[]>(`${this.baseUrl}${id}`);
+ }
+ assignTacheToCollaborator(tacheId: number, chefId: number, collaboratorId: number): Observable<Tache> {
+  const params = new HttpParams()
+    .set('chefId', chefId.toString())
+    .set('collaboratorId', collaboratorId.toString());
+
+  return this.http.put<Tache>(`${this.baseUrl}${tacheId}/assign`, {}, { params });
+}
+addTache(chefId: number, tacheDTO: Tache): Observable<Tache> {
+  return this.http.post<Tache>(`${this.baseUrl}add-by-chef/${chefId}`, tacheDTO);
+}
+
 }

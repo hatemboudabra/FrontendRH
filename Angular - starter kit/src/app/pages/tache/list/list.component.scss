@@ -44,3 +44,145 @@
       color: #e74c3c; 
     }
   }
+  /* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* Modal container */
+.modal-container {
+  width: 100%;
+  max-width: 28rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+              0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transform: translateY(0);
+  transition: transform 0.3s ease-out;
+}
+
+/* Modal header */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.close-button {
+  padding: 0.5rem;
+  border-radius: 9999px;
+  color: #ef4444;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: #fee2e2;
+}
+
+/* Modal form */
+.modal-form {
+  padding: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #1f2937;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  ring: 2px solid #bfdbfe;
+}
+
+/* Button container */
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* Button styles */
+.button {
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.button-cancel {
+  color: #4b5563;
+  background-color: #f3f4f6;
+}
+
+.button-cancel:hover {
+  background-color: #e5e7eb;
+}
+
+.button-assign {
+  color: white;
+  background-color: #2563eb;
+}
+
+.button-assign:hover {
+  background-color: #1d4ed8;
+}
+
+/* Animation classes */
+.modal-enter {
+  opacity: 0;
+  transform: translateY(-1rem);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.modal-exit {
+  opacity: 1;
+}
+
+.modal-exit-active {
+  opacity: 0;
+  transform: translateY(-1rem);
+  transition: opacity 0.3s, transform 0.3s;
+}

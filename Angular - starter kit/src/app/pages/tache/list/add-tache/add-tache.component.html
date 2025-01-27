@@ -1,0 +1,71 @@
+<div class="card" id="taskTable">
+    <div class="card-body">
+        <!-- <div class="flex items-center gap-3 mb-4">
+            <h6 class="text-15 grow">Tasks (<b class="total-tasks">{{tasks?.length}}</b>)</h6>
+            <div class="shrink-0">
+                <button (click)="isAddTaskModalOpen = true" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20 add-task">
+                    <lucide-angular name="plus" class="inline-block size-4"></lucide-angular> 
+                    <span class="align-middle">Add Task</span>
+                </button>
+            </div>
+        </div>  -->
+
+        <div class="modal">
+            <div class="w-screen md:w-[50rem] bg-white shadow rounded-md dark:bg-zink-=600">
+                <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
+                    <h5 class="text-16">Add Task</h5>
+                </div>
+            
+                    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="create-form" id="create-form">
+                        <div *ngIf="error" class="px-4 py-3 text-sm text-red-500 border border-transparent rounded-md bg-red-50 dark:bg-red-500/20">
+                            {{error}}
+                        </div>
+                        <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
+                            <div class="xl:col-span-12">
+                                <label for="title" class="inline-block mb-2 text-base font-medium">Title</label>
+                                <input type="text" id="title" formControlName="title" 
+                                    class="form-input" placeholder="Enter task title">
+                            </div>
+                            <div class="xl:col-span-12">
+                                <label for="description" class="inline-block mb-2 text-base font-medium">Description</label>
+                                <textarea id="description" formControlName="description" rows="3"
+                                    class="form-input" placeholder="Enter task description"></textarea>
+                            </div>
+                            <div class="xl:col-span-6">
+                                <label for="dateDebut" class="inline-block mb-2 text-base font-medium">Start Date</label>
+                                <input type="date" id="dateDebut" formControlName="dateDebut"
+                                    class="form-input">
+                            </div>
+                            <div class="xl:col-span-6">
+                                <label for="dateFin" class="inline-block mb-2 text-base font-medium">End Date</label>
+                                <input type="date" id="dateFin" formControlName="dateFin"
+                                    class="form-input">
+                            </div>
+                            <div class="xl:col-span-6">
+                                <label for="statusTache" class="inline-block mb-2 text-base font-medium">Status</label>
+                                <select id="statusTache" formControlName="statusTache"
+                                    class="form-input">
+                                    <option *ngFor="let status of statusOptions" [value]="status">{{status}}</option>
+                                </select>
+                            </div>
+                            <div class="xl:col-span-6">
+                                <label for="complexite" class="inline-block mb-2 text-base font-medium">Complexity</label>
+                                <select id="complexite" formControlName="complexite"
+                                    class="form-input">
+                                    <option *ngFor="let complexity of complexityOptions" [value]="complexity">{{complexity}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2 mt-4">
+                            <button type="submit" [disabled]="loading" class="text-white btn bg-custom-500">
+                                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                                Add Task
+                            </button>
+                        </div>
+                    </form>
+             
+            </div>
+        </div>
+        
+    </div>
+</div>

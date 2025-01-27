@@ -17,6 +17,8 @@ import { NgxDatatableModule } from '@siemens/ngx-datatable';
   
 })
 export class ListComponent {
+  selectedTaskDetails?: Tache;
+  showDetailsModal = false;
   taches: Tache[] = [];
   isLoading = true;
   errorMessage = '';
@@ -33,7 +35,7 @@ export class ListComponent {
     { name: 'Actions' }
   ];
 
-  constructor(private tacheS: TacheService) {}
+  constructor(private tacheS: TacheService ) {}
 
   ngOnInit(): void {
     const chefId = 27;
@@ -53,7 +55,7 @@ export class ListComponent {
   getStatusClass(status: StatusTache): string {
     switch(status) {
       case StatusTache.ASSIGNED: return 'bg-orange-100 text-orange-500';
-      // case StatusTache.INPROGRESS: return 'bg-blue-100 text-blue-500';
+      case StatusTache.INPROGRESS: return 'bg-blue-100 text-blue-500';
       case StatusTache.COMPLETED: return 'bg-green-100 text-green-500';
       default: return '';
     }
@@ -93,4 +95,42 @@ export class ListComponent {
 
   addTask(): void {
   }
+  collaborateurs = [
+    { id: 26, name: 'aymen ' },
+    { id: 28, name: 'Affi ' }
+  ];
+  
+  selectedCollaborateurId: number | null = null;
+  showAssignModal: boolean = false;
+selectedTaskId: number | null = null;
+
+openAssignModal(taskId: number): void {
+  this.selectedTaskId = taskId;
+  this.showAssignModal = true;
+}
+
+closeAssignModal(): void {
+  this.showAssignModal = false;
+  this.selectedTaskId = null;
+}
+
+assignTaskToCollaborator(tacheId: number): void {
+  if (this.selectedCollaborateurId !== null) {
+    this.tacheS.assignTacheToCollaborator(tacheId, 27, this.selectedCollaborateurId).subscribe({
+      next: (assignedTache) => {
+        console.log('Task successfully assigned:', assignedTache);
+        this.closeAssignModal();
+        this.ngOnInit(); 
+      },
+      error: (error) => {
+        console.error('Error assigning task:', error);
+        alert('Failed to assign task. Please try again.'); 
+      },
+    });
+  } else {
+    alert('Please select a collaborator.'); 
+  }
+}
+
+
 }
