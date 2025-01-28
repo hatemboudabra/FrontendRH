@@ -73,12 +73,12 @@ export const MENU: MenuItem[] = [
                 link: '/',
                 parentId: 2.18
             },
-            {
-                id: 2.20,
-                label: 'Demande',
-                link: '/',
-                parentId: 2.18
-            },
+            // {
+            //     id: 2.20,
+            //     label: 'Reclamation',
+            //     link: '/',
+            //     parentId: 2.18
+            // },
             {
                 id: 2.21,
                 label: 'Demande',

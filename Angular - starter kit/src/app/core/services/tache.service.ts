@@ -26,4 +26,15 @@ addTache(chefId: number, tacheDTO: Tache): Observable<Tache> {
   return this.http.post<Tache>(`${this.baseUrl}add-by-chef/${chefId}`, tacheDTO);
 }
 
+getAssignedTachesByChef(chefId: number, collaboratorId: number): Observable<Tache[]> {
+  return this.http.get<Tache[]>(`${this.baseUrl}chef/${chefId}/collaborator/${collaboratorId}/taches`);
+}
+
+updateTacheStatus(id: number, newStatus: string): Observable<Tache> {
+  return this.http.put<Tache>(`${this.baseUrl}${id}/status`, null, {
+    params: { newStatus: newStatus }
+  });
+}
+
+
 }
