@@ -123,7 +123,7 @@ export const MENU: MenuItem[] = [
                     },
                     {
                         id: 2.28,
-                        label: 'attestation',
+                        label: 'Offers',
                         link: '/',
                         parentId: 2.26
                     },
