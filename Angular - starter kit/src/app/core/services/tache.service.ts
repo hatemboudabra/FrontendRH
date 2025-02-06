@@ -12,9 +12,11 @@ export class TacheService {
 getTachesByChef(chefId: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}by-chef/${chefId}`);
   }
- getTacheById(id:number):Observable<Tache[]>{
-   return this.http.get<Tache[]>(`${this.baseUrl}${id}`);
- }
+  getTacheById(id: number): Observable<Tache> {
+    return this.http.get<Tache>(`${this.baseUrl}Tache/${id}`);
+  }
+  
+
  assignTacheToCollaborator(tacheId: number, chefId: number, collaboratorId: number): Observable<Tache> {
   const params = new HttpParams()
     .set('chefId', chefId.toString())

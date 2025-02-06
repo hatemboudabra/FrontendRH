@@ -1,10 +1,9 @@
 export interface ChatMessage {
-    id?: number;
-    sender: {
-      username: string;
-    };
-    content: string;
-    timestamp?: string;
-    messageType: 'CHAT' | 'JOIN' | 'LEAVE';
-  }
-  
+  id: number; 
+  content: string; 
+  timestamp: string; 
+  senderId: number; 
+  senderName: string;
+  chatRoomId: number; 
+  isRead: boolean; 
+}

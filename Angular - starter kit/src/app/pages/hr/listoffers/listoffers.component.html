@@ -1,0 +1,108 @@
+<div class="card shadow-lg border-0 rounded-4 p-4 bg-white" id="employeeTable">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 fw-bold text-primary">📌 Job Offers</h1>
+            <button 
+            [appModalTrigger]="'addOfferModal'" 
+            class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+            <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> Add Offer
+          </button>
+        </div>
+
+<!-- Modale pour Ajouter une Offre d'Emploi -->
+<ng-modals id="addOfferModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4">
+    <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
+      <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
+        <h5 class="text-16" id="addOfferLabel">Add Job Offer</h5>
+        <button data-modal-close="addOfferModal" dismissModal [ModalDismiss]="'addOfferModal'" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500">
+          <lucide-angular name="x" [class]="'size-5'"></lucide-angular>
+        </button>
+      </div>
+      <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
+        <form [formGroup]="offerForm" (ngSubmit)="onSubmit()" class="create-form">
+          <div id="alert-error-msg" class="hidden px-4 py-3 text-sm text-red-500 border border-transparent rounded-md bg-red-50 dark:bg-red-500/20"></div>
+          <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
+            <div class="xl:col-span-12">
+              <label for="titleInput" class="inline-block mb-2 text-base font-medium">Title</label>
+              <input formControlName="title" id="titleInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Job title">
+            </div>
+            <div class="xl:col-span-12">
+              <label for="descriptionInput" class="inline-block mb-2 text-base font-medium">Description</label>
+              <textarea formControlName="description" id="descriptionInput" rows="4" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Job description"></textarea>
+            </div>
+            <div class="xl:col-span-6">
+              <label for="salaryInput" class="inline-block mb-2 text-base font-medium">Salary</label>
+              <input formControlName="salary" id="salaryInput" type="number" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Annual salary">
+            </div>
+            <div class="xl:col-span-6">
+              <label for="contractTypeInput" class="inline-block mb-2 text-base font-medium">Contract Type</label>
+              <select formControlName="contractType" id="contractTypeInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
+                <option value="full-time">Full Time</option>
+                <option value="part-time">Part Time</option>
+                <option value="contract">Contract</option>
+              </select>
+            </div>
+            <div class="xl:col-span-6">
+              <label for="publicationDateInput" class="inline-block mb-2 text-base font-medium">Publication Date</label>
+              <input formControlName="publicationDate" id="publicationDateInput" type="date" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
+            </div>
+            <div class="xl:col-span-6">
+              <label for="expirationDateInput" class="inline-block mb-2 text-base font-medium">Expiration Date</label>
+              <input formControlName="expirationDate" id="expirationDateInput" type="date" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 mt-4">
+            <button type="reset" dismissModal [ModalDismiss]="'addOfferModal'" class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-600 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">Cancel</button>
+            <button type="submit" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">Add Offer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </ng-modals>
+
+        <!-- Loading Spinner -->
+        <div *ngIf="loading" class="text-center py-4">
+            <div class="spinner-grow text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <!-- Offers List -->
+        <div *ngIf="!loading" class="row g-4">
+            <div *ngFor="let offer of offers" class="col-md-4">
+                <div class="card offer-card shadow-lg border-0 rounded-4 transition-all position-relative hover:shadow-xl">
+                    <div class="card-body p-4">
+                        <h5 class="card-title text-primary fw-bold d-flex align-items-center">
+                            <i class="bi bi-briefcase me-2"></i> {{ offer.title }}
+                        </h5>
+                        <div class="d-flex align-items-center my-3">
+                            🏷️ {{ offer.contractType ? offer.contractType : 'N/A' }}
+                            <span class="ms-3 fw-medium text-muted">
+                                💰 ${{ offer.salary?.toLocaleString() }}/year
+                            </span>
+                        </div>
+                        <p class="text-muted small line-clamp-3">{{ offer.description }}</p>
+                        <div class="d-flex justify-content-between text-muted small mt-4">
+                            <span>📅 <strong>Posted:</strong> {{ formatDate(offer.publicationDate) }}</span>
+                            <span>⏳ <strong>Expires:</strong> {{ formatDate(offer.expirationDate) }}</span>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button 
+                              (click)="deleteOffer(offer.id)" 
+                              class="text-white btn bg-red-600 border-red-600 hover:bg-red-700 hover:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg shadow-md py-2 px-4 transition duration-300 transform hover:scale-105 active:scale-95">
+                              <lucide-angular name="trash" [class]="'inline-block size-4 mr-2'"></lucide-angular> Delete 
+                            </button>
+                          </div>
+                          
+                          
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- No Offers Message -->
+        <div *ngIf="!loading && offers.length === 0" class="text-center py-4 text-muted">
+            🚀 No job offers available at the moment.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-header {
+    border-bottom: none;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .btn-close {
+    filter: invert(1);
+  }
+  .modal.fade {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .modal.fade.show {
+    opacity: 1;
+  }
+  
+  .modal-backdrop.fade {
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  .modal-backdrop.fade.show {
+    opacity: 1;
+  }

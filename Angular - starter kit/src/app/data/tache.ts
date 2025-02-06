@@ -10,7 +10,7 @@ export enum ComplexiteTache {
     AVANCEE
 }
 export interface Tache{
-    id?: number;
+    id: number;
     title: string;
     description: string;
     dateDebut: Date;

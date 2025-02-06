@@ -19,6 +19,11 @@ import { StatusTache, Tache } from '../../../data/tache.model';
 export class UpdateStatusComponent implements OnInit {
   taches: Tache[] = [];
   isLoading: boolean = true;
+  selectedTaskDetails?: Tache;
+  showDetailsModal = false;
+  StatusTache = StatusTache;
+  public Object = Object; 
+  public statuses = Object.values(StatusTache); 
   // statusOptions: string[] = Object.values(StatusTache); 
   columns = [
     { name: 'Title', prop: 'title' },
@@ -30,7 +35,7 @@ export class UpdateStatusComponent implements OnInit {
   ];
   constructor(private tacheservice:TacheService){}
   ngOnInit(): void {
-    this.loadTaches(27, 26);
+    this.loadTaches(7, 11);
      }
     loadTaches(chefId: number, collaboratorId: number): void {
       this.isLoading = true;
@@ -83,22 +88,29 @@ getStatusClass(status: string): string {
 
 
 
-  // onUpdateStatus(tacheId: number, newStatus: string): void {
-  //   this.tacheservice.updateTacheStatus(tacheId, newStatus).subscribe({
-  //     next: (updatedTache: Tache) => {
-  //       const index = this.taches.findIndex((t) => t.id === tacheId);
-  //       if (index !== -1) {
-  //         this.taches[index] = updatedTache;
-  //       }
-  //       console.log('Statut mis à jour avec succès:', updatedTache);
-  //     },
-  //     error: (err: any) => {
-  //       console.error('Erreur lors de la mise à jour du statut', err);
-  //     },
-  //   });
-  // }
+ 
 
 
+  
+openDetailsModal(taskId: number): void {
+  this.isLoading = true;
+  this.tacheservice.getTacheById(taskId).subscribe({
+    next: (task: Tache) => {
+      this.selectedTaskDetails = task;
+      this.showDetailsModal = true;
+      this.isLoading = false;
+    },
+    error: (error) => {
+      console.error('Error loading task details:', error);
+      this.isLoading = false;
+    }
+  });
+}
 
+
+closeDetailsModal(): void {
+  this.showDetailsModal = false;
+  this.selectedTaskDetails = undefined;
+}
   
 }

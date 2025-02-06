@@ -39,7 +39,7 @@ export class AddTacheComponent {
     onSubmit(): void {
       if (this.taskForm.valid) {
         this.loading = true;
-        const chefId = 27; 
+        const chefId = 7; 
   
         const formValue = this.taskForm.value;
         const task: Tache = {

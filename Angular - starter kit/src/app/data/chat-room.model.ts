@@ -1,7 +1,9 @@
 export interface ChatRoom {
-    id: number;
-    roomId: string;
-    name: string;
+  id: number;
+  name: string; 
+  type: 'PRIVATE' | 'TEAM'; 
+  teamId?: number;
+  participantIds: number[];
   }
    
   

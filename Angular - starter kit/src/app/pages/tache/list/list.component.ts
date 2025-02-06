@@ -38,7 +38,7 @@ export class ListComponent {
   constructor(private tacheS: TacheService ) {}
 
   ngOnInit(): void {
-    const chefId = 27;
+    const chefId = 7;
 
     this.tacheS.getTachesByChef(chefId).subscribe({
       next: (data) => {
@@ -88,7 +88,7 @@ export class ListComponent {
       complexite: ComplexiteTache.SIMPLE,
       dateDebut: new Date(), 
       dateFin: new Date(), 
-      userId: 27 
+      userId: 7 
     };
   }
   
@@ -96,8 +96,8 @@ export class ListComponent {
   addTask(): void {
   }
   collaborateurs = [
-    { id: 26, name: 'aymen ' },
-    { id: 28, name: 'Affi ' }
+    { id: 11, name: 'farhat' },
+    { id: 10, name: 'youusef ' }
   ];
   
   selectedCollaborateurId: number | null = null;
@@ -116,7 +116,7 @@ closeAssignModal(): void {
 
 assignTaskToCollaborator(tacheId: number): void {
   if (this.selectedCollaborateurId !== null) {
-    this.tacheS.assignTacheToCollaborator(tacheId, 27, this.selectedCollaborateurId).subscribe({
+    this.tacheS.assignTacheToCollaborator(tacheId, 7, this.selectedCollaborateurId).subscribe({
       next: (assignedTache) => {
         console.log('Task successfully assigned:', assignedTache);
         this.closeAssignModal();
@@ -131,6 +131,26 @@ assignTaskToCollaborator(tacheId: number): void {
     alert('Please select a collaborator.'); 
   }
 }
+openDetailsModal(taskId: number): void {
+  this.isLoading = true;
+  this.tacheS.getTacheById(taskId).subscribe({
+    next: (task: Tache) => {
+      this.selectedTaskDetails = task;
+      this.showDetailsModal = true;
+      this.isLoading = false;
+    },
+    error: (error) => {
+      console.error('Error loading task details:', error);
+      this.errorMessage = 'Failed to load task details. Please try again.';
+      this.isLoading = false;
+    }
+  });
+}
 
+
+closeDetailsModal(): void {
+  this.showDetailsModal = false;
+  this.selectedTaskDetails = undefined;
+}
 
 }

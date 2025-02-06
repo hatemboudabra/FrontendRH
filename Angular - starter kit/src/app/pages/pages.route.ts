@@ -6,6 +6,8 @@ import { EmployeesComponent } from "./hr/employees/employees.component";
 import { ListComponent } from "./tache/list/list.component";
 import { UpdateStatusComponent } from "./tache/update-status/update-status.component";
 import { AddTacheComponent } from "./tache/list/add-tache/add-tache.component";
+import { OffersComponent } from "./hr/offers/offers.component";
+import { ListoffersComponent } from "./hr/listoffers/listoffers.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -14,7 +16,10 @@ export const PAGE_ROUTES: Route[] = [
     {path:'hr-employee', component:EmployeesComponent},
     {path:'list-tache' , component:ListComponent},
     {path:'add' , component: AddTacheComponent},
-    {path:'updateStatus' , component:UpdateStatusComponent}
+    {path:'updateStatus' , component:UpdateStatusComponent},
+    {path:'offers', component:OffersComponent},
+    {path:'listoffers',component:ListoffersComponent}
+
 
 
 ];
