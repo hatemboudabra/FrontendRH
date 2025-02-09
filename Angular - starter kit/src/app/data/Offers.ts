@@ -5,6 +5,9 @@ export interface Offers {
     salary: number;
     contractType: string;
     publicationDate: Date;
-    expirationDate: Date;
+   // expirationDate: Date;
+   educationLevel :String;
+   experience : number;
     createdById: number;
+
 }

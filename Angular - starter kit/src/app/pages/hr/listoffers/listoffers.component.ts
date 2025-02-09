@@ -42,7 +42,8 @@ export class ListoffersComponent implements OnInit  {
           salary: ['', [Validators.required, Validators.min(0)]],
           contractType: ['', Validators.required],
           publicationDate: ['', Validators.required],
-          expirationDate: ['', Validators.required]
+          educationLevel: ['', Validators.required],
+          experience: ['', [Validators.required, Validators.min(0)]]
         });
     
 

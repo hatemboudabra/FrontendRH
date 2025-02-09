@@ -28,10 +28,12 @@ export class ListComponent {
   newTask: Tache = this.initNewTask();
   columns = [
     { prop: 'title', name: 'Title' },
+    { prop: 'description', name: 'Description' },
     { prop: 'statusTache', name: 'Status' },
     { prop: 'complexite', name: 'Complexity' },
     { prop: 'dateDebut', name: 'Start Date' },
     { prop: 'dateFin', name: 'End Date' },
+    { name: 'Assigned Collaborator' }, 
     { name: 'Actions' }
   ];
 

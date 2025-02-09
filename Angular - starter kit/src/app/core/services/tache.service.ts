@@ -37,6 +37,8 @@ updateTacheStatus(id: number, newStatus: string): Observable<Tache> {
     params: { newStatus: newStatus }
   });
 }
-
+getAssignedCollaborator(id: number): Observable<Tache> {
+  return this.http.get<Tache>(`${this.baseUrl}${id}/assigned-nameCola`);
+}
 
 }

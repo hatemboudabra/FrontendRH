@@ -24,8 +24,18 @@
             <div class="flex items-center">
               <div>
                 <h6 class="text-xs">{{ row.title }}</h6>
-                <p class="text-slate-500 text-xxs">{{ row.description }}</p>
               </div>
+              
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Description" prop="description" [width]="150">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <div class="flex items-center">
+              <div>
+                <h6 class="text-xs">{{ row.description }}</h6>
+              </div>
+              
             </div>
           </ng-template>
         </ngx-datatable-column>
@@ -57,7 +67,15 @@
             {{ value | date:'shortDate' }}
           </ng-template>
         </ngx-datatable-column>
-  
+     <!--   <ngx-datatable-column name="Assigned Collaborator" [width]="150">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <div class="flex items-center">
+              <div>
+                <h6 class="text-xs">{{ row.assignedCollaboratorName || 'Not Assigned' }}</h6>
+              </div>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>-->
         <ngx-datatable-column name="Actions" [width]="150">
           <ng-template ngx-datatable-cell-template let-row="row">
             <div class="d-flex gap-3 justify-content-center">

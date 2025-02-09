@@ -1,0 +1,59 @@
+<app-page-title [title]="'Add Demande '" [pagetitle]="'Leaves Manage'"></app-page-title>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-x-5">
+  <div class="xl:col-span-9">
+    <div class="card shadow-lg rounded-lg">
+      <div class="card-body p-6">
+        <form [formGroup]="demandeForm" (ngSubmit)="onSubmit()">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-12">
+            <!-- Titre -->
+            <div class="xl:col-span-6">
+              <div class="form-group">
+                <label for="title" class="block mb-2 text-sm font-medium text-gray-700">Title</label>
+                <input type="text" id="title" formControlName="title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Enter title">
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="xl:col-span-6">
+              <div class="form-group">
+                <label for="description" class="block mb-2 text-sm font-medium text-gray-700">Description</label>
+                <textarea id="description" formControlName="description" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" rows="3" placeholder="Enter description"></textarea>
+              </div>
+            </div>
+
+            <!-- Date -->
+            <div class="xl:col-span-6">
+              <div class="form-group">
+                <label for="date" class="block mb-2 text-sm font-medium text-gray-700">Date</label>
+                <input type="text" id="date" formControlName="date" mwlFlatpickr class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Select date" data-provider="flatpickr">
+              </div>
+            </div>
+
+            <!-- Type de demande -->
+            <div class="xl:col-span-6">
+              <div class="form-group">
+                <label for="type" class="block mb-2 text-sm font-medium text-gray-700">Type</label>
+                <select id="type" formControlName="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300">
+                  <option value="">Select Type</option>
+                  <option value="DOCUMENT">Document</option>
+                  <option value="TRAINING">Training</option>
+                  <option value="LEAVE">Leave</option>
+                  <option value="LOAN">Loan</option>
+                  <option value="ADVANCE">Advance</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Boutons -->
+          
+          </div>
+          <div class="flex justify-end gap-2 mt-6">
+            <button type="reset" class="px-6 py-2 text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-300">Reset</button>
+            <button type="submit" class="px-6 py-2 text-white bg-custom-500 border border-custom-500 rounded-lg hover:bg-custom-600 hover:border-custom-600 focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-opacity-50 transition duration-300">Apply Leave</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
