@@ -69,6 +69,15 @@
             >
               <i class="fas fa-eye"></i> <span>View</span>
             </button>
+            <select
+            class="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out shadow-sm"
+            [(ngModel)]="row.statusTache"
+            (change)="updateTaskStatus(row.id, row.statusTache)"
+          >
+            <option *ngFor="let status of statuses" [value]="status">
+              {{ status }}
+            </option>
+          </select>
             </div>
             
           </ng-template>

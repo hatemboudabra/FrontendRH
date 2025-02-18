@@ -10,6 +10,16 @@ export class FormationService{
     constructor(private http:HttpClient){}
     addFormation(formation:Formation):Observable<Formation>
     {
-            return this.http.post<Formation>(`${this.baseUrl}`,formation)
+            return this.http.post<Formation>(`${this.baseUrl}addF`,formation)
     }
+
+
+       getFormationByUserId(userId: number): Observable<Formation[]> {
+            return this.http.get<Formation[]>(`${this.baseUrl}form/${userId}`);
+          }
+          getAllFormationsWithUsernames(): Observable<string[]> {
+                return this.http.get<string[]>(`${this.baseUrl}withusernames`);
+            }
+
+        
 }

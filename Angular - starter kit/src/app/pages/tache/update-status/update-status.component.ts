@@ -33,6 +33,8 @@ export class UpdateStatusComponent implements OnInit {
     { name: 'End Date', prop: 'dateFin' },
     { name: 'Actions' }
   ];
+  updatingTaskId: number | null = null;
+  isUpdating: boolean = false; 
   constructor(private tacheservice:TacheService){}
   ngOnInit(): void {
     this.loadTaches(7, 11);
@@ -111,6 +113,33 @@ openDetailsModal(taskId: number): void {
 closeDetailsModal(): void {
   this.showDetailsModal = false;
   this.selectedTaskDetails = undefined;
+}
+  
+updateTaskStatus(taskId: number, newStatus: string): void {
+  this.isUpdating = true;
+  this.updatingTaskId = taskId;
+
+  this.tacheservice.updateTacheStatus(taskId, newStatus).subscribe({
+    next: (updatedTask: Tache) => {
+      // Mettre à jour la tâche dans la liste locale
+      const index = this.taches.findIndex(t => t.id === taskId);
+      if (index !== -1) {
+        this.taches[index] = updatedTask;
+      }
+
+      // Recharger la liste des tâches
+      this.loadTaches(7, 11); // Rechargez les tâches avec les mêmes paramètres
+
+      this.isUpdating = false;
+      this.updatingTaskId = null;
+      console.log('Task status updated successfully', updatedTask);
+    },
+    error: (error) => {
+      this.isUpdating = false;
+      this.updatingTaskId = null;
+      console.error('Failed to update task status', error);
+    }
+  });
 }
   
 }

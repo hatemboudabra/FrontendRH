@@ -1,0 +1,49 @@
+<div class="grid grid-cols-1 gap-x-5 xl:grid-cols-3">
+    <!-- Statistiques par statut -->
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-4 text-15">Statistiques par Statut</h6>
+        <div id="chartStatut" class="apex-charts">
+          <apx-chart
+            [series]="chartStatut.series"
+            [chart]="chartStatut.chart"
+            [xaxis]="chartStatut.xaxis"
+            [yaxis]="chartStatut.yaxis"
+            [colors]="chartStatut.colors"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Statistiques par collaborateur -->
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-4 text-15">Statistiques par Collaborateur</h6>
+        <div id="chartCollaborateur" class="apex-charts">
+          <apx-chart
+            [series]="chartCollaborateur.series"
+            [chart]="chartCollaborateur.chart"
+            [xaxis]="chartCollaborateur.xaxis"
+            [yaxis]="chartCollaborateur.yaxis"
+            [colors]="chartCollaborateur.colors"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Statistiques des notes des utilisateurs évalués -->
+    <div class="card">
+      <div class="card-body">
+        <h6 class="mb-4 text-15">Statistiques des Notes des collaborateurs</h6>
+        <div id="chartEvaluation" class="apex-charts">
+          <apx-chart
+            [series]="chartEvaluation.series"
+            [chart]="chartEvaluation.chart"
+            [xaxis]="chartEvaluation.xaxis"
+            [yaxis]="chartEvaluation.yaxis"
+            [colors]="chartEvaluation.colors"
+          ></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>

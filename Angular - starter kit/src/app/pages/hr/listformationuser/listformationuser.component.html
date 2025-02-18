@@ -1,0 +1,34 @@
+<div class="formation-list">
+  <h2>Formations with Users</h2>
+
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input [(ngModel)]="searchTerm" type="text" placeholder="Search by formation name" class="search-input" />
+    <button (click)="onSearch()" class="search-button">Search</button>
+  </div>
+
+  <!-- Table with Filtered Data -->
+  <div *ngIf="filteredFormations.length > 0; else noData" class="table-container">
+    <table class="formation-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Formation Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let formation of filteredFormations; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ formation }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Controls -->
+
+
+  <ng-template #noData>
+    <p class="no-data-message">No formations available.</p>
+  </ng-template>
+</div>

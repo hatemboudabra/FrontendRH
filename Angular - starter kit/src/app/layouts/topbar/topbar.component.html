@@ -43,16 +43,47 @@
                         </button>
                     </div>
                     
-                    <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">
+             <!--       <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">
 
-                    
-                    </div>
+                        <button mndropdownToggle type="button" class="inline-flex justify-center relative items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar rounded-md dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200 group-data-[topbar=dark]:text-topbar-item-dark" id="notificationDropdown" data-bs-toggle="dropdown">
+                            <lucide-angular name="bell-ring" [class]="'inline-block size-5 stroke-1 fill-slate-100 group-data-[topbar=dark]:fill-topbar-item-bg-hover-dark group-data-[topbar=brand]:fill-topbar-item-bg-hover-brand'"></lucide-angular>
+                            <span class="absolute top-0 right-0 flex size-1.5">
+                                <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-sky-400"></span>
+                                <span class="relative inline-flex size-1.5 rounded-full bg-sky-500"></span>
+                            </span>
+                        </button>
+                        <div mndropdownMenu class="absolute z-50 ltr:text-left rtl:text-right bg-white rounded-md shadow-md !top-4 dropdown-menu min-w-[20rem] lg:min-w-[26rem] dark:bg-zink-600" aria-labelledby="notificationDropdown">
+                            <div class="p-4">
+                                <h6 class="mb-4 text-16">Notifications <span class="inline-flex items-center justify-center size-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-orange-500 border-orange-500">{{notifyList?.length}}</span></h6>
+                                <ul class="flex flex-wrap w-full p-1 mb-2 text-sm font-medium text-center rounded-md filter-btns text-slate-500 bg-slate-100 nav-tabs dark:bg-zink-500 dark:text-zink-200">
+                                    <li class="group grow" (click)="NotifyFilter('all')" [ngClass]="{'active':type == 'all'}">
+                                        <a href="javascript:void(0);" data-filter="all" class="inline-block nav-link px-1.5 w-full py-1 text-xs transition-all duration-300 ease-linear rounded-md text-slate-500 border border-transparent group-[.active]:bg-white group-[.active]:text-custom-500 hover:text-custom-500 active:text-custom-500 dark:text-zink-200 dark:hover:text-custom-500 dark:group-[.active]:bg-zink-600 -mb-[1px]">View All</a>
+                                    </li>
+                                  
+                                </ul>
+
+                            </div>
+                            <ngx-simplebar class="max-h-[350px]">
+
+
+                            </ngx-simplebar>
+                            <div class="flex items-center gap-2 p-4 border-t border-slate-200 dark:border-zink-500">
+                                <div class="grow">
+                                    <a href="javascript:void(0);">Manage Notification</a>
+                                </div>
+                                <div class="shrink-0">
+                                    <button type="button" class="px-2 py-1.5 text-xs text-white transition-all duration-200 ease-linear btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100">View All Notification <lucide-angular name="move-right" [class]="'inline-block size-3.5 ml-1'"></lucide-angular></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
 
                     <div class="relative items-center hidden h-header md:flex">
                         <button [DrawerTrigger]="'customizerButton'" type="button" class="inline-flex justify-center items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar group-data-[topbar=dark]:text-topbar-item-dark rounded-md btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200">
                             <lucide-angular name="settings" [class]="'inline-block size-5 stroke-1 fill-slate-100 group-data-[topbar=dark]:fill-topbar-item-bg-hover-dark group-data-[topbar=brand]:fill-topbar-item-bg-hover-brand'"></lucide-angular>
                         </button>
                     </div>
+                 
 
 
                     <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">

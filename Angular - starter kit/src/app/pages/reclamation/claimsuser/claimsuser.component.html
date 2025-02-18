@@ -1,0 +1,84 @@
+<!-- list-reclamation.component.html -->
+<app-page-title [title]="'Reclamation List'" [pagetitle]="'Reclamation Management'"></app-page-title>
+
+<div class="card" id="reclamationTable">
+    <div class="card-body">
+        <div class="flex items-center gap-3 mb-4">
+            <h6 class="text-15 grow">Reclamations (<b class="total-reclamations">{{reclamations?.length}}</b>)</h6>
+         <div class="shrink-0">
+                <a routerLink="/add-reclamation" type="button" 
+                   class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100">
+                    <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular>
+                    <span class="align-middle">Add Reclamation</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="-mx-5 overflow-x-auto">
+            <ngx-datatable 
+                [rows]="reclamations" 
+                class="material w-full whitespace-nowrap"
+                [loadingIndicator]="true"
+                [columnMode]="'force'"
+                [limit]="7"
+                [headerHeight]="42"
+                [footerHeight]="50"
+                [rowHeight]="'auto'"
+                [columns]="columns">
+                
+                @for(column of columns;track $index){
+                    <ngx-datatable-column 
+                        name="{{column.name}}" 
+                        prop="{{column.prop}}"
+                        headerClass="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600 px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500"
+                        cellClass="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500">
+                        <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                            @if(column.prop === 'id'){
+                                <a href="javascript:void(0);" class="transition-all duration-150 ease-linear text-custom-500 hover:text-custom-600">{{value}}</a>
+                            }@else if(column.prop === 'action'){
+                                <div class="flex gap-3">
+                                    <a href="javascript:void(0);" class="text-slate-500 hover:text-slate-600">
+                                        <lucide-angular name="eye" class="size-4"></lucide-angular>
+                                    </a>
+                                 
+                                    <a href="javascript:void(0);" class="text-slate-500 hover:text-red-500">
+                                        <lucide-angular name="trash-2" class="size-4"></lucide-angular>
+                                    </a>
+                                </div>
+                            }@else{
+                                {{value}}
+                            }
+                        </ng-template>
+                    </ngx-datatable-column>
+                }
+                
+                <ngx-datatable-footer>
+                    <ng-template ngx-datatable-footer-template 
+                        let-rowCount="rowCount"
+                        let-pageSize="pageSize"
+                        let-selectedCount="selectedCount"
+                        let-curPage="curPage"
+                        let-offset="offset">
+                        <div class="grow ps-5">
+                            <p class="text-slate-500 dark:text-zink-200">
+                                Showing <b>{{getEndIndex()}}</b> of <b>{{totalItems}}</b> Results
+                            </p>
+                        </div>
+                        @if(totalItems > 0){
+                            <pagination-controls 
+                                class="pe-4"
+                                [currentPage]="currentPage"
+                                [boundryLinks]="false"
+                                previousLabel="Prev"
+                                nextLabel="Next"
+                                [itemsPerPage]="itemsPerPage"
+                                [total]="totalItems"
+                                (pageChanged)="onPageChange($event)">
+                            </pagination-controls>
+                        }
+                    </ng-template>
+                </ngx-datatable-footer>
+            </ngx-datatable>
+        </div>
+    </div>
+</div>

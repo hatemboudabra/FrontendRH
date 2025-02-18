@@ -1,0 +1,105 @@
+<app-page-title [title]="'Add Formation'" [pagetitle]="'Formation Management'"></app-page-title>
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-x-5">
+  <div class="xl:col-span-9">
+    <div class="card shadow-lg rounded-lg bg-white">
+      <div class="card-body p-6">
+        
+        <!-- Formulaire d'ajout de formation -->
+        <form [formGroup]="formationForm" (ngSubmit)="onSubmitFormation()" class="space-y-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter une Formation</h2>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="form-group">
+              <label for="nom" class="block text-sm font-medium text-gray-700">Nom</label>
+              <input type="text" id="nom" formControlName="nom" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              <div *ngIf="formationForm.get('nom')?.invalid && formationForm.get('nom')?.touched" class="text-red-500 text-sm mt-1">
+                Le nom est requis.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+              <textarea id="description" formControlName="description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+              <div *ngIf="formationForm.get('description')?.invalid && formationForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
+                La description est requise.
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" [disabled]="formationForm.invalid">
+            Ajouter Formation
+          </button>
+        </form>
+
+        <hr class="my-8 border-t border-gray-200">
+
+        <!-- Formulaire d'ajout de compétence -->
+        <form [formGroup]="competanceForm" (ngSubmit)="onSubmitCompetance()" *ngIf="formationId" class="space-y-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter une Compétence</h2>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="form-group">
+              <label for="competanceNom" class="block text-sm font-medium text-gray-700">Nom</label>
+              <input type="text" id="competanceNom" formControlName="nom" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              <div *ngIf="competanceForm.get('nom')?.invalid && competanceForm.get('nom')?.touched" class="text-red-500 text-sm mt-1">
+                Le nom est requis.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="niveauC" class="block text-sm font-medium text-gray-700">Niveau</label>
+              <select id="niveauC" formControlName="niveauC" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <option *ngFor="let level of NiveauC | keyvalue" [value]="level.value">
+                  {{ level.value }}
+                </option>
+              </select>
+              <div *ngIf="competanceForm.get('niveauC')?.invalid && competanceForm.get('niveauC')?.touched" class="text-red-500 text-sm mt-1">
+                Le niveau est requis.
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" [disabled]="competanceForm.invalid">
+            Ajouter Compétence
+          </button>
+        </form>
+
+        <hr class="my-8 border-t border-gray-200">
+
+        <!-- Formulaire d'ajout de certificat -->
+        <form [formGroup]="certificatForm" (ngSubmit)="onSubmitCertificat()" *ngIf="formationId" class="space-y-6">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter un Certificat</h2>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="form-group">
+              <label for="certificatNom" class="block text-sm font-medium text-gray-700">Nom</label>
+              <input type="text" id="certificatNom" formControlName="nom" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              <div *ngIf="certificatForm.get('nom')?.invalid && certificatForm.get('nom')?.touched" class="text-red-500 text-sm mt-1">
+                Le nom est requis.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="certificatDesc" class="block text-sm font-medium text-gray-700">Description</label>
+              <textarea id="certificatDesc" formControlName="description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
+              <div *ngIf="certificatForm.get('description')?.invalid && certificatForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
+                La description est requise.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="certificatUrl" class="block text-sm font-medium text-gray-700">URL</label>
+              <input type="text" id="certificatUrl" formControlName="url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              <div *ngIf="certificatForm.get('url')?.invalid && certificatForm.get('url')?.touched" class="text-red-500 text-sm mt-1">
+                L'URL est requise.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="dateExpiration" class="block text-sm font-medium text-gray-700">Date d'Expiration</label>
+              <input type="date" id="dateExpiration" formControlName="dateExpiration" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+              <div *ngIf="certificatForm.get('dateExpiration')?.invalid && certificatForm.get('dateExpiration')?.touched" class="text-red-500 text-sm mt-1">
+                La date d'expiration est requise.
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" [disabled]="certificatForm.invalid">
+            Ajouter Certificat
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

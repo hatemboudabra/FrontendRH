@@ -15,298 +15,83 @@ export const MENU: MenuItem[] = [
                 id: 1.4,
                 label: 'hr',
                 link: '/',
-                parentId: 1
+                parentId: 1,
+                roles: ['ROLE_RESPONSABLE_RH'] 
             },
-         
         ]
     },
     {
-        id: 2,
-        label: 'apps',
-        isTitle: true,
-    },
-    {
-        id: 2.1,
-        label: 'chat',
-        icon: 'messages-square',
-        link: '/',
-        parentId: 2
-    },
-    {
-        id: 2.2,
-        label: 'email',
-        icon: 'mail',
-        link: '/',
-        parentId: 2
-    },
-    {
-        id: 2.3,
-        label: 'Tache',
-        icon: 'calendar-days',
-        parentId: 2,
+        id: 5, 
+        label: 'Tache', 
+        icon: 'calendar-days', 
+        roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'],
         subItems: [
-            {
-                id: 2.4,
-                label: 'add Tache',
-                link: '/',
-                parentId: 2.3
-            },
-            {
-                id: 2.5,
-                label: 'List Tache',
-                link: '/',
-                parentId: 2.3
-            },
-            
-        
+            { id: 5.1, label: 'Ajouter Tâche', link: '/add', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 5.2, label: 'Liste des Tâches', link: '/list-tache', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 5.3, label: 'Mettre à jour le statut', link: '/updateStatus', parentId: 5, roles: ['ROLE_COLLABORATEUR'] }
         ]
     },
     {
         id: 2.18,
-        label: 'hr-management',
+        label: 'Gestion RH',
         icon: 'circuit-board',
-        parentId: 2,
+        roles: ['ROLE_RESPONSABLE_RH'], 
         subItems: [
-            {
-                id: 2.19,
-                label: 'employees-list',
-                link: '/',
-                parentId: 2.18
-            },
-            // {
-            //     id: 2.20,
-            //     label: 'Reclamation',
-            //     link: '/',
-            //     parentId: 2.18
-            // },
-            {
-                id: 2.21,
-                label: 'Demande',
-                parentId: 2.18,
-                subItems: [
-                    {
-                        id: 2.22,
-                        label: 'Avance',
-                        link: '/',
-                        parentId: 2.21
-                    },
-                     {
-                         id: 2.23,
-                        label: 'Prêts',
-                         link: '/',
-                         parentId: 2.21
-                     },
-                    // {
-                    //     id: 2.24,
-                    //     label: 'by-hr',
-                    //     link: '/',
-                    //     parentId: 2.21
-                    // },
-                    // {
-                    //     id: 2.25,
-                    //     label: 'add-leave-hr',
-                    //     link: '/',
-                    //     parentId: 2.21
-                    // },
-                ]
-            },
-            {
-                id: 2.26,
-                label: 'Cadidature',
-                parentId: 2,
-                subItems: [
-                    {
-                        id: 2.27,
-                        label: 'List Candidat',
-                        link: '/',
-                        parentId: 2.26
-                    },
-                    {
-                        id: 2.28,
-                        label: 'Offers',
-                        link: '/',
-                        parentId: 2.26
-                    },
-                ]
-            },
-           
-
+            { id: 2.19, label: 'Liste des employés', link: '/hr-employee', parentId: 2.18, roles: ['ROLE_RESPONSABLE_RH'] },
+            { id: 2.20, label: 'Liste des offres', link: '/listoffers', parentId: 2.18, roles: ['ROLE_RESPONSABLE_RH'] },
+            { id: 2.21, label: 'Demandes', link: '/listdemande', parentId: 2.18, roles: ['ROLE_RESPONSABLE_RH'] },
+            { id: 2.22, label: 'Formations', link: '/listformation', parentId: 2.18, roles: ['ROLE_RESPONSABLE_RH'] }
         ]
     },
     {
-        id: 2.38,
-        label: 'notes',
-        icon: 'scroll-text',
-        link: '/',
-        parentId: 2,
-    },
-   
-    {
-        id: 2.48,
-        label: 'users',
-        icon: 'user',
-        parentId: 2,
+        id: 6,
+        label: 'Demandes',
+        icon: 'file-text',
+        roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'],
         subItems: [
-            {
-                id: 2.49,
-                label: 'list-view',
-                link: '/',
-                parentId: 2.48,
-            },
-            {
-                id: 2.50,
-                label: 'grid-view',
-                link: '/',
-                parentId: 2.48,
-            }
+            { id: 6.1, label: 'Gérer les demandes', link: '/demandeChef', parentId: 6, roles: ['ROLE_CHEF'] },
+            { id: 6.2, label: 'Ajouter une demande', link: '/add-demande', parentId: 6, roles: ['ROLE_COLLABORATEUR'] },
+            { id: 6.3, label: 'Mes demandes', link: '/userdemande', parentId: 6, roles: ['ROLE_COLLABORATEUR'] }
         ]
     },
     {
-        id: 2,
-        label: 'pages',
-        isTitle: true,
-    },
-    {
-        id: 3,
-        label: 'authentication',
-        icon: 'award',
+        id: 7,
+        label: 'Reclamations',
+        icon: 'alert-triangle',
+        roles: ['ROLE_COLLABORATEUR', 'ROLE_RESPONSABLE_RH'],
         subItems: [
-            {
-                id: 3.1,
-                label: 'login',
-                parentId: 3,
-                subItems: [
-                    {
-                        id: 3.2,
-                        label: 'basic',
-                        link: '/',
-                        parentId: 3.1,
-                    },
-                   
-                ]
-            },
-            {
-                id: 3.6,
-                label: 'register',
-                parentId: 3,
-                subItems: [
-                    {
-                        id: 3.7,
-                        label: 'basic',
-                        link: '/',
-                        parentId: 3.6,
-                    },
-                  
-                ]
-            },
-          
-            {
-                id: 3.20,
-                label: 'logout',
-                parentId: 3,
-                subItems: [
-                    {
-                        id: 3.21,
-                        label: 'basic',
-                        link: '/',
-                        parentId: 3.20,
-                    },
-                    
-                ]
-            },
-            {
-                id: 3.25,
-                label: 'reset-password',
-                parentId: 3,
-                subItems: [
-                    {
-                        id: 3.26,
-                        label: 'basic',
-                        link: '/',
-                        parentId: 3.25,
-                    },
-                   
-                ]
-            },
-        
+            { id: 7.1, label: 'Ajouter Réclamation', link: '/add-reclamation', parentId: 7, roles: ['ROLE_COLLABORATEUR'] },
+            { id: 7.2, label: 'Liste Réclamations RH', link: '/listClaims', parentId: 7, roles: ['ROLE_RESPONSABLE_RH'] },
+            { id: 7.3, label: 'Mes Réclamations', link: '/listclaimsuser', parentId: 7, roles: ['ROLE_COLLABORATEUR'] }
         ]
     },
-  
-
+    {
+        id: 8,
+        label: 'Équipe',
+        icon: 'users',
+        roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'],
+        subItems: [
+            { id: 8.1, label: 'Liste des équipes', link: '/listteam', parentId: 8, roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'] },
+            { id: 8.2, label: 'Ajouter une équipe', link: '/add-team', parentId: 8, roles: ['ROLE_CHEF'] }
+        ]
+    },
     {
         id: 10,
-        label: 'apexcharts',
+        label: 'Statistiques',
         icon: 'pie-chart',
+        roles: ['ROLE_CHEF'],
         subItems: [
-            {
-                id: 10.1,
-                label: 'area',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.2,
-                label: 'bar',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.3,
-                label: 'boxplot',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.4,
-                label: 'bubble',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.5,
-                label: 'candlstick',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.6,
-                label: 'column',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.7,
-                label: 'funnel',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.8,
-                label: 'heatmap',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.9,
-                label: 'line',
-                link: '/',
-                parentId: 10
-            },
-            {
-                id: 10.10,
-                label: 'mixed',
-                link: '/',
-                parentId: 10
-            },
-     
-   
-            {
-                id: 10.18,
-                label: 'treemap',
-                link: '/',
-                parentId: 10
-            },
+            { id: 10.1, label: 'Statistiques générales', link: '/stat', parentId: 10, roles: ['ROLE_CHEF'] }
         ]
     },
- 
-]
+    {
+        id: 11,
+        label: 'Communication',
+        icon: 'message-circle',
+        roles: ['ROLE_RESPONSABLE_RH', 'ROLE_COLLABORATEUR', 'ROLE_CHEF'], 
+        subItems: [
+            { id: 11.1, label: 'Chat', link: '/chat', parentId: 11, roles: [ 'ROLE_COLLABORATEUR', 'ROLE_CHEF'] },
+            { id: 11.2, label: 'Email', link: '/email', parentId: 11, roles: ['ROLE_RESPONSABLE_RH'] }
+        ]
+    }
+];

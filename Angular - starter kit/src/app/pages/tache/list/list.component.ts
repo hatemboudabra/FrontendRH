@@ -84,6 +84,7 @@ export class ListComponent {
 
   initNewTask(): Tache {
     return {
+      
       title: '',
       description: '',
       statusTache: StatusTache.ASSIGNED,

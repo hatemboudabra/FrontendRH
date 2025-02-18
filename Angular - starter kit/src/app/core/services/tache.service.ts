@@ -40,5 +40,10 @@ updateTacheStatus(id: number, newStatus: string): Observable<Tache> {
 getAssignedCollaborator(id: number): Observable<Tache> {
   return this.http.get<Tache>(`${this.baseUrl}${id}/assigned-nameCola`);
 }
-
+getTacheStatsByChef(chefId: number): Observable<{ [key: string]: number }> {
+  return this.http.get<{ [key: string]: number }>(`${this.baseUrl}stats/${chefId}`);
+}
+getTachesAssignedByChefToCollaborators(chefId: number): Observable<{ [key: string]: number }> {
+  return this.http.get<{ [key: string]: number }>(`${this.baseUrl}chef/${chefId}/collaborateurs/stats`);
+}
 }

@@ -45,7 +45,6 @@
 
     <!-- Main Content -->
     <div class="col-span-12 lg:col-span-9 2xl:col-span-10 grow card">
-      <!-- Afficher la liste des candidats -->
     <!-- Afficher la liste des candidats -->
 <div *ngIf="showEmailList">
   <div class="card-body p-6">
@@ -98,7 +97,7 @@
                     <strong>Téléphone :</strong> {{ selectedCandidate.telephone }}
                 </div>
                 <div>
-                    <strong>CV :</strong> <a [href]="selectedCandidate.cv" class="text-blue-500 hover:text-blue-600 transition-all duration-300 ease-in-out">Télécharger le CV</a>
+                    <strong>CV :</strong> <a [href]="'http://localhost:8082/cvs/' + selectedCandidate.cv" class="text-blue-500 hover:text-blue-600 transition-all duration-300 ease-in-out">Télécharger le CV</a>
                 </div>
             </div>
         </div>
