@@ -79,16 +79,16 @@ getCurrentUser(): Observable<User | null> {
   const token = this.token;
   if (token) {
     const decodedToken = this.helper.decodeToken(token);
-    console.log("Token décodé :", decodedToken); // Vérifie le token décodé
+    console.log("Token décodé :", decodedToken);
     if (decodedToken) {
       const user: User = {
         id: decodedToken.id,
-        username: decodedToken.sub, // `sub` contient généralement le nom d'utilisateur dans un JWT
+        username: decodedToken.sub, 
         email: decodedToken.email, 
-        roles: decodedToken.roles || [] // Vérifie si les rôles existent
+        roles: decodedToken.roles || [] 
       };
       return new Observable(observer => {
-        observer.next(user); // Retourne l'objet utilisateur complet
+        observer.next(user); 
         observer.complete();
       });
     }
@@ -106,5 +106,24 @@ const url = `${environment.apiUrl}/id/${username}`;
 }
 updateUserRole(newRole: string): void {
   this.userRoleSubject.next(newRole);
+}
+
+getRoleCounts(): Observable<Map<string, number>> {
+  return this.http.get<Map<string, number>>(`${environment.apiUrl}/role-counts`);
+}
+
+
+getCollaboratorsUsernames(): Observable<{ id: number, username: string }[]> {
+  return this.http.get<{ id: number, username: string }[]>(`${environment.apiUrl}/collaboratorsusernames`);
+}
+updateProfile(userId: number, userDTO: any): Observable<User> {
+  const url = `${environment.apiUrl}/${userId}/profile`;
+  return this.http.put<User>(url, userDTO).pipe(
+    map(updatedUser => {
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      this.currentUserSubject.next(updatedUser);
+      return updatedUser;
+    })
+  );
 }
 }

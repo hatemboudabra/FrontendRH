@@ -9,6 +9,8 @@ import { NGXPagination } from '../../../Component/pagination';
 import { MDModalModule } from '../../../Component/modals';
 import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { RouterLink } from '@angular/router';
+import { AuthenticationService } from '../../../core/services/auth.service';
+import { User } from '../../../store/Authentication/auth.models';
 
 @Component({
   selector: 'app-list-reclamation',
@@ -28,13 +30,47 @@ export class ListReclamationComponent {
   totalItems: number = 0;
   startIndex: number = 0;
   endIndex: any;
-  constructor(private reclamationService: ReclamationService) {}
+  currentUser: User | null = null;
+  constructor(private reclamationService: ReclamationService,
+    private authService: AuthenticationService) {}
 
-  ngOnInit() {
-    this.loadReclamations();
-  }
+    ngOnInit(): void {
+      this.loadCurrentUser(); 
+    }
   
-  loadReclamations() {
+    loadCurrentUser(): void {
+      this.authService.getCurrentUser().subscribe({
+        next: (user) => {
+          if (user && user.username) {
+            this.currentUser = user;
+            this.getUserIdByUsername(user.username); 
+          } else {
+            console.error('❌ Utilisateur non connecté ou username manquant.');
+          }
+        },
+        error: (error) => {
+          console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        },
+      });
+    }
+  
+    getUserIdByUsername(username: string): void {
+      this.authService.getUserByUsername(username).subscribe({
+        next: (userDetails) => {
+          if (userDetails && userDetails.id) {
+            console.log('✅ ID utilisateur reçu :', userDetails.id);
+            this.loadReclamations(userDetails.id); 
+          } else {
+            console.error('❌ Données utilisateur invalides ou ID manquant');
+          }
+        },
+        error: (error) => {
+          console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        },
+      });
+    }
+  
+  loadReclamations(userId: number) {
     this.reclamationService.getAllClaims().subscribe({
       next: (data) => {
         this.reclamations = data;
@@ -63,6 +99,21 @@ export class ListReclamationComponent {
     { name: 'ID', prop: 'id' },
     { name: 'Title', prop: 'title' },
     { name: 'Description', prop: 'description' },
+    {name:'CreatedBy',prop:'username'},
     { name: 'Action', prop: 'action' }
   ];
+  deleteReclamation(id: number) {
+    if (confirm("Voulez-vous vraiment supprimer cette réclamation ?")) {
+      this.reclamationService.deleteclaims(id).subscribe({
+        next: () => {
+          console.log("✅ Réclamation supprimée avec succès !");
+          this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
+        },
+        error: (err) => {
+          console.error("❌ Erreur lors de la suppression :", err);
+        }
+      });
+    }
+  }
+  
 }

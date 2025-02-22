@@ -36,4 +36,11 @@ export class DemandeService {
     getDemandesByUserId(userId: number): Observable<Demande[]> {
         return this.http.get<Demande[]>(`${this.baseUrl}user/${userId}`);
       }
+
+      getDemandesCountByStatusForDocumentTrainingOrLeave(): Observable<Map<string, number>> {
+        return this.http.get<Map<string, number>>(`${this.baseUrl}countchef`);
+    }
+    getDemandecountsbystatusavancepret(): Observable<Map<string, number>> {
+      return this.http.get<Map<string, number>>(`${this.baseUrl}countRh`);
+    }
 }

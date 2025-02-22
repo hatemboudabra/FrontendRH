@@ -46,4 +46,7 @@ getTacheStatsByChef(chefId: number): Observable<{ [key: string]: number }> {
 getTachesAssignedByChefToCollaborators(chefId: number): Observable<{ [key: string]: number }> {
   return this.http.get<{ [key: string]: number }>(`${this.baseUrl}chef/${chefId}/collaborateurs/stats`);
 }
+getTachesByCollaboratorId(collaboratorId: number): Observable<Tache[]> {
+  return this.http.get<Tache[]>(`${this.baseUrl}collaborateur/${collaboratorId}`);
+}
 }

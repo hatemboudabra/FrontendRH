@@ -19,4 +19,8 @@ export class ReclamationService {
     getReclamationUserId(userId:number):Observable<Reclamation[]>{
              return this.http.get<Reclamation[]>(`${this.baseUrl}claims/${userId}`)
          }
+
+         deleteclaims(id:number):Observable<void>{
+            return this.http.delete<void>(`${this.baseUrl}Recl/${id}`)
+         }
 }

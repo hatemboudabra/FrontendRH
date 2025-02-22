@@ -31,8 +31,8 @@ export class OffersComponent implements OnInit {
   isAddingOffer = false;
   loading = true;
   error: string | null = null;
-  readonly STATIC_CREATED_BY_ID = 13;
-
+ // readonly STATIC_CREATED_BY_ID = 13;
+  
   // for candidat
   selectedOfferId: number | null = null;
   isPostulerModalOpen = false;

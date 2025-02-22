@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
+import { CountUpModule } from 'ngx-countup';
 import { icons, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider } from 'lucide-angular';
 import { TacheService } from '../../../core/services/tache.service';
 import { StatusTache, Tache } from '../../../data/tache.model';
+import { User } from '../../../store/Authentication/auth.models';
+import { AuthenticationService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-update-status',
   standalone: true,
-  imports: [CommonModule,FormsModule,    NgxDatatableModule,
-        LucideAngularModule],
+  imports: [CommonModule, FormsModule, NgxDatatableModule, CountUpModule, LucideAngularModule],
   templateUrl: './update-status.component.html',
-  styleUrl: './update-status.component.scss',
-  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
-  
+  styleUrls: ['./update-status.component.scss'],
+  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }],
 })
 export class UpdateStatusComponent implements OnInit {
   taches: Tache[] = [];
@@ -22,37 +23,78 @@ export class UpdateStatusComponent implements OnInit {
   selectedTaskDetails?: Tache;
   showDetailsModal = false;
   StatusTache = StatusTache;
-  public Object = Object; 
-  public statuses = Object.values(StatusTache); 
-  // statusOptions: string[] = Object.values(StatusTache); 
+  public Object = Object;
+  public statuses = Object.values(StatusTache);
+  currentUser: User | null = null;
+
   columns = [
     { name: 'Title', prop: 'title' },
     { name: 'Status', prop: 'statusTache' },
     { name: 'Complexity', prop: 'complexite' },
     { name: 'Start Date', prop: 'dateDebut' },
     { name: 'End Date', prop: 'dateFin' },
-    { name: 'Actions' }
+    { name: 'Actions' },
   ];
-  updatingTaskId: number | null = null;
-  isUpdating: boolean = false; 
-  constructor(private tacheservice:TacheService){}
+
+  constructor(private tacheService: TacheService, private authService: AuthenticationService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
   ngOnInit(): void {
-    this.loadTaches(7, 11);
-     }
-    loadTaches(chefId: number, collaboratorId: number): void {
-      this.isLoading = true;
-      this.tacheservice.getAssignedTachesByChef(chefId, collaboratorId).subscribe({
-        next: (data: Tache[]) => {
-          this.taches = data;
-          this.isLoading = false;
-        },
-        error: (err: any) => {
-          console.error('Erreur lors du chargement des tâches', err);
-          this.isLoading = false;
+    this.loadCurrentUser();
+  }
+
+  loadCurrentUser(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user && user.username) {
+          this.currentUser = user;
+          this.getUserIdByUsername(user.username);
+        } else {
+          console.error('❌ Utilisateur non connecté ou username manquant.');
         }
-      });
-    }
-getStatusClass(status: string): string {
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+      },
+    });
+  }
+
+  getUserIdByUsername(username: string): void {
+    this.authService.getUserByUsername(username).subscribe({
+      next: (userDetails) => {
+        if (userDetails && userDetails.id) {
+          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          this.loadTaches(userDetails.id);
+        } else {
+          console.error('❌ Données utilisateur invalides ou ID manquant');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+      },
+    });
+  }
+
+  loadTaches(collaboratorId: number): void {
+    this.isLoading = true;
+    this.tacheService.getTachesByCollaboratorId(collaboratorId).subscribe({
+      next: (data: Tache[]) => {
+        this.taches = data;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des tâches', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  getStatusCount(status: string): number {
+    return this.taches.filter((t) => t.statusTache === status).length;
+  }
+
+  getStatusClass(status: string): string {
     switch (status) {
       case 'En cours':
         return 'bg-yellow-100 text-yellow-800';
@@ -86,60 +128,41 @@ getStatusClass(status: string): string {
     return complexity;
   }
 
+  openDetailsModal(taskId: number): void {
+    this.isLoading = true;
+    this.tacheService.getTacheById(taskId).subscribe({
+      next: (task: Tache) => {
+        this.selectedTaskDetails = task;
+        this.showDetailsModal = true;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading task details:', error);
+        this.isLoading = false;
+      },
+    });
+  }
 
+  closeDetailsModal(): void {
+    this.showDetailsModal = false;
+    this.selectedTaskDetails = undefined;
+  }
 
-
-
- 
-
-
+  updateTaskStatus(taskId: number, newStatus: string): void {
+    this.tacheService.updateTacheStatus(taskId, newStatus).subscribe({
+      next: (updatedTask: Tache) => {
+        const index = this.taches.findIndex((t) => t.id === taskId);
+        if (index !== -1) {
+          this.taches[index] = updatedTask;
+        }
   
-openDetailsModal(taskId: number): void {
-  this.isLoading = true;
-  this.tacheservice.getTacheById(taskId).subscribe({
-    next: (task: Tache) => {
-      this.selectedTaskDetails = task;
-      this.showDetailsModal = true;
-      this.isLoading = false;
-    },
-    error: (error) => {
-      console.error('Error loading task details:', error);
-      this.isLoading = false;
-    }
-  });
-}
-
-
-closeDetailsModal(): void {
-  this.showDetailsModal = false;
-  this.selectedTaskDetails = undefined;
-}
-  
-updateTaskStatus(taskId: number, newStatus: string): void {
-  this.isUpdating = true;
-  this.updatingTaskId = taskId;
-
-  this.tacheservice.updateTacheStatus(taskId, newStatus).subscribe({
-    next: (updatedTask: Tache) => {
-      // Mettre à jour la tâche dans la liste locale
-      const index = this.taches.findIndex(t => t.id === taskId);
-      if (index !== -1) {
-        this.taches[index] = updatedTask;
-      }
-
-      // Recharger la liste des tâches
-      this.loadTaches(7, 11); // Rechargez les tâches avec les mêmes paramètres
-
-      this.isUpdating = false;
-      this.updatingTaskId = null;
-      console.log('Task status updated successfully', updatedTask);
-    },
-    error: (error) => {
-      this.isUpdating = false;
-      this.updatingTaskId = null;
-      console.error('Failed to update task status', error);
-    }
-  });
-}
+        this.cdr.detectChanges(); 
+        console.log('Task status updated successfully', updatedTask);
+      },
+      error: (error) => {
+        console.error('Failed to update task status', error);
+      },
+    });
+  }
   
 }

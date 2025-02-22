@@ -19,5 +19,11 @@ export interface Demande{
     status:Status;
     type: Type;
     userId:number;
+
+    documentType:string //document
+    amount : number // pret, avance
+    loanType : string //Pour pret
+    nbrejour : number //congé
 }
+
 

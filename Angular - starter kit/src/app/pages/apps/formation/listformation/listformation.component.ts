@@ -11,6 +11,8 @@ import { RouterModule } from '@angular/router';
 import { FormationService } from '../../../../core/services/formation.service';
 import { Competance } from '../../../../data/competance';
 import { Certificat } from '../../../../data/certificat';
+import { User } from '../../../../store/Authentication/auth.models';
+import { AuthenticationService } from '../../../../core/services/auth.service';
 interface TableColumn {
   prop: string;
   name: string;
@@ -32,6 +34,7 @@ export class ListformationComponent {
   public searchTerm: string = '';
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
+  currentUser: User | null = null;
 
   public columns: any[] = [
     { name: 'Formation', prop: 'nom' },
@@ -41,14 +44,47 @@ export class ListformationComponent {
     { name: 'Actions', prop: 'actions' }
   ];
 
-  constructor(private formationService: FormationService) {}
+  constructor(private formationService: FormationService ,    private authService: AuthenticationService
+   ) {}
 
-  ngOnInit(): void {
-    this.loadFormations();
+   ngOnInit(): void {
+    this.loadCurrentUser(); 
   }
 
-  private loadFormations(): void {
-    this.formationService.getFormationByUserId(10).subscribe({
+  loadCurrentUser(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user && user.username) {
+          this.currentUser = user;
+          this.getUserIdByUsername(user.username); 
+        } else {
+          console.error('❌ Utilisateur non connecté ou username manquant.');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+      },
+    });
+  }
+
+  getUserIdByUsername(username: string): void {
+    this.authService.getUserByUsername(username).subscribe({
+      next: (userDetails) => {
+        if (userDetails && userDetails.id) {
+          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          this.loadFormations(userDetails.id); 
+        } else {
+          console.error('❌ Données utilisateur invalides ou ID manquant');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+      },
+    });
+  }
+
+  private loadFormations(userId: number): void {
+    this.formationService.getFormationByUserId(userId).subscribe({
       next: (data: Formation[]) => {
         this.formations = data;
         this.filteredFormations = data;

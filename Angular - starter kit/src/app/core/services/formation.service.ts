@@ -20,6 +20,10 @@ export class FormationService{
           getAllFormationsWithUsernames(): Observable<string[]> {
                 return this.http.get<string[]>(`${this.baseUrl}withusernames`);
             }
+            
+                 getAllFormatons():Observable<Formation[]>{
+                    return this.http.get<Formation[]>(`${this.baseUrl}allFormation`)
+                 }
 
         
 }

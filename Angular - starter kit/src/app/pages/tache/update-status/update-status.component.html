@@ -1,13 +1,29 @@
 <div class="card" id="tache">
   <div class="card-body">
-      <div class="flex items-center gap-3 mb-4">
-          <h6 class="text-15 grow">Tasks </h6>
-          <!-- <div class="shrink-0">
-              <a href="javascript:void(0);"  type="button" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20 add-employee"><lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> <span class="align-middle">Add Task</span></a>
-          </div> -->
-        
+    <!-- Header Section -->
+    <div class="flex items-center gap-3 mb-4">
+      <h6 class="text-15 grow">Tasks</h6>
+    </div>
+
+    <div class="grid grid-cols-1 gap-x-5 md:grid-cols-2 xl:grid-cols-12">
+      <div class="xl:col-span-3">
+        <div class="card">
+          <div class="flex items-center gap-3 card-body">
+            <div class="flex items-center justify-center size-12 text-blue-500 bg-blue-100 rounded-md text-15 dark:bg-blue-500/20 shrink-0">
+              <lucide-angular name="list"></lucide-angular>
+            </div>
+            <div class="grow">
+              <h5 class="mb-1 text-16">
+                <span class="counter-value" [countUp]="taches.length" [options]="{ duration: 2 }">0</span>
+              </h5>
+              <p class="text-slate-500 dark:text-zink-200">Total Tasks</p>
+            </div>
+          </div>
+        </div>
       </div>
 
+   
+    </div>
 
     <div class="-mx-2 overflow-x-auto">
       <ngx-datatable
@@ -20,7 +36,6 @@
         [footerHeight]="36"
         [rowHeight]="'auto'"
       >
-      
         <ngx-datatable-column name="Title" prop="title" [width]="150">
           <ng-template ngx-datatable-cell-template let-row="row">
             <div class="flex items-center">
@@ -62,37 +77,33 @@
 
         <ngx-datatable-column name="Actions" [width]="150">
           <ng-template ngx-datatable-cell-template let-row="row">
-            <div class="d-flex gap-3 justify-content-center">
-              <button 
-              class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm transition-all hover:bg-warning hover:text-white"
-              (click)="openDetailsModal(row.id)"
-            >
-              <i class="fas fa-eye"></i> <span>View</span>
-            </button>
-            <select
-            class="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ease-in-out shadow-sm"
-            [(ngModel)]="row.statusTache"
-            (change)="updateTaskStatus(row.id, row.statusTache)"
-          >
-            <option *ngFor="let status of statuses" [value]="status">
-              {{ status }}
-            </option>
-          </select>
+            <div class="flex gap-2 justify-center">
+              <button
+                class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md text-custom-500 bg-custom-100 hover:text-white hover:bg-custom-500 dark:bg-custom-500/20 dark:hover:bg-custom-500"
+                (click)="openDetailsModal(row.id)"
+              >
+                <lucide-angular name="eye" [class]="'size-4'"></lucide-angular>
+              </button>
+              <select
+                class="px-2 py-1 text-xs rounded-md border border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 dark:focus:border-custom-800 transition-all duration-200 ease-in-out"
+                [(ngModel)]="row.statusTache"
+                (change)="updateTaskStatus(row.id, row.statusTache)"
+              >
+                <option *ngFor="let status of statuses" [value]="status">
+                  {{ status }}
+                </option>
+              </select>
             </div>
-            
           </ng-template>
         </ngx-datatable-column>
-        
       </ngx-datatable>
     </div>
   </div>
 </div>
-<!--afficher deatils task-->
+
 <ng-container *ngIf="showDetailsModal && selectedTaskDetails">
   <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
     <div class="w-full max-w-2xl bg-white rounded-xl shadow-2xl transform scale-95 sm:scale-100 transition-all duration-200 ease-in-out">
-      
-      <!-- Header -->
       <div class="flex justify-between items-center p-5 border-b border-gray-200 bg-gray-100 rounded-t-xl">
         <h5 class="text-xl font-semibold text-gray-800">Task Details</h5>
         <button class="text-gray-500 hover:text-red-600 transition-all duration-200" (click)="closeDetailsModal()">
@@ -100,55 +111,36 @@
         </button>
       </div>
 
-      <!-- Content -->
       <div class="p-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          
-          <!-- Left Section -->
           <div class="space-y-5">
             <div>
               <h6 class="text-sm font-medium text-gray-700">Title</h6>
               <p class="mt-1 text-gray-900 font-semibold">{{ selectedTaskDetails.title }}</p>
             </div>
-
             <div>
               <h6 class="text-sm font-medium text-gray-700">Description</h6>
               <p class="mt-1 text-gray-600">{{ selectedTaskDetails.description }}</p>
             </div>
+          </div>
 
+          <div class="space-y-5">
             <div>
               <h6 class="text-sm font-medium text-gray-700">Status</h6>
-              <span class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full" 
-                [ngClass]="getStatusClass(selectedTaskDetails.statusTache)">
+              <span class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="getStatusClass(selectedTaskDetails.statusTache)">
                 {{ getStatusLabel(selectedTaskDetails.statusTache) }}
               </span>
             </div>
-          </div>
-
-          <!-- Right Section -->
-          <div class="space-y-5">
             <div>
               <h6 class="text-sm font-medium text-gray-700">Complexity</h6>
-              <span class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full" 
-                [ngClass]="getComplexityClass(selectedTaskDetails.complexite)">
+              <span class="inline-block mt-1 px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="getComplexityClass(selectedTaskDetails.complexite)">
                 {{ getComplexityLabel(selectedTaskDetails.complexite) }}
               </span>
-            </div>
-
-            <div>
-              <h6 class="text-sm font-medium text-gray-700">Start Date</h6>
-              <p class="mt-1 text-gray-600">{{ selectedTaskDetails.dateDebut | date:'mediumDate' }}</p>
-            </div>
-
-            <div>
-              <h6 class="text-sm font-medium text-gray-700">End Date</h6>
-              <p class="mt-1 text-gray-600">{{ selectedTaskDetails.dateFin | date:'mediumDate' }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Footer -->
       <div class="flex justify-end gap-3 p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
         <button
           class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-all duration-200"

@@ -1,0 +1,55 @@
+<div class="update-profile-container">
+    <h2>Mettre à jour votre profil</h2>
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Nom d'utilisateur</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Entrez votre nom d'utilisateur"
+        />
+        <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched">
+          Le nom d'utilisateur est requis.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Entrez votre email"
+        />
+        <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+          Veuillez entrer un email valide.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Entrez votre mot de passe"
+        />
+        <div *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
+          Le mot de passe doit contenir au moins 6 caractères.
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="post">Poste</label>
+        <input
+          id="post"
+          type="text"
+          formControlName="post"
+          placeholder="Entrez votre poste"
+        />
+      </div>
+  
+      <button type="submit" [disabled]="profileForm.invalid">Mettre à jour</button>
+    </form>
+  </div>

@@ -1,0 +1,157 @@
+.update-profile-container {
+    max-width: 600px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: linear-gradient(to bottom right, #ffffff, #f8f9fa);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 2.5rem;
+      font-size: 2rem;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      position: relative;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, #6366f1, #8b5cf6);
+        border-radius: 2px;
+      }
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+  
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+  
+        label {
+          color: #4b5563;
+          font-weight: 500;
+          font-size: 0.95rem;
+          margin-left: 0.2rem;
+          letter-spacing: 0.3px;
+        }
+  
+        input {
+          padding: 1rem 1.2rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 12px;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+          background-color: rgba(255, 255, 255, 0.8);
+          backdrop-filter: blur(10px);
+  
+          &:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+          }
+  
+          &::placeholder {
+            color: #94a3b8;
+            font-size: 0.95rem;
+          }
+        }
+  
+        // Error messages with smooth animation
+        div {
+          color: #ef4444;
+          font-size: 0.85rem;
+          margin-top: 0.3rem;
+          opacity: 0;
+          transform: translateY(-5px);
+          animation: slideDown 0.3s ease forwards;
+        }
+      }
+  
+      button {
+        margin-top: 1.5rem;
+        padding: 1.1rem;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+        }
+  
+        &:active {
+          transform: translateY(0);
+        }
+  
+        &:disabled {
+          background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+      }
+    }
+  
+    // Smooth animation for error messages
+    @keyframes slideDown {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    // Glass morphism effect on hover
+    &:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+      transition: all 0.3s ease;
+    }
+  
+    // Responsive design
+    @media (max-width: 768px) {
+      margin: 1.5rem;
+      padding: 2rem;
+  
+      h2 {
+        font-size: 1.75rem;
+        margin-bottom: 2rem;
+        
+        &:after {
+          width: 50px;
+        }
+      }
+  
+      form {
+        gap: 1.5rem;
+  
+        .form-group {
+          input {
+            padding: 0.9rem 1rem;
+          }
+        }
+  
+        button {
+          padding: 1rem;
+        }
+      }
+    }
+  }

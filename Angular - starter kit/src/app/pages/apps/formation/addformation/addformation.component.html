@@ -5,7 +5,6 @@
     <div class="card shadow-lg rounded-lg bg-white">
       <div class="card-body p-6">
         
-        <!-- Formulaire d'ajout de formation -->
         <form [formGroup]="formationForm" (ngSubmit)="onSubmitFormation()" class="space-y-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter une Formation</h2>
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -31,7 +30,6 @@
 
         <hr class="my-8 border-t border-gray-200">
 
-        <!-- Formulaire d'ajout de compétence -->
         <form [formGroup]="competanceForm" (ngSubmit)="onSubmitCompetance()" *ngIf="formationId" class="space-y-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter une Compétence</h2>
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -61,7 +59,6 @@
 
         <hr class="my-8 border-t border-gray-200">
 
-        <!-- Formulaire d'ajout de certificat -->
         <form [formGroup]="certificatForm" (ngSubmit)="onSubmitCertificat()" *ngIf="formationId" class="space-y-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">Ajouter un Certificat</h2>
           <div class="grid grid-cols-1 gap-6 md:grid-cols-2">

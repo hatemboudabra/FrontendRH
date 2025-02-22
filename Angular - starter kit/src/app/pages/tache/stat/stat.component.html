@@ -1,49 +1,82 @@
-<div class="grid grid-cols-1 gap-x-5 xl:grid-cols-3">
-    <!-- Statistiques par statut -->
-    <div class="card">
-      <div class="card-body">
-        <h6 class="mb-4 text-15">Statistiques par Statut</h6>
-        <div id="chartStatut" class="apex-charts">
-          <apx-chart
-            [series]="chartStatut.series"
-            [chart]="chartStatut.chart"
-            [xaxis]="chartStatut.xaxis"
-            [yaxis]="chartStatut.yaxis"
-            [colors]="chartStatut.colors"
-          ></apx-chart>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Statistiques par collaborateur -->
-    <div class="card">
-      <div class="card-body">
-        <h6 class="mb-4 text-15">Statistiques par Collaborateur</h6>
-        <div id="chartCollaborateur" class="apex-charts">
-          <apx-chart
-            [series]="chartCollaborateur.series"
-            [chart]="chartCollaborateur.chart"
-            [xaxis]="chartCollaborateur.xaxis"
-            [yaxis]="chartCollaborateur.yaxis"
-            [colors]="chartCollaborateur.colors"
-          ></apx-chart>
-        </div>
-      </div>
-    </div>
-  
-    <!-- Statistiques des notes des utilisateurs évalués -->
-    <div class="card">
-      <div class="card-body">
-        <h6 class="mb-4 text-15">Statistiques des Notes des collaborateurs</h6>
-        <div id="chartEvaluation" class="apex-charts">
-          <apx-chart
-            [series]="chartEvaluation.series"
-            [chart]="chartEvaluation.chart"
-            [xaxis]="chartEvaluation.xaxis"
-            [yaxis]="chartEvaluation.yaxis"
-            [colors]="chartEvaluation.colors"
-          ></apx-chart>
-        </div>
+<div class="grid grid-cols-1 gap-x-5 xl:grid-cols-2">
+  <!-- Statistiques par statut -->
+  <div class="card">
+    <div class="card-body">
+      <h6 class="mb-4 text-15">Statistiques par Statut</h6>
+      <div id="chartStatut" class="apex-charts">
+        <apx-chart
+          [series]="chartStatut.series"
+          [chart]="chartStatut.chart"
+          [xaxis]="chartStatut.xaxis"
+          [yaxis]="chartStatut.yaxis"
+          [colors]="chartStatut.colors"
+          [plotOptions]="chartStatut.plotOptions"
+          [dataLabels]="chartStatut.dataLabels"
+          [grid]="chartStatut.grid"
+          [tooltip]="chartStatut.tooltip"
+        ></apx-chart>
       </div>
     </div>
   </div>
+
+  <!-- Statistiques des demandes -->
+  <div class="card">
+    <div class="card-body">
+      <h6 class="mb-4 text-15">Statistiques des Demandes</h6>
+      <div id="chartDemandes" class="apex-charts">
+        <apx-chart
+          [series]="chartDemandes.series"
+          [chart]="chartDemandes.chart"
+          [labels]="chartDemandes.labels"
+          [colors]="chartDemandes.colors"
+          [dataLabels]="chartDemandes.dataLabels"
+          [plotOptions]="chartDemandes.plotOptions"
+          [legend]="chartDemandes.legend"
+          [responsive]="chartDemandes.responsive"
+          [tooltip]="chartDemandes.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 gap-x-5 xl:grid-cols-2 mt-5">
+  <!-- Statistiques par collaborateur -->
+  <div class="card">
+    <div class="card-body">
+      <h6 class="mb-4 text-15">Statistiques par Collaborateur</h6>
+      <div id="chartCollaborateur" class="apex-charts">
+        <apx-chart
+          [series]="chartCollaborateur.series"
+          [chart]="chartCollaborateur.chart"
+          [xaxis]="chartCollaborateur.xaxis"
+          [yaxis]="chartCollaborateur.yaxis"
+          [colors]="chartCollaborateur.colors"
+          [dataLabels]="chartCollaborateur.dataLabels"
+          [stroke]="chartCollaborateur.stroke"
+          [fill]="chartCollaborateur.fill"
+          [tooltip]="chartCollaborateur.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistiques des notes des utilisateurs évalués -->
+  <div class="card">
+    <div class="card-body">
+      <h6 class="mb-4 text-15">Statistiques des Notes des collaborateurs</h6>
+      <div id="chartEvaluation" class="apex-charts">
+        <apx-chart
+          [series]="chartEvaluation.series"
+          [chart]="chartEvaluation.chart"
+          [xaxis]="chartEvaluation.xaxis"
+          [yaxis]="chartEvaluation.yaxis"
+          [colors]="chartEvaluation.colors"
+          [stroke]="chartEvaluation.stroke"
+          [fill]="chartEvaluation.fill"
+          [tooltip]="chartEvaluation.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+</div>

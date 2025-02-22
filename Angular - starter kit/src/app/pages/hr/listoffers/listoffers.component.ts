@@ -7,6 +7,8 @@ import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { Offers } from '../../../data/Offers';
 import { OffersService } from '../../../core/services/offers.service';
 import { Subscription } from 'rxjs';
+import { User } from '../../../store/Authentication/auth.models';
+import { AuthenticationService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-listoffers',
@@ -29,12 +31,15 @@ export class ListoffersComponent implements OnInit  {
     isAddingOffer = false;
     loading = true;
     error: string | null = null;
-    readonly STATIC_CREATED_BY_ID = 13;
+    //readonly STATIC_CREATED_BY_ID = 13;
+    currentUser: User | null = null;
+    
       private subscriptions: Subscription = new Subscription();
     
      constructor(
         private offersService: OffersService,
         private fb: FormBuilder,
+        private authService:AuthenticationService
       ) {
         this.offerForm = this.fb.group({
           title: ['', Validators.required],
@@ -50,14 +55,47 @@ export class ListoffersComponent implements OnInit  {
 
 }
 ngOnInit(): void {
-  this.loadOffers();
+  this.loadCurrentUser();
+}
+
+loadCurrentUser(): void {
+  this.authService.getCurrentUser().subscribe({
+    next: (user) => {
+      if (user && user.username) {
+        this.currentUser = user;
+        this.getUserIdByUsername(user.username); 
+      } else {
+        console.error('❌ Utilisateur non connecté ou username manquant.');
+      }
+    },
+    error: (error) => {
+      console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+    },
+  });
+}
+
+getUserIdByUsername(username: string): void {
+  this.authService.getUserByUsername(username).subscribe({
+    next: (userDetails) => {
+      if (userDetails && userDetails.id) {
+        console.log('✅ ID utilisateur reçu :', userDetails.id);
+        this.currentUser = { ...this.currentUser, id: userDetails.id }; // Update currentUser with ID
+        this.loadOffers(userDetails.id);
+      } else {
+        console.error('❌ Données utilisateur invalides ou ID manquant');
+      }
+    },
+    error: (error) => {
+      console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+    },
+  });
 }
 
 ngOnDestroy(): void {
   this.subscriptions.unsubscribe();
 }
 
-loadOffers(): void {
+loadOffers(userId: number): void {
   this.loading = true;
   this.subscriptions.add(
     this.offersService.getAllOffers().subscribe({
@@ -81,28 +119,41 @@ toggleAddOffer(): void {
 }
 
 onSubmit(): void {
-  if (this.offerForm.valid) {
+  if (this.offerForm.valid && this.currentUser?.id) {
     const newOffer: Offers = {
       ...this.offerForm.value,
-      createdById: this.STATIC_CREATED_BY_ID
+      createdById: this.currentUser.id
     };
 
-    console.log('New Offer:', newOffer); 
+    console.log('New Offer:', newOffer);
     this.subscriptions.add(
       this.offersService.addOffer(newOffer).subscribe({
         next: (response) => {
-          console.log('Offer added successfully:', response); 
+          console.log('Offer added successfully:', response);
           this.offers.unshift(response);
           this.toggleAddOffer();
         },
         error: (err) => {
-          console.error('Error adding offer:', err); 
+          console.error('Error adding offer:', err);
           this.error = 'Error adding offer. Please try again.';
         }
       })
     );
   } else {
-    console.error('Form is invalid');
+    console.error('Form is invalid or current user ID is missing');
+    if (!this.offerForm.valid) {
+      console.log('Form validation errors:', this.offerForm.errors);
+      console.log('Form control errors:');
+      Object.keys(this.offerForm.controls).forEach(key => {
+        const controlErrors = this.offerForm.get(key)?.errors;
+        if (controlErrors) {
+          console.log(`Control: ${key}, Errors:`, controlErrors);
+        }
+      });
+    }
+    if (!this.currentUser?.id) {
+      console.error('Current user ID is missing:', this.currentUser);
+    }
   }
 }
 

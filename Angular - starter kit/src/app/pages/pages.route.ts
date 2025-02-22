@@ -22,6 +22,8 @@ import { StatComponent } from "./tache/stat/stat.component";
 import { AddReclamationComponent } from "./reclamation/add-reclamation/add-reclamation.component";
 import { ListReclamationComponent } from "./reclamation/list-reclamation/list-reclamation.component";
 import { ClaimsuserComponent } from "./reclamation/claimsuser/claimsuser.component";
+import { StatistiqueComponent } from "./hr/statistique/statistique.component";
+import { UpdateProfileComponent } from "../account/profile/update-profile/update-profile.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -37,15 +39,17 @@ export const PAGE_ROUTES: Route[] = [
    {path:'demandeChef', component:DemandeManagerComponent},//chef
    {path:'add-demande', component:AdddemandeComponent},//collaborateur
    {path:'userdemande',component:UserdemandeComponent},//collaborateur
-   {path:'listformation',component:ListformationComponent},//rh
-   {path:'listformation/addformations',component:AddformationComponent},//colla
-   {path:'listformationuser',component:ListformationuserComponent},//colla
+   {path:'listformation',component:ListformationComponent},//coll+chef
+   {path:'listformation/addformations',component:AddformationComponent},//colla+chef
+   {path:'listformationuser',component:ListformationuserComponent},//rh
    {path:'listteam',component:ListteamComponent},//chef / colla
    {path:'add-team',component:AddTeamComponent},//chef
    {path:'stat',component:StatComponent},//chef
    {path:'add-reclamation',component:AddReclamationComponent},//coll    
    {path:'listClaims',component:ListReclamationComponent},//rh
-   {path:'listclaimsuser',component:ClaimsuserComponent}//colla
+   {path:'listclaimsuser',component:ClaimsuserComponent},//colla
+   {path:'statist',component:StatistiqueComponent},//
+   {path:'updateProfile', component:UpdateProfileComponent},
 
 
 

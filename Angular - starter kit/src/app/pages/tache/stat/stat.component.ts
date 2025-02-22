@@ -6,6 +6,8 @@ import { PageTitleComponent } from '../../../shared/page-title/page-title.compon
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { EvaluationService } from '../../../core/services/evaluation.service';
+import { User } from '../../../store/Authentication/auth.models';
+import { DemandeService } from '../../../core/services/demande.service';
 
 @Component({
   selector: 'app-stat',
@@ -18,38 +20,161 @@ export class StatComponent {
   chartStatut: any;
   chartCollaborateur: any;
   chartEvaluation: any;
-  chefId: number = 7;
+  chartDemandes: any ;
+
+ // chefId: number = 7;
+  currentUser: User | null = null;
 
   constructor(
     private tacheService: TacheService, 
     private evaluationService: EvaluationService, 
-    private auth: AuthenticationService
+    private authService: AuthenticationService,
+    private demandeService:DemandeService
   ) {}
 
   ngOnInit(): void {
-    this.loadStats();
+    this.loadCurrentUser();
   }
 
-  loadStats(): void {
-    // Charger les statistiques par statut
-    this.tacheService.getTacheStatsByChef(this.chefId).subscribe(
+  loadCurrentUser(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user && user.username) {
+          this.currentUser = user;
+          this.getUserIdByUsername(user.username); 
+        } else {
+          console.error('❌ Utilisateur non connecté ou username manquant.');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+      },
+    });
+  }
+
+  getUserIdByUsername(username: string): void {
+    this.authService.getUserByUsername(username).subscribe({
+      next: (userDetails) => {
+        if (userDetails && userDetails.id) {
+          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          this.loadStats(userDetails.id); 
+        } else {
+          console.error('❌ Données utilisateur invalides ou ID manquant');
+        }
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+      },
+    });
+  }
+
+  loadStats(userId: number): void {
+    this.tacheService.getTacheStatsByChef(userId).subscribe(
       (data) => this.initChartStatut(data),
       (error) => console.error('Erreur lors de la récupération des stats par statut', error)
     );
 
-    // Charger les statistiques par collaborateur
-    this.tacheService.getTachesAssignedByChefToCollaborators(this.chefId).subscribe(
+    this.tacheService.getTachesAssignedByChefToCollaborators(userId).subscribe(
       (data) => this.initChartCollaborateur(data),
       (error) => console.error('Erreur lors de la récupération des stats par collaborateur', error)
     );
 
-    // Charger les notes des utilisateurs évalués
     this.evaluationService.getAllUsersWithAverageNote().subscribe(
       (data) => this.initChartEvaluation(data),
       (error) => console.error('Erreur lors de la récupération des notes des utilisateurs', error)
     );
+    this.demandeService.getDemandesCountByStatusForDocumentTrainingOrLeave().subscribe(
+      (data) => this.initChartDemandes(data),
+      (error) => console.error('Erreur lors de la récupération des stats des demandes', error)
+    );
   }
-
+  initChartDemandes(data: any): void {
+    let dataObj: {[key: string]: number};
+    
+    if (data instanceof Map) {
+      dataObj = Object.fromEntries(data);
+    } else if (data instanceof Object) {
+      dataObj = data;
+    } else {
+      console.error('Format de données inattendu pour les demandes', data);
+      dataObj = { 'Erreur': 0 };
+    }
+    
+    if (Object.keys(dataObj).length === 0) {
+      dataObj = { 'Aucune donnée': 0 };
+    }
+    
+    this.chartDemandes = {
+      series: Object.values(dataObj),
+      chart: {
+        type: 'donut',
+        height: 350,
+        toolbar: {
+          show: true
+        },
+        animations: {
+          enabled: true,
+          easing: 'easeinout',
+          speed: 800
+        }
+      },
+      labels: Object.keys(dataObj),
+      colors: [
+        '#06b6d4', 
+        '#ec4899', 
+        '#eab308', 
+        '#84cc16',
+        '#8b5cf6' 
+      ],
+      dataLabels: {
+        enabled: true,
+        formatter: function (val: number, opts: any) {
+          return opts.w.globals.series[opts.seriesIndex];
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              total: {
+                show: true,
+                label: 'Total Demandes',
+                formatter: function (w: any) {
+                  return w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0).toString();
+                }
+              }
+            }
+          }
+        }
+      },
+      legend: {
+        position: 'bottom',
+        horizontalAlign: 'center'
+      },
+      tooltip: {
+        theme: 'light',
+        y: {
+          formatter: function (val: number) {
+            return val + ' demandes';
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 480,
+          options: {
+            chart: {
+              height: 300
+            },
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      ]
+    };
+  }
   initChartStatut(data: { [key: string]: number }): void {
     this.chartStatut = {
       series: [{ 

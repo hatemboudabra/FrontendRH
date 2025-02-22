@@ -34,6 +34,7 @@ export class EmployeesComponent implements OnInit {
   
   isLoading: boolean = false;
   errorMessage: string | null = null;
+  //currentUser: User | null = null;
   
   currentPage: number = 1;
   itemsPerPage: number = 7;

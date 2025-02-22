@@ -1,4 +1,4 @@
-<app-page-title [title]="'Add Demande '" [pagetitle]="'Leaves Manage'"></app-page-title>
+<app-page-title [title]="'Add Demande'" [pagetitle]="'Leaves Manage'"></app-page-title>
 
 <div class="grid grid-cols-1 xl:grid-cols-12 gap-x-5">
   <div class="xl:col-span-9">
@@ -45,9 +45,41 @@
               </div>
             </div>
 
-            <!-- Boutons -->
-          
+            <!-- Champs dynamiques -->
+            <!-- Document Type -->
+            <div class="xl:col-span-6" *ngIf="demandeForm.get('type')?.value === 'DOCUMENT'">
+              <div class="form-group">
+                <label for="documentType" class="block mb-2 text-sm font-medium text-gray-700">Document Type</label>
+                <input type="text" id="documentType" formControlName="documentType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Enter document type">
+              </div>
+            </div>
+
+            <!-- Nombre de jours (Leave) -->
+            <div class="xl:col-span-6" *ngIf="demandeForm.get('type')?.value === 'LEAVE'">
+              <div class="form-group">
+                <label for="nbrejour" class="block mb-2 text-sm font-medium text-gray-700">Nombre de jours</label>
+                <input type="number" id="nbrejour" formControlName="nbrejour" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Enter number of days">
+              </div>
+            </div>
+
+            <!-- Montant (Loan et Advance) -->
+            <div class="xl:col-span-6" *ngIf="demandeForm.get('type')?.value === 'LOAN' || demandeForm.get('type')?.value === 'ADVANCE'">
+              <div class="form-group">
+                <label for="amount" class="block mb-2 text-sm font-medium text-gray-700">Montant</label>
+                <input type="number" id="amount" formControlName="amount" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Enter amount">
+              </div>
+            </div>
+
+            <!-- Type de prêt (Loan) -->
+            <div class="xl:col-span-6" *ngIf="demandeForm.get('type')?.value === 'LOAN'">
+              <div class="form-group">
+                <label for="loanType" class="block mb-2 text-sm font-medium text-gray-700">Type de prêt</label>
+                <input type="text" id="loanType" formControlName="loanType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-custom-500 focus:border-transparent transition duration-300" placeholder="Enter loan type">
+              </div>
+            </div>
           </div>
+
+          <!-- Boutons alignés à droite -->
           <div class="flex justify-end gap-2 mt-6">
             <button type="reset" class="px-6 py-2 text-red-500 bg-white border border-red-500 rounded-lg hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-300">Reset</button>
             <button type="submit" class="px-6 py-2 text-white bg-custom-500 border border-custom-500 rounded-lg hover:bg-custom-600 hover:border-custom-600 focus:outline-none focus:ring-2 focus:ring-custom-500 focus:ring-opacity-50 transition duration-300">Apply Leave</button>

@@ -18,6 +18,7 @@ import { ProductLandingComponent } from './landing/product-landing/product-landi
 import { AuthGuard } from './core/guards/auth.guard';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
+import { UpdateProfileComponent } from './account/profile/update-profile/update-profile.component';
 
 export const routes: Routes = [
     { 
@@ -32,7 +33,7 @@ export const routes: Routes = [
     
 
     { path: 'auth-logout-basic', component: LogoutBasicComponent },
-  
+    
 
     { path: 'auth-reset-password-basic', component: ResetPassBasicComponent },
     { path: 'auth-reset-password-cover', component: ResetPassCoverComponent },

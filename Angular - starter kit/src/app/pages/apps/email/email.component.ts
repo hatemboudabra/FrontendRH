@@ -28,7 +28,7 @@ export class EmailComponent {
   showComposeEmail: boolean = false; 
   selectedCandidate: any = null;
   offer !: Offers;
-  showDeletedCandidatesList: boolean = false; // Added property
+  showDeletedCandidatesList: boolean = false; 
   deletedCandidates: any[] = []
   constructor(private candidatService: CandidatService) {}
 
@@ -64,7 +64,6 @@ export class EmailComponent {
       this.updatePaginatedMailbox();
     }
   }
-//details candidat
   showCandidateDetails(candidat: any): void {
     this.selectedCandidate = candidat;
     this.showEmailList = false;
@@ -82,7 +81,6 @@ export class EmailComponent {
     return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   }
 
-  // Calculer le temps écoulé
   getTimeAgo(dateString: string): string {
     const date = new Date(dateString);
     const now = new Date();
@@ -107,7 +105,7 @@ export class EmailComponent {
   }
 
   restoreCandidate(candidat: any): void {
-    this.mailbox.push(candidat); // Move back to mailbox
+    this.mailbox.push(candidat); 
     this.deletedCandidates = this.deletedCandidates.filter((c) => c !== candidat);
   }
 
