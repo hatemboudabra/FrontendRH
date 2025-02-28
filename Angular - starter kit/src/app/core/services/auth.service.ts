@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User } from '../../store/Authentication/auth.models';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { UserDTO } from '../../data/auth.dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -24,7 +25,7 @@ private userRoleSubject = new BehaviorSubject<string | null>(null);
 
   private getUserFromStorage(): User | null {
     const userStr = localStorage.getItem('currentUser');
-    console.log("Utilisateur depuis le localStorage :", userStr); // Ajoutez ce log
+    console.log("Utilisateur depuis le localStorage :", userStr);
     return userStr ? JSON.parse(userStr) : null;
   }
 
@@ -125,5 +126,14 @@ updateProfile(userId: number, userDTO: any): Observable<User> {
       return updatedUser;
     })
   );
+}
+
+
+addChef(user: UserDTO): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/addchef`, user);
+}
+
+deleteCollCHE(id: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/${id}`);
 }
 }

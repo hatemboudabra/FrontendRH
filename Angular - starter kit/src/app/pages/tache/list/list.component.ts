@@ -31,7 +31,8 @@ export class ListComponent {
   selectedCollaborateurId: number | null = null;
   showAssignModal = false;
   selectedTaskId: number | null = null;
-
+  showDescModal = false;
+  selectedRowDescription = '';
   columns = [
     { prop: 'title', name: 'Title' },
     { prop: 'description', name: 'Description' },
@@ -66,11 +67,11 @@ export class ListComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username);
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       }
     });
   }
@@ -79,14 +80,14 @@ export class ListComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log(' ID utilisateur reçu :', userDetails.id);
           this.loadTache(userDetails.id);
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       }
     });
   }
@@ -147,7 +148,6 @@ export class ListComponent {
   }
 
   addTask(): void {
-    // Implémentez la logique pour ajouter une tâche
   }
 
   openAssignModal(taskId: number): void {
@@ -162,11 +162,11 @@ export class ListComponent {
 
   assignTaskToCollaborator(tacheId: number): void {
     if (this.selectedCollaborateurId !== null) {
-      this.tacheS.assignTacheToCollaborator(tacheId, 7, this.selectedCollaborateurId).subscribe({
+      this.tacheS.assignTacheToCollaborator(tacheId,7 ,this.selectedCollaborateurId).subscribe({
         next: (assignedTache) => {
           console.log('Task successfully assigned:', assignedTache);
           this.closeAssignModal();
-          this.loadTache(this.currentUser?.id || 0); // Recharger les tâches après l'assignation
+          this.loadTache(this.currentUser?.id || 0); 
         },
         error: (error) => {
           console.error('Error assigning task:', error);
@@ -197,5 +197,13 @@ export class ListComponent {
   closeDetailsModal(): void {
     this.showDetailsModal = false;
     this.selectedTaskDetails = undefined;
+  }
+  openDescriptionModal(row: any): void {
+    this.selectedRowDescription = row.description;
+    this.showDescModal = true;
+  }
+
+  closeDescriptionModal(): void {
+    this.showDescModal = false;
   }
 }

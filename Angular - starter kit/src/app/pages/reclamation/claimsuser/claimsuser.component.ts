@@ -46,11 +46,11 @@ export class ClaimsuserComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -59,14 +59,14 @@ export class ClaimsuserComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log(' ID utilisateur reçu :', userDetails.id);
           this.loadReclamations(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }

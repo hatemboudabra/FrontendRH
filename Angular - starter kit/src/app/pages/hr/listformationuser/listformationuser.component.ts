@@ -21,8 +21,8 @@ import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
   providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
 })
 export class ListformationuserComponent {
-  formations: any[] = []; // Tableau pour stocker toutes les formations
-  filteredFormations: any[] = []; // Tableau pour stocker les formations filtrées
+  formations: any[] = []; 
+  filteredFormations: any[] = []; 
   searchTerm: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 7;
@@ -32,9 +32,11 @@ export class ListformationuserComponent {
  currentUser: User | null = null;
   columns = [
   //  { name: 'ID', prop: 'id' },
+  { name: 'Username', prop: 'username' },
     { name: 'Nom', prop: 'nom' },
     { name: 'Description', prop: 'description' },
-    { name: 'Username', prop: 'username' }
+    
+    {name : 'Action' , prop:'action'}
   ];
 
   constructor(private formationService: FormationService,
@@ -53,11 +55,11 @@ export class ListformationuserComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error('Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -66,14 +68,14 @@ export class ListformationuserComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log(' ID utilisateur reçu :', userDetails.id);
           this.loadFormations(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error('Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -115,4 +117,5 @@ export class ListformationuserComponent {
   getEndIndex(): number {
     return Math.min(this.startIndex + this.itemsPerPage, this.totalItems);
   }
+  
 }

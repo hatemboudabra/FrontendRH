@@ -32,10 +32,9 @@ export class SidebarComponent {
   size: any;
   userRole: any;
   filteredMenuItems: MenuItem[] = [];
-
   private store = inject(Store);
-  private zone = inject(NgZone); // Injection de NgZone
-  private cdr = inject(ChangeDetectorRef); // Injection de ChangeDetectorRef
+  private zone = inject(NgZone); 
+  private cdr = inject(ChangeDetectorRef); 
 
   constructor(public translate: TranslateService, private auth: AuthenticationService) {
     translate.setDefaultLang('sp');
@@ -65,32 +64,34 @@ export class SidebarComponent {
     this.auth.getCurrentUser().subscribe(
       user => {
         if (user) {
-          console.log("✅ Utilisateur récupéré :", user);
+          console.log("Utilisateur récupéré :", user);
           this.userRole = user.roles?.[0] || null;
-          console.log("🎭 Rôle utilisateur :", this.userRole);
+          console.log("Rôle utilisateur :", this.userRole);
           this.filteredMenuItems = this.filterMenuByRole(MENU, this.userRole);
-
-          this.zone.run(() => { // 🔥 Force la détection des changements
+  
+          this.zone.run(() => {
             this.menuItems = this.filteredMenuItems;
-            this.cdr.detectChanges(); // 🔥 Force la détection des changements
+            this.cdr.detectChanges();
           });
-
+  
           if (!user.username) {
-            console.error("⚠️ Username est undefined !");
+            console.error("Username undefined !");
           } else {
             this.user = user;
             this.loadUserData(user.username);
+  
+          
           }
         } else {
-          console.log("❌ Aucun utilisateur connecté.");
+          console.log("Aucun utilisateur connecté.");
         }
       },
       error => {
-        console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
+        console.error("Erreur lors de la récupération de l'utilisateur :", error);
       }
     );
-
-    // Récupérer la mise en page et la taille du sidebar
+  
+    // Abonnement pour obtenir le layout et ajuster le menu
     this.store.select(getLayout).subscribe((data) => {
       this.layout = data;
       if (this.layout === 'horizontal') {
@@ -101,20 +102,22 @@ export class SidebarComponent {
         this.menuItems = MENU;
       }
     });
-
+  
+    // Abonnement pour obtenir la taille de la sidebar
     this.store.select(getSidebarsize).subscribe((data) => {
       this.size = data;
     });
-
+  
     this.navData = MENU;
     this.menuItems = this.navData;
   }
+  
 
   loadUserData(username: string): void {
-    console.log("🔍 Récupération des données utilisateur pour :", username);
+    console.log(" Récupération des données utilisateur pour :", username);
 
     if (!username) {
-      console.error("⛔ Username est vide !");
+      console.error(" Username est vide !");
       return;
     }
 
@@ -123,16 +126,16 @@ export class SidebarComponent {
         if (data && data.id) {
           console.log('✅ ID utilisateur reçu :', data.id);
 
-          this.zone.run(() => { // 🔥 Force la détection après mise à jour
+          this.zone.run(() => { 
             this.user = { ...this.user, id: data.id };
-            this.cdr.detectChanges(); // 🔥 Force la détection des changements
+            this.cdr.detectChanges(); 
           });
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error('Données utilisateur invalides ou ID manquant');
         }
       },
       error => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur', error);
+        console.error('Erreur lors de la récupération des données utilisateur', error);
       }
     );
   }
@@ -187,10 +190,7 @@ export class SidebarComponent {
       }
     }
 
-    this.zone.run(() => { // 🔥 Mettre à jour le menu avec NgZone
-      this.menuItems = hiddenItems.length > 0 ? [...visibleItems, moreMenuItem] : visibleItems;
-      this.cdr.detectChanges(); // 🔥 Force la détection des changements
-    });
+   
   }
 
   hasItems(item: MenuItem) {

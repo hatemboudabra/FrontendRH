@@ -35,7 +35,7 @@ export class EmployeesComponent implements OnInit {
   isLoading: boolean = false;
   errorMessage: string | null = null;
   //currentUser: User | null = null;
-  
+   selectedEmployeeId: number | null = null;
   currentPage: number = 1;
   itemsPerPage: number = 7;
   totalItems: number = 0;
@@ -103,4 +103,35 @@ export class EmployeesComponent implements OnInit {
       }
     });
   }
+
+  prepareDelete(employeeId: number): void {
+    this.selectedEmployeeId = employeeId;
+  }
+  
+  // Method to delete the employee
+  deleteEmployee(): void {
+    if (!this.selectedEmployeeId) {
+      return;
+    }
+    
+  
+    
+    this.authService.deleteCollCHE(this.selectedEmployeeId).subscribe({
+      next: () => {
+        // Remove the employee from the list
+        this.allemployee = this.allemployee.filter(employee => employee.id !== this.selectedEmployeeId);
+        this.totalItems = this.allemployee.length;
+        this.updatePagedOrders();
+        this.isLoading = false;
+        this.selectedEmployeeId = null;
+        
+        // Success message could be displayed here
+      },
+      error: (error) => {
+        this.errorMessage = 'Failed to delete employee. Please try again later.';
+        console.error(error);
+        this.isLoading = false;
+      }
+    });
+  } 
 }

@@ -17,16 +17,14 @@ export class TeamService {
         return this.http.post<any>(`${this.baseUrl}createTeam?chefId=${chefId}&teamName=${teamName}`, collaboratorIds);
     }
 
-    updateTeam(teamId: number, newTeamName?: string, collaboratorIdsToAdd?: number[], collaboratorIdsToRemove?: number[]): Observable<any> {
-        const params = new HttpParams()
-          .set('teamId', teamId.toString())
-          .set('newTeamName', newTeamName || '')
-          // Convertir le tableau en chaîne séparée par des virgules
-          .set('collaboratorIdsToAdd', (collaboratorIdsToAdd || []).join(',')) 
-          .set('collaboratorIdsToRemove', (collaboratorIdsToRemove || []).join(',')); 
-      
-        return this.http.put<any>(`${this.baseUrl}updateTeam`, {}, { params });
-      }
+    updateTeam(teamId: number, newTeamName?: string, collaboratorUsernamesToAdd?: string[], collaboratorUsernamesToRemove?: string[]): Observable<any> {
+      const params = new HttpParams()
+        .set('teamId', teamId.toString())
+        .set('newTeamName', newTeamName || '')
+        .set('collaboratorUsernamesToAdd', (collaboratorUsernamesToAdd || []).join(',')) 
+        .set('collaboratorUsernamesToRemove', (collaboratorUsernamesToRemove || []).join(',')); 
+      return this.http.put<any>(`${this.baseUrl}updateTeam`, {}, { params });
+    }
       getTeamsWithUserCount(): Observable<any[]> {
         return this.http.get<any[]>(`${this.baseUrl}teamsusercount`);
     }
@@ -51,4 +49,11 @@ export class TeamService {
         })
       );
     }
+
+
+
+    getTeamByCollaboratorId(collaboratorId: number): Observable<any[]> {
+      return this.http.get<any[]>(`${this.baseUrl}bycollaborator/${collaboratorId}`);
+  }
+  
 }

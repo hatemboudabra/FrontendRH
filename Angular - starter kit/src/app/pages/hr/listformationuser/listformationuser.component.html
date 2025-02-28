@@ -1,80 +1,65 @@
-<div class="formation-list">
-
-  <!-- Barre de recherche -->
-  <div class="search-bar">
-   
-  </div>
 <br>
 <br>
-<br>
-
-  <!-- Tableau des formations -->
-  <div *ngIf="filteredFormations.length > 0; else noData" class="table-container">
-    <ngx-datatable 
-      [rows]="filteredFormations" 
-      class="material w-full whitespace-nowrap"
-      [loadingIndicator]="true"
-      [columnMode]="'force'"
-      [limit]="itemsPerPage"
-      [headerHeight]="42"
-      [footerHeight]="50"
-      [rowHeight]="'auto'"
-      [columns]="columns">
-      
-      @for(column of columns; track $index) {
-        <ngx-datatable-column 
-          name="{{column.name}}" 
-          prop="{{column.prop}}"
-          headerClass="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-600 px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-500"
-          cellClass="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-500">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-            @if(column.prop === 'action') {
-              <div class="action-buttons">
-                <button class="edit-button">
-                  <lucide-angular name="edit" class="size-4"></lucide-angular>
-                </button>
-                <button class="delete-button" >
-                  <lucide-angular name="trash-2" class="size-4"></lucide-angular>
-                </button>
-              </div>
-            } @else {
-              {{value}}
-            }
-          </ng-template>
-        </ngx-datatable-column>
-      }
-      
-      <ngx-datatable-footer>
-        <ng-template ngx-datatable-footer-template 
-          let-rowCount="rowCount"
-          let-pageSize="pageSize"
-          let-selectedCount="selectedCount"
-          let-curPage="curPage"
-          let-offset="offset">
-          <div class="grow ps-5">
-            <p class="text-slate-500 dark:text-zink-200">
-              Showing <b>{{getEndIndex()}}</b> of <b>{{totalItems}}</b> Results
-            </p>
-          </div>
-          @if(totalItems > 0) {
-            <pagination-controls 
-              class="pe-4"
-              [currentPage]="currentPage"
-              [boundryLinks]="false"
-              previousLabel="Prev"
-              nextLabel="Next"
-              [itemsPerPage]="itemsPerPage"
-              [total]="totalItems"
-              (pageChanged)="onPageChange($event)">
-            </pagination-controls>
+<div  class="table-container shadow-sm rounded-lg overflow-hidden border border-slate-200 dark:border-zink-600">
+  <ngx-datatable 
+    [rows]="filteredFormations" 
+    class="material w-full whitespace-nowrap"
+    [loadingIndicator]="true"
+    [columnMode]="'force'"
+    [limit]="itemsPerPage"
+    [headerHeight]="42"
+    [footerHeight]="50"
+    [rowHeight]="'auto'"
+    [columns]="columns">
+    
+    @for(column of columns; track $index) {
+      <ngx-datatable-column 
+        name="{{column.name}}" 
+        prop="{{column.prop}}"
+        headerClass="ltr:text-left rtl:text-right bg-slate-100 dark:bg-zink-700 px-3.5 py-2.5 first:pl-5 last:pr-5 font-semibold border-b border-slate-200 dark:border-zink-600"
+        cellClass="px-3.5 py-2.5 first:pl-5 last:pr-5 border-y border-slate-200 dark:border-zink-600 hover:bg-slate-50 dark:hover:bg-zink-700 transition-colors">
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+          @if(column.prop === 'action') {
+            <div class="action-buttons flex space-x-2">
+           <!--   <button class="edit-button p-1.5 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors">
+                <lucide-angular name="edit" class="size-4"></lucide-angular>
+              </button>
+              <button class="delete-button p-1.5 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-colors">
+                <lucide-angular name="trash-2" class="size-4"></lucide-angular>
+              </button>-->
+            </div>
+          } @else {
+            <span class="text-slate-700 dark:text-slate-200">{{value}}</span>
           }
         </ng-template>
-      </ngx-datatable-footer>
-    </ngx-datatable>
-  </div>
-
-  <!-- Message si aucune donnée -->
-  <ng-template #noData>
-    <p class="no-data-message">No formations available.</p>
-  </ng-template>
+      </ngx-datatable-column>
+    }
+    
+    <ngx-datatable-footer>
+      <ng-template ngx-datatable-footer-template 
+        let-rowCount="rowCount"
+        let-pageSize="pageSize"
+        let-selectedCount="selectedCount"
+        let-curPage="curPage"
+        let-offset="offset">
+        <div class="grow ps-5">
+          <p class="text-slate-500 dark:text-zink-200">
+            Affichage de <b>{{getEndIndex()}}</b> sur <b>{{totalItems}}</b> résultats
+          </p>
+        </div>
+        @if(totalItems > 0) {
+          <pagination-controls 
+            class="pe-4"
+            [currentPage]="currentPage"
+            [boundryLinks]="false"
+            previousLabel="Précédent"
+            nextLabel="Suivant"
+            [itemsPerPage]="itemsPerPage"
+            [total]="totalItems"
+            (pageChanged)="onPageChange($event)">
+          </pagination-controls>
+        }
+      </ng-template>
+    </ngx-datatable-footer>
+  </ngx-datatable>
 </div>

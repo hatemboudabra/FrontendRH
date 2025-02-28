@@ -11,6 +11,8 @@ import { Demande, Status,Type } from '../../../data/demande';
 import { DemandeService } from '../../../core/services/demande.service';
 import { User } from '../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../core/services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
+import { Notifications } from '../../../data/notif';
 
 @Component({
   selector: 'app-demande-manager',
@@ -26,7 +28,7 @@ export class DemandeManagerComponent {
   allDemandes: Demande[] = [];
   Type = Type;
   Status = Status;
-
+ // notifyList:Notifications [] = [];
   currentPage: number = 1;
   itemsPerPage: number = 5;
   totalItems: number = 0;
@@ -34,11 +36,13 @@ export class DemandeManagerComponent {
   endIndex: any;
   currentUser: User | null = null;
   constructor(private demandeService: DemandeService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private notificationService: NotificationService 
   ) {}
 
   ngOnInit(): void {
     this.loadCurrentUser(); 
+   
   }
 
   loadCurrentUser(): void {
@@ -48,11 +52,11 @@ export class DemandeManagerComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username);
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -61,14 +65,14 @@ export class DemandeManagerComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
-          this.loadDemandes(userDetails.id); // Charger les demandes avec l'ID de l'utilisateur
+          console.log(' ID utilisateur reçu :', userDetails.id);
+          this.loadDemandes(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -139,16 +143,22 @@ export class DemandeManagerComponent {
   updateStatus(id: number, newStatus: Status): void {
     this.demandeService.updateStatusChef(id, newStatus).subscribe({
       next: (updatedDemande) => {
-        const index = this.allDemandes.findIndex(d => d.id === id);
+        const index = this.allDemandes.findIndex((d) => d.id === id);
         if (index !== -1) {
-          this.allDemandes[index] = { ...updatedDemande }; 
+          this.allDemandes[index] = { ...updatedDemande };
           this.updatePagedOrders();
-          this.ngOnInit()
+          this.ngOnInit();
+  
+          const notification: Notifications = {
+            message: `Le statut de la demande "${updatedDemande.title}" a été mis à jour.`,
+            type: newStatus === Status.APPROVED ? 'success' : 'error',
+          };
+          this.notificationService.addNotification(notification); 
         }
       },
       error: (error) => {
         console.error('Erreur lors de la mise à jour du statut:', error);
-      }
+      },
     });
   }
 }

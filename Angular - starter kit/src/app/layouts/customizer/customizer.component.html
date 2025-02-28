@@ -1,3 +1,4 @@
+<!--
 <div class="fixed items-center hidden bottom-6 right-12 h-header group-data-[navbar=hidden]:flex">
     <button [DrawerTrigger]="'customizerButton'" type="button" class="inline-flex items-center justify-center size-12 p-0 transition-all duration-200 ease-linear rounded-md shadow-lg text-sky-50 bg-sky-500">
         <lucide-angular name="settings" [class]="'inline-block size-5'"></lucide-angular>
@@ -72,7 +73,6 @@
         </div>
 
         <div class="mt-6">
-            <!-- data-skin="" -->
             <h5 class="mb-3 underline capitalize text-15">Skin Layouts</h5>
             <div class="grid grid-cols-1 mb-5 gap-7 sm:grid-cols-2">
                 <div class="relative">
@@ -124,7 +124,6 @@
         </div>
 
         <div class="mt-6">
-            <!-- data-mode="" -->
             <h5 class="mb-3 underline capitalize text-15">Light & Dark</h5>
             <div class="flex gap-3">
                 <button type="button" id="dataModeOne" name="dataMode" value="light" (click)="changeLayoutMode('light')" [ngClass]="{'active':mode == 'light'}" class="transition-all duration-200 ease-linear bg-white border-dashed text-slate-500 btn border-slate-200 hover:text-slate-500 hover:bg-slate-50 hover:border-slate-200 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-200 dark:bg-zink-600 dark:text-zink-200 dark:border-zink-400 dark:hover:bg-zink-600 dark:hover:text-zink-100 dark:hover:border-zink-400 dark:[&.active]:bg-custom-500/10 dark:[&.active]:border-custom-500/30 dark:[&.active]:text-custom-500">Light Mode</button>
@@ -133,7 +132,6 @@
         </div>
 
         <div class="mt-6">
-            <!-- dir="ltr" -->
             <h5 class="mb-3 underline capitalize text-15">LTR & RTL</h5>
             <div class="flex flex-wrap gap-3">
                 <button type="button" id="diractionOne" name="dir" value="ltr" (click)="changeLayoutDirection('ltr')" [ngClass]="{'active':dir == 'ltr'}" class="transition-all duration-200 ease-linear bg-white border-dashed text-slate-500 btn border-slate-200 hover:text-slate-500 hover:bg-slate-50 hover:border-slate-200 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-200 dark:bg-zink-600 dark:text-zink-200 dark:border-zink-400 dark:hover:bg-zink-600 dark:hover:text-zink-100 dark:hover:border-zink-400 dark:[&.active]:bg-custom-500/10 dark:[&.active]:border-custom-500/30 dark:[&.active]:text-custom-500">LTR Mode</button>
@@ -142,7 +140,6 @@
         </div>
 
         <div class="mt-6">
-            <!-- data-content -->
             <h5 class="mb-3 underline capitalize text-15">Content Width</h5>
             <div class="flex gap-3">
                 <button type="button" id="datawidthOne" name="datawidth" value="fluid" (click)="changeWidth('fluid')" [ngClass]="{'active':width == 'fluid'}" class="transition-all duration-200 ease-linear bg-white border-dashed text-slate-500 btn border-slate-200 hover:text-slate-500 hover:bg-slate-50 hover:border-slate-200 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-200 dark:bg-zink-600 dark:text-zink-200 dark:border-zink-400 dark:hover:bg-zink-600 dark:hover:text-zink-100 dark:hover:border-zink-400 dark:[&.active]:bg-custom-500/10 dark:[&.active]:border-custom-500/30 dark:[&.active]:text-custom-500">Fluid</button>
@@ -152,7 +149,6 @@
 
         @if(theme == 'vertical'){
         <div class="mt-6" id="sidebar-size">
-            <!-- data-sidebar-size="" -->
             <h5 class="mb-3 underline capitalize text-15">Sidebar Size</h5>
             <div class="flex flex-wrap gap-3">
                 <button type="button" id="sidebarSizeOne" name="sidebarSize" value="lg" (click)="changeSize('lg')" [ngClass]="{'active':size == 'lg'}" class="transition-all duration-200 ease-linear bg-white border-dashed text-slate-500 btn border-slate-200 hover:text-slate-500 hover:bg-slate-50 hover:border-slate-200 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-200 dark:bg-zink-600 dark:text-zink-200 dark:border-zink-400 dark:hover:bg-zink-600 dark:hover:text-zink-100 dark:hover:border-zink-400 dark:[&.active]:bg-custom-500/10 dark:[&.active]:border-custom-500/30 dark:[&.active]:text-custom-500">Default</button>
@@ -163,7 +159,6 @@
     }
 
         <div class="mt-6" id="navigation-type">
-            <!-- data-navbar="" -->
             <h5 class="mb-3 underline capitalize text-15">Navigation Type</h5>
             <div class="flex flex-wrap gap-3">
                 <button type="button" id="navbarTwo" name="navbar" value="sticky" (click)="changenavbar('sticky')" [ngClass]="{'active':navbar == 'sticky'}" class="transition-all duration-200 ease-linear bg-white border-dashed text-slate-500 btn border-slate-200 hover:text-slate-500 hover:bg-slate-50 hover:border-slate-200 [&.active]:text-custom-500 [&.active]:bg-custom-50 [&.active]:border-custom-200 dark:bg-zink-600 dark:text-zink-200 dark:border-zink-400 dark:hover:bg-zink-600 dark:hover:text-zink-100 dark:hover:border-zink-400 dark:[&.active]:bg-custom-500/10 dark:[&.active]:border-custom-500/30 dark:[&.active]:text-custom-500">Sticky</button>
@@ -175,7 +170,6 @@
 
         @if(theme == 'vertical'){
             <div class="mt-6" id="sidebar-color">
-                <!-- data-sidebar="" light, dark, brand, modern-->
                 <h5 class="mb-3 underline capitalize text-15">Sizebar Colors</h5>
                 <div class="flex flex-wrap gap-3">
                     <button type="button" id="sidebarColorOne" name="sidebarColor" value="light" (click)="changecolor('light')" [ngClass]="{'active':color == 'light'}" class="flex items-center justify-center size-10 bg-white border rounded-md border-slate-200 group active"><lucide-angular name="check" [class]="'size-5 hidden group-[.active]:inline-block text-slate-600'"></lucide-angular></button>
@@ -187,7 +181,6 @@
         }
 
         <div class="mt-6">
-            <!-- data-topbar="" light, dark, brand, modern-->
             <h5 class="mb-3 underline capitalize text-15">Topbar Colors</h5>
             <div class="flex flex-wrap gap-3">
                 <button type="button" id="topbarColorOne" name="topbarColor" value="light" (click)="changetopbar('light')" [ngClass]="{'active':topbar == 'light'}" class="flex items-center justify-center size-10 bg-white border rounded-md border-slate-200 group active"><lucide-angular name="check" [class]="'size-5 hidden group-[.active]:inline-block text-slate-600'"></lucide-angular></button>
@@ -197,4 +190,4 @@
         </div>
 
     </div>
-</drawer>
+</drawer>-->

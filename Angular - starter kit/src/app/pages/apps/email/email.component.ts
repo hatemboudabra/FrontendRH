@@ -38,6 +38,7 @@ export class EmailComponent {
 
   loadCandidatures(): void {
     this.candidatService.getCandidatures().subscribe((data) => {
+      console.log('Données reçues :', data);
       this.mailbox = data;
       this.totalPages = Math.ceil(this.mailbox.length / this.itemsPerPage);
       this.updatePaginatedMailbox();

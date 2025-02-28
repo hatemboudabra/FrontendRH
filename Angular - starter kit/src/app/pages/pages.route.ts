@@ -24,6 +24,9 @@ import { ListReclamationComponent } from "./reclamation/list-reclamation/list-re
 import { ClaimsuserComponent } from "./reclamation/claimsuser/claimsuser.component";
 import { StatistiqueComponent } from "./hr/statistique/statistique.component";
 import { UpdateProfileComponent } from "../account/profile/update-profile/update-profile.component";
+import { ListtemcollaboeateurComponent } from "./team/listtemcollaboeateur/listtemcollaboeateur.component";
+import { ListnoteComponent } from "./note/listnote/listnote.component";
+import { AddnoteComponent } from "./note/addnote/addnote.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -50,6 +53,9 @@ export const PAGE_ROUTES: Route[] = [
    {path:'listclaimsuser',component:ClaimsuserComponent},//colla
    {path:'statist',component:StatistiqueComponent},//
    {path:'updateProfile', component:UpdateProfileComponent},
+   {path:'listteamcoolaborateur',component:ListtemcollaboeateurComponent},
+ //  {path:'listnote',component:ListnoteComponent}
+    {path:'addnote',component:AddnoteComponent}
 
 
 

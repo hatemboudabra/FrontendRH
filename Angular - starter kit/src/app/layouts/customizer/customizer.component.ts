@@ -15,7 +15,7 @@ import { LUCIDE_ICONS, LucideAngularModule, LucideIconProvider, icons } from 'lu
   providers:[{provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons)}]
 })
 export class CustomizerComponent {
-
+/*
   theme: string | undefined;
   mode: string | undefined;
   dir: string | undefined;
@@ -165,5 +165,5 @@ export class CustomizerComponent {
     this.store.select(getTopbarcolor).subscribe((topbar) => {
       document.documentElement.setAttribute('data-topbar', topbar)
     })
-  }
+  }*/
 }

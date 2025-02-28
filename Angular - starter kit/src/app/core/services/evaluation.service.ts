@@ -13,9 +13,9 @@ export class EvaluationService{
         return this.http.post<string>(url, {}, { params }); 
     }
     getCollaboratorEvaluationNote(collaboratorId: number): Observable<string> {
-        const url = `${this.baseUrl}collaborator/${collaboratorId}`; 
-        return this.http.get<string>(url); 
-    }
+        const url = `${this.baseUrl}collaborator/${collaboratorId}`;
+        return this.http.get(url, { responseType: 'text' });
+      }
     getAllUsersWithAverageNote(): Observable<{ username: string, averageNote: number }[]> {
         const url = `${this.baseUrl}all-users-notes`;
         return this.http.get<{ username: string, averageNote: number }[]>(url);

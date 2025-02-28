@@ -1,4 +1,3 @@
-// auth.models.ts
 export class User {
   id?: number;
   username?: string;
@@ -11,9 +10,10 @@ export class User {
   formations?: any[];
   reclamations?: any[];
   evaluations?: any[];
+ // post:string;
 }
 
-// auth.dto.ts
+
 export interface LoginDTO {
   username: string;
   password: string;

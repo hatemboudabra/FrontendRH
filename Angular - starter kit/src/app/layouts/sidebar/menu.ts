@@ -72,8 +72,9 @@ export const MENU: MenuItem[] = [
         icon: 'users',
         roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'],
         subItems: [
-            { id: 801, label: 'Liste des équipes', link: '/listteam', parentId: 8, roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'] },
-            { id: 802, label: 'Ajouter une équipe', link: '/add-team', parentId: 8, roles: ['ROLE_CHEF'] }
+            { id: 801, label: 'Liste des équipes', link: '/listteam', parentId: 8, roles: ['ROLE_CHEF'] },
+            { id: 802, label: 'Ajouter une équipe', link: '/add-team', parentId: 8, roles: ['ROLE_CHEF'] },
+            { id: 803, label: 'Liste une équipe', link: '/listteamcoolaborateur', parentId: 8, roles: ['ROLE_COLLABORATEUR'] },
         ]
     },
     {
@@ -90,12 +91,15 @@ export const MENU: MenuItem[] = [
         id: 10,
         label: 'Statistiques',
         icon: 'pie-chart',
-        roles: ['ROLE_CHEF','ROLE_RESPONSABLE_RH'],
-        subItems: [
-            { id: 1001, label: 'Statistiques générales', link: '/stat', parentId: 10, roles: ['ROLE_CHEF'] },
-            { id: 1002, label: 'Statistiques générales', link: '/statist', parentId: 10, roles: ['ROLE_RESPONSABLE_RH'] },
-
-        ]
+        link: '/stat',
+        roles: ['ROLE_CHEF']
+    },
+    {
+        id: 11,
+        label: 'Statistiques',
+        icon: 'pie-chart',
+        link: '/statist',
+        roles: ['ROLE_RESPONSABLE_RH']
     },
     {
         id: 11,
@@ -106,5 +110,15 @@ export const MENU: MenuItem[] = [
             { id: 1101, label: 'Chat', link: '/chat', parentId: 11, roles: [ 'ROLE_COLLABORATEUR', 'ROLE_CHEF'] },  
             { id: 1102, label: 'Email', link: '/email', parentId: 11, roles: ['ROLE_RESPONSABLE_RH'] }
         ]
-    }
+    }/*,
+    {
+        id: 12,
+        label: 'Évaluation',
+        icon: 'clipboard-list', 
+        roles: ['ROLE_CHEF'],
+        subItems: [
+            { id: 1201, label: 'Ajouter une évaluation', link: '/addnote', parentId: 12, roles: ['ROLE_CHEF'] },
+           
+        ]
+    }*/
 ];

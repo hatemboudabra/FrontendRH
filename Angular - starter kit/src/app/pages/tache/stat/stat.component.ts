@@ -43,11 +43,11 @@ export class StatComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error('Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -56,14 +56,14 @@ export class StatComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log(' ID utilisateur reçu :', userDetails.id);
           this.loadStats(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -83,12 +83,12 @@ export class StatComponent {
       (data) => this.initChartEvaluation(data),
       (error) => console.error('Erreur lors de la récupération des notes des utilisateurs', error)
     );
-    this.demandeService.getDemandesCountByStatusForDocumentTrainingOrLeave().subscribe(
+    /*this.demandeService.getDemandesCountByStatusForDocumentTrainingOrLeave().subscribe(
       (data) => this.initChartDemandes(data),
       (error) => console.error('Erreur lors de la récupération des stats des demandes', error)
-    );
+    );*/
   }
-  initChartDemandes(data: any): void {
+  /*initChartDemandes(data: any): void {
     let dataObj: {[key: string]: number};
     
     if (data instanceof Map) {
@@ -174,7 +174,7 @@ export class StatComponent {
         }
       ]
     };
-  }
+  }*/
   initChartStatut(data: { [key: string]: number }): void {
     this.chartStatut = {
       series: [{ 

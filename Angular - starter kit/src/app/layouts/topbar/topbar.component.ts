@@ -12,6 +12,10 @@ import { changeMode, changesidebarcolor, changesidebarsize, changetopbarcolor } 
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { notification, cart } from '../../data';
 import { CommonModule, DOCUMENT } from '@angular/common';
+import { User } from '../../store/Authentication/auth.models';
+import { AuthenticationService } from '../../core/services/auth.service';
+import { Notifications } from '../../data/notif';
+import { NotificationService } from '../../core/services/notification.service';
 
 
 @Component({
@@ -24,11 +28,11 @@ import { CommonModule, DOCUMENT } from '@angular/common';
   providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }, LanguageService],
 })
 export class TopbarComponent {
-
+  notifyList: Notifications[] = [];
   cookieValue: any;
   flagvalue: any;
 
-  notifyList: any;
+ // notifyListt: any;
   type: any = 'all';
   mode: any;
   subtotal: any = 0;
@@ -44,12 +48,15 @@ export class TopbarComponent {
 
   private store = inject(Store);
   layout: any;
+  currentUser: User | null = null;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public translate: TranslateService,
     public languageService: LanguageService,
     public _cookiesService: CookieService,
+    private authService:AuthenticationService,
+    private notificationService: NotificationService,
     private renderer: Renderer2) {
     translate.setDefaultLang('en');
   }
@@ -78,8 +85,10 @@ export class TopbarComponent {
 
 
   ngOnInit(): void {
+  
+  
     // Fetch Data
-    this.cartlist = cart
+    /*this.cartlist = cart
 
     // Fetch Data
     this.notifyList = notification;
@@ -103,9 +112,46 @@ export class TopbarComponent {
       this.flagvalue = val.map(element => element.flag);
     }
 
+*/
 
-
+this.loadCurrentUser();
+this.notificationService.notifications$.subscribe((notifications) => {
+  this.notifyList = notifications; 
+});
   }
+  
+  loadCurrentUser(): void {
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user && user.username) {
+          this.currentUser = user;
+          this.getUserIdByUsername(user.username); 
+        } else {
+          console.error(' Utilisateur non connecté ou username manquant.');
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement de l\'utilisateur :', error);
+      },
+    });
+  }
+
+  getUserIdByUsername(username: string): void {
+    this.authService.getUserByUsername(username).subscribe({
+      next: (userDetails) => {
+        if (userDetails && userDetails.id) {
+          console.log(' ID utilisateur reçu :', userDetails.id);
+          this.currentUser = { ...this.currentUser, id: userDetails.id }; 
+        } else {
+          console.error(' Données utilisateur invalides ou ID manquant');
+        }
+      },
+      error: (error) => {
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
+      },
+    });
+  }
+
 
   // scroll
   windowScroll() {
@@ -202,7 +248,7 @@ export class TopbarComponent {
   }
 
   // Notification Filter
-  NotifyFilter(type: any) {
+/*  NotifyFilter(type: any) {
     this.type = type
     if (type == 'all') {
       this.notifyList = notification
@@ -210,7 +256,7 @@ export class TopbarComponent {
       this.notifyList = notification.filter((item: any) => item.type == type)
     }
   }
-
+*/
 
 
   // Increment Decrement Quantity

@@ -1,114 +1,116 @@
 <div class="page-container">
-    <div class="content-wrapper">
-      <div class="form-card-container">
-        <div class="header-banner">
-          <div class="header-content">
-            <h2 class="title-main">Créer une équipe</h2>
-            <p class="subtitle-text">Constituez votre équipe idéale en quelques clics</p>
-          </div>
-          <div class="illustration">
-            <svg width="150" height="120" viewBox="0 0 150 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="75" cy="45" r="30" fill="#e2eeff"/>
-              <circle cx="60" cy="40" r="12" fill="#4e73df"/>
-              <circle cx="90" cy="40" r="12" fill="#36b9cc"/>
-              <circle cx="75" cy="70" r="12" fill="#1cc88a"/>
-              <path d="M60 52 L75 70 L90 52" stroke="#5a5c69" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
+  <div class="content-wrapper">
+    <div class="form-card-container">
+      <div class="header-banner">
+        <div class="header-content">
+          <h2 class="title-main">Créer une équipe</h2>
+          <p class="subtitle-text">Constituez votre équipe idéale en quelques clics</p>
         </div>
-  
-        <div class="form-container">
-          <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
-            <div class="input-group premium">
-              <label for="teamName">
-                <span class="label-text">Nom de l'équipe</span>
-                <span class="required-badge">Requis</span>
-              </label>
-              <div class="input-wrapper">
-                <i class="icon-prefix bi bi-people-fill"></i>
-                <input
-                  type="text"
-                  id="teamName"
-                  formControlName="teamName"
-                  placeholder="Ex: Équipe Marketing Digital"
-                  class="premium-input"
-                />
-              </div>
-              <div *ngIf="teamForm.get('teamName')?.invalid && teamForm.get('teamName')?.touched" class="error-message">
-                <i class="bi bi-exclamation-circle"></i>
-                <span>Veuillez saisir un nom d'équipe valide</span>
-              </div>
+        <div class="illustration">
+          <svg width="150" height="120" viewBox="0 0 150 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="75" cy="45" r="30" fill="#e2eeff"/>
+            <circle cx="60" cy="40" r="12" fill="#4e73df"/>
+            <circle cx="90" cy="40" r="12" fill="#36b9cc"/>
+            <circle cx="75" cy="70" r="12" fill="#1cc88a"/>
+            <path d="M60 52 L75 70 L90 52" stroke="#5a5c69" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="form-container">
+        <form [formGroup]="teamForm" (ngSubmit)="onSubmit()">
+          <div class="input-group premium">
+            <label for="teamName">
+              <span class="label-text">Nom de l'équipe</span>
+              <span class="required-badge">Requis</span>
+            </label>
+            <div class="input-wrapper">
+              <i class="icon-prefix bi bi-people-fill"></i>
+              <input
+                type="text"
+                id="teamName"
+                formControlName="teamName"
+                placeholder="Ex: Équipe Marketing Digital"
+                class="premium-input"
+              />
             </div>
-  
-            <div class="input-group premium">
-              <label>
-                <span class="label-text">Collaborateurs</span>
-                <span class="required-badge">Requis</span>
-              </label>
-              
-              <div class="search-box">
-                <i class="bi bi-search"></i>
-                <input type="text" placeholder="Rechercher un collaborateur..." (input)="filterCollaborators($event)"/>
-              </div>
-  
-              <div class="collaborators-container">
-                <div *ngFor="let collaborator of filteredCollaborators$ | async" class="collaborator-card">
-                  <div class="collaborator-info">
-                    <div class="avatar" [style.backgroundColor]="getAvatarColor(collaborator.username)">
-                      {{collaborator.username.charAt(0).toUpperCase()}}
-                    </div>
-                    <div class="collaborator-details">
-                      <span class="collaborator-name">{{collaborator.username}}</span>
-                      <span class="collaborator-role">Collaborateur</span>
-                    </div>
+            <div *ngIf="teamForm.get('teamName')?.invalid && teamForm.get('teamName')?.touched" class="error-message">
+              <i class="bi bi-exclamation-circle"></i>
+              <span>Veuillez saisir un nom d'équipe valide</span>
+            </div>
+          </div>
+
+          <div class="input-group premium">
+            <label>
+              <span class="label-text">Collaborateurs</span>
+              <span class="required-badge">Requis</span>
+            </label>
+          
+            <div class="search-box">
+              <i class="bi bi-search"></i>
+              <input type="text" placeholder="Rechercher un collaborateur..." (input)="filterCollaborators($event)"/>
+            </div>
+
+         
+
+            <div class="collaborators-container">
+              <div *ngFor="let collaborator of filteredCollaborators$ | async" class="collaborator-card">
+                <div class="collaborator-info">
+                  <div class="avatar" [style.backgroundColor]="getAvatarColor(collaborator.username)">
+                    {{collaborator.username.charAt(0).toUpperCase()}}
                   </div>
-                  <label class="premium-checkbox">
-                    <input
-                      type="checkbox"
-                      [value]="collaborator.id" 
-                      (change)="onCollaboratorChange($event, collaborator.id)"
-                    />
-                    <span class="checkmark"></span>
-                  </label>
+                  <div class="collaborator-details">
+                    <span class="collaborator-name">{{collaborator.username}}</span>
+                    <span class="collaborator-role">Collaborateur</span>
+                  </div>
                 </div>
-              </div>
-              
-              <div *ngIf="noCollaboratorsSelected" class="error-message">
-                <i class="bi bi-exclamation-circle"></i>
-                <span>Veuillez sélectionner au moins un collaborateur</span>
-              </div>
-            </div>
-  
-            <div *ngIf="selectedCollaborators.length > 0" class="selected-summary">
-              <div class="summary-header">
-                <span class="summary-title">{{selectedCollaborators.length}} collaborateur(s) sélectionné(s)</span>
-              </div>
-              <div class="selected-avatars">
-                <div *ngFor="let id of selectedCollaborators; let i = index" 
-                    class="selected-avatar" 
-                    [style.zIndex]="selectedCollaborators.length - i"
-                    [style.left]="i * 20 + 'px'">
-                  {{getCollaboratorInitial(id)}}
-                </div>
+                <label class="premium-checkbox">
+                  <input
+                    type="checkbox"
+                    [value]="collaborator.id"
+                    (change)="onCollaboratorChange($event, collaborator.id)"
+                  />
+                  <span class="checkmark"></span>
+                </label>
               </div>
             </div>
-  
-            <div class="button-group">
-              <button type="button" class="btn-secondary" routerLink="/teams">
-                <i class="bi bi-arrow-left"></i>
-                <span>Annuler</span>
-              </button>
-              <button 
-                type="submit" 
-                class="btn-primary" 
-                [disabled]="teamForm.invalid || isSubmitting"
-                [class.submitting]="isSubmitting">
-                <i class="bi bi-check-circle"></i>
-                <span>{{isSubmitting ? 'Création en cours...' : 'Créer l\'équipe'}}</span>
-              </button>
+
+            <div *ngIf="noCollaboratorsSelected" class="error-message">
+              <i class="bi bi-exclamation-circle"></i>
+              <span>Veuillez sélectionner au moins un collaborateur</span>
             </div>
-          </form>
-        </div>
+          </div>
+
+          <div *ngIf="selectedCollaborators.length > 0" class="selected-summary">
+            <div class="summary-header">
+              <span class="summary-title">{{selectedCollaborators.length}} collaborateur(s) sélectionné(s)</span>
+            </div>
+            <div class="selected-avatars">
+              <div *ngFor="let id of selectedCollaborators; let i = index"
+                  class="selected-avatar"
+                  [style.zIndex]="selectedCollaborators.length - i"
+                  [style.left]="i * 20 + 'px'">
+                {{getCollaboratorInitial(id)}}
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button type="button" class="btn-secondary" routerLink="/teams">
+              <i class="bi bi-arrow-left"></i>
+              <span>Annuler</span>
+            </button>
+            <button
+              type="submit"
+              class="btn-primary"
+              [disabled]="teamForm.invalid || isSubmitting"
+              [class.submitting]="isSubmitting">
+              <i class="bi bi-check-circle"></i>
+              <span>{{isSubmitting ? 'Création en cours...' : 'Créer l\'équipe'}}</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+</div>

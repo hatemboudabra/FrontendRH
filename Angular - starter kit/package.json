@@ -94,6 +94,7 @@
     "@types/lodash": "^4.17.14",
     "@types/node": "^18.18.0",
     "@types/sockjs-client": "^1.5.4",
+    "@types/stompjs": "^2.3.9",
     "autoprefixer": "^10.4.16",
     "file-loader": "^6.2.0",
     "html-loader": "^4.2.0",

@@ -46,11 +46,11 @@ export class AddReclamationComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -59,21 +59,21 @@ export class AddReclamationComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log(' ID utilisateur reçu :', userDetails.id);
           this.reclamation.userId = userDetails.id.toString(); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
 
   onSubmit() {
     if (!this.reclamation.userId) {
-      console.error('❌ ID utilisateur manquant.');
+    //  console.error('ID utilisateur manquant.');
       alert('Erreur : ID utilisateur manquant.');
       return;
     }

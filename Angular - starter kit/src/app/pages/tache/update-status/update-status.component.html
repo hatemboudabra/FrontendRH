@@ -1,6 +1,5 @@
 <div class="card" id="tache">
   <div class="card-body">
-    <!-- Header Section -->
     <div class="flex items-center gap-3 mb-4">
       <h6 class="text-15 grow">Tasks</h6>
     </div>
@@ -36,17 +35,23 @@
         [footerHeight]="36"
         [rowHeight]="'auto'"
       >
-        <ngx-datatable-column name="Title" prop="title" [width]="150">
-          <ng-template ngx-datatable-cell-template let-row="row">
-            <div class="flex items-center">
-              <div>
-                <h6 class="text-xs">{{ row.title }}</h6>
-                <p class="text-slate-500 text-xxs">{{ row.description }}</p>
-              </div>
+      <ngx-datatable-column name="Title" prop="title" [width]="150">
+        <ng-template ngx-datatable-cell-template let-row="row">
+          <div class="flex items-center">
+            <div>
+              <h6 class="text-xs">{{ row.title }}</h6>
+              <p class="text-slate-500 text-xxs">
+                {{ row.description.length > 10 ? row.description.slice(0, 10) : row.description }}
+                <button *ngIf="row.description.length > 10" class="text-blue-500 hover:text-blue-700 text-xs ml-1"  (click)="openDetailsModal(row.id)">
+                  plus
+                </button>
+              </p>
             </div>
-          </ng-template>
-        </ngx-datatable-column>
-
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      
+      
         <ngx-datatable-column name="Status" prop="statusTache" [width]="100">
           <ng-template ngx-datatable-cell-template let-value="value">
             <span class="status-badge text-xs {{ getStatusClass(value) }}">

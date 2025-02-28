@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PageTitleComponent } from '../../../shared/page-title/page-title.component';
 import { TeamService } from '../../../core/services/team.service';
 import { AuthenticationService } from '../../../core/services/auth.service';
@@ -17,7 +17,7 @@ interface Collaborator {
 @Component({
   selector: 'app-add-team',
   standalone: true,
-  imports: [CommonModule, PageTitleComponent, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, PageTitleComponent, ReactiveFormsModule, FormsModule,RouterLink],
   templateUrl: './add-team.component.html',
   styleUrls: ['./add-team.component.scss']
 })
@@ -96,7 +96,7 @@ export class AddTeamComponent implements OnInit {
       },
       error: (error) => {
         this.toastService.error('Erreur lors du chargement de l\'utilisateur');
-        console.error('❌ Erreur détaillée :', error);
+        console.error(' Erreur détaillée :', error);
       },
     });
   }
@@ -112,7 +112,7 @@ export class AddTeamComponent implements OnInit {
       },
       error: (error) => {
         this.toastService.error('Erreur lors de la récupération des données utilisateur');
-        console.error('❌ Erreur détaillée :', error);
+        console.error(' Erreur détaillée :', error);
       },
     });
   }
@@ -162,12 +162,13 @@ export class AddTeamComponent implements OnInit {
       this.teamService.createTeam(this.userId, teamName, this.selectedCollaborators).subscribe({
         next: (response) => {
           this.toastService.success(`L'équipe "${teamName}" a été créée avec succès!`);
-          setTimeout(() => this.router.navigate(['/teams']), 1000);
+          setTimeout(() => this.router.navigate(['/listteam']), 1000);
+        //  this.router.navigate(['/listteam'])
         },
         error: (error) => {
           this.isSubmitting = false;
           this.toastService.error('Erreur lors de la création de l\'équipe');
-          console.error('❌ Erreur détaillée :', error);
+          console.error(' Erreur détaillée :', error);
         },
         complete: () => {
           this.isSubmitting = false;

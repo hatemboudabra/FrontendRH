@@ -22,7 +22,7 @@ export class LoginComponent {
   loginForm!: FormGroup;
   submitted = false;
   fieldTextType = false;
-
+  //private isReloaded = false;
   constructor(
     private fb: FormBuilder, 
     private authService: AuthenticationService,
@@ -38,6 +38,8 @@ export class LoginComponent {
        // Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)/)
       ]]
     });
+   
+
   }
 
   get f() { 
@@ -55,7 +57,9 @@ export class LoginComponent {
     this.authService.login(username, password).subscribe({
       next: (response) => {
         document.getElementById('successAlert')?.classList.remove('hidden');
+      
         this.router.navigate(['']);
+     
       },
       error: (err) => {
         console.error('Login failed', err);
