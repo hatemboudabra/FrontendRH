@@ -43,25 +43,26 @@
       </div>
   </div><!--end sidebar-->
 
-    <!-- Main Content -->
+   
     <div class="col-span-12 lg:col-span-9 2xl:col-span-10 grow card">
-    <!-- Afficher la liste des candidats -->
+   
 <div *ngIf="showEmailList">
   <div class="card-body p-6">
     <div class="mt-4 space-y-4">
-      <div *ngFor="let candidat of paginatedMailbox" (click)="showCandidateDetails(candidat)" class="p-5 border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-zink-700 cursor-pointer transform hover:scale-105">
-        <div class="flex items-center justify-between">
-          <strong class="text-lg text-gray-800 dark:text-gray-200">Nouvelle candidature pour votre offre :</strong> 
-          <span class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(candidat.date) }} (il y a {{ getTimeAgo(candidat.date) }})</span>
-        </div>
-        <div class="mt-3 text-sm text-gray-600 dark:text-gray-300">
-          <strong class="text-gray-900 dark:text-gray-100">{{ candidat.email }}</strong><br>
-          À <span class="text-gray-500 dark:text-gray-400">user3</span>
-        </div>
-      </div>
+        <div *ngFor="let candidat of paginatedMailbox" (click)="showCandidateDetails(candidat)" class="p-5 border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-zink-700 cursor-pointer transform hover:scale-105">
+            <div class="flex items-center justify-between">
+              <strong class="text-lg text-gray-800 dark:text-gray-200">Nouvelle candidature pour votre offre : {{ candidat.offerTitle }}</strong> 
+          <!--    <span class="text-sm text-gray-500 dark:text-gray-400">
+                {{ candidat.datepostule ? formatDate(candidat.datepostule) : 'Date inconnue' }} (il y a {{ candidat.datepostule ? getTimeAgo(candidat.datepostule) : 'Date inconnue' }})
+              </span>
+            -->
+            </div>
+            <div class="mt-3 text-sm text-gray-600 dark:text-gray-300">
+              <strong class="text-gray-900 dark:text-gray-100">{{ candidat.email }}</strong><br>
+            </div>
+          </div>
     </div>
 
-    <!-- Pagination -->
     <div class="flex justify-between items-center mt-6">
       <button (click)="previousPage()" [disabled]="currentPage === 1" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-gray-700 dark:bg-zink-600 dark:hover:bg-zink-500 dark:text-gray-200 text-sm transition-all duration-300 ease-in-out">
         Précédent
@@ -108,8 +109,8 @@
                 <div *ngFor="let candidat of deletedCandidates" class="p-5 border border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 bg-white dark:bg-zink-700">
                     <div class="flex items-center justify-between">
                         <strong class="text-lg text-gray-800 dark:text-gray-200">Nouvelle candidature pour votre offre :</strong> 
-                        <span class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(candidat.date) }} (il y a {{ getTimeAgo(candidat.date) }})</span>
-                    </div>
+                      <!--  <span class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(candidat.date) }} (il y a {{ getTimeAgo(candidat.date) }})</span>
+                    --></div>
                     <div class="mt-3 text-sm text-gray-600 dark:text-gray-300">
                         <strong class="text-gray-900 dark:text-gray-100">{{ candidat.email }}</strong><br>
                         À <span class="text-gray-500 dark:text-gray-400">user3</span>

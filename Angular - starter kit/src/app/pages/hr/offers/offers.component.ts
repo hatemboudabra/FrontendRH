@@ -33,7 +33,6 @@ export class OffersComponent implements OnInit {
   error: string | null = null;
  // readonly STATIC_CREATED_BY_ID = 13;
   
-  // for candidat
   selectedOfferId: number | null = null;
   isPostulerModalOpen = false;
   postulerForm: FormGroup;

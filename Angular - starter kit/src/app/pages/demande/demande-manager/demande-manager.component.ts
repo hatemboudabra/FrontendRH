@@ -28,7 +28,7 @@ export class DemandeManagerComponent {
   allDemandes: Demande[] = [];
   Type = Type;
   Status = Status;
- // notifyList:Notifications [] = [];
+  //notifyList:Notifications [] = [];
   currentPage: number = 1;
   itemsPerPage: number = 5;
   totalItems: number = 0;
@@ -151,9 +151,11 @@ export class DemandeManagerComponent {
   
           const notification: Notifications = {
             message: `Le statut de la demande "${updatedDemande.title}" a été mis à jour.`,
-            type: newStatus === Status.APPROVED ? 'success' : 'error',
+            type: newStatus === Status.APPROVED ? 'success' : newStatus === Status.REJECTED ? 'error' : 'info',
+            userId: updatedDemande.userId,
+            createdAt: new Date(Date.now()) 
           };
-          this.notificationService.addNotification(notification); 
+          this.notificationService.addNotification(notification);
         }
       },
       error: (error) => {

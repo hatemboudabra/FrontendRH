@@ -47,6 +47,7 @@ export class ListoffersComponent implements OnInit  {
           salary: ['', [Validators.required, Validators.min(0)]],
           contractType: ['', Validators.required],
           publicationDate: ['', Validators.required],
+          expirationDate: ['', Validators.required],
           educationLevel: ['', Validators.required],
           experience: ['', [Validators.required, Validators.min(0)]]
         });
@@ -100,7 +101,9 @@ loadOffers(userId: number): void {
   this.subscriptions.add(
     this.offersService.getAllOffers().subscribe({
       next: (data) => {
-        this.offers = data;
+        // les offers pas expirer
+        const currentDate = new Date();
+        this.offers = data.filter(offer => new Date(offer.expirationDate) > currentDate);
         this.loading = false;
       },
       error: (err) => {
@@ -124,7 +127,10 @@ onSubmit(): void {
       ...this.offerForm.value,
       createdById: this.currentUser.id
     };
-
+    if (new Date(newOffer.expirationDate) < new Date()) {
+      this.error = 'Expiration date must in future.';
+      return;
+    }
     console.log('New Offer:', newOffer);
     this.subscriptions.add(
       this.offersService.addOffer(newOffer).subscribe({
@@ -177,5 +183,21 @@ deleteOffer(id: number): void {
     );
   }
 }
-
+deleteExpiredOffers(): void {
+  const currentDate = new Date();
+  this.offers.forEach(offer => {
+    if (new Date(offer.expirationDate) < currentDate) {
+      this.subscriptions.add(
+        this.offersService.deleteOffer(offer.id).subscribe({
+          next: () => {
+            this.offers = this.offers.filter(o => o.id !== offer.id);
+          },
+          error: (err) => {
+            console.error('Error deleting expired offer:', err);
+          }
+        })
+      );
+    }
+  });
+}
 }

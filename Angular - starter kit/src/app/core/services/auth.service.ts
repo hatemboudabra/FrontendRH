@@ -134,6 +134,7 @@ addChef(user: UserDTO): Observable<any> {
 }
 
 deleteCollCHE(id: number): Observable<void> {
-    return this.http.delete<void>(`${environment.apiUrl}/${id}`);
+  return this.http.delete<void>(`${environment.apiUrl}/coll-che/${id}`);
 }
+
 }

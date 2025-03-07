@@ -8,7 +8,6 @@ import { UpdateStatusComponent } from "./tache/update-status/update-status.compo
 import { AddTacheComponent } from "./tache/list/add-tache/add-tache.component";
 import { OffersComponent } from "./hr/offers/offers.component";
 import { ListoffersComponent } from "./hr/listoffers/listoffers.component";
-import path from "path";
 import { ListdemandeComponent } from "./hr/listdemande/listdemande.component";
 import { DemandeManagerComponent } from "./demande/demande-manager/demande-manager.component";
 import { AdddemandeComponent } from "./demande/adddemande/adddemande.component";
@@ -25,7 +24,6 @@ import { ClaimsuserComponent } from "./reclamation/claimsuser/claimsuser.compone
 import { StatistiqueComponent } from "./hr/statistique/statistique.component";
 import { UpdateProfileComponent } from "../account/profile/update-profile/update-profile.component";
 import { ListtemcollaboeateurComponent } from "./team/listtemcollaboeateur/listtemcollaboeateur.component";
-import { ListnoteComponent } from "./note/listnote/listnote.component";
 import { AddnoteComponent } from "./note/addnote/addnote.component";
 
 export const PAGE_ROUTES: Route[] = [

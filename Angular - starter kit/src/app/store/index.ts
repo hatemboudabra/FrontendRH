@@ -13,7 +13,7 @@ export interface RootReducerState {
     layout: LayoutState,
     // authentication: AuthenticationState;
     Ecommerce: EcommerceState,
-    HR: HRManagementState,
+  //  HR: HRManagementState,
     Notes: NotesState,
     Social: SocialState,
     User: UserState,
@@ -24,7 +24,7 @@ export const rootReducer: ActionReducerMap<RootReducerState> = {
     layout: layoutReducer,
     // authentication: authenticationReducer,
     Ecommerce: EcommerceReducer,
-    HR: HRManagementReducer,
+  //  HR: HRManagementReducer,
     Notes: NotesReducer,
     Social: SocialReducer,
     User: UserReducer,

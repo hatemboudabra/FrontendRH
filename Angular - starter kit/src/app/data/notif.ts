@@ -1,4 +1,7 @@
 export interface Notifications {
-    message: string;
-    type: 'success' | 'error' | 'info';
+  id?: number;
+  message: string;
+  type: 'success' | 'error' | 'info';
+  userId?: number;
+  createdAt?: Date;
   }

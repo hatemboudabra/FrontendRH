@@ -8,7 +8,12 @@ import { TeamService } from '../../../core/services/team.service';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { User } from '../../../store/Authentication/auth.models';
 import { ComplexiteTache, StatusTache, Tache } from '../../../data/tache.model';
-
+import { NotificationService } from '../../../core/services/notification.service';
+import { Notifications } from '../../../data/notif';
+export interface Collaborator {
+  id: number;
+  name: string;
+}
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -33,6 +38,8 @@ export class ListComponent {
   selectedTaskId: number | null = null;
   showDescModal = false;
   selectedRowDescription = '';
+  collaborateurs: Collaborator[] = [];
+  teamId: number | null = null; 
   columns = [
     { prop: 'title', name: 'Title' },
     { prop: 'description', name: 'Description' },
@@ -43,17 +50,18 @@ export class ListComponent {
     { name: 'Assigned Collaborator' },
     { name: 'Actions' }
   ];
-
+/*
   collaborateurs = [
     { id: 11, name: 'farhat' },
     { id: 10, name: 'youusef' },
     { id: 9, name: 'lou' }
-  ];
+  ];*/
 
   constructor(
     private tacheS: TacheService,
     private teamService: TeamService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+  private notificationService: NotificationService 
   ) {}
 
   ngOnInit(): void {
@@ -64,14 +72,27 @@ export class ListComponent {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
         if (user && user.username) {
-          this.currentUser = user;
-          this.getUserIdByUsername(user.username);
+          this.authService.getUserByUsername(user.username).subscribe({
+            next: (userDetails) => {
+              if (userDetails && userDetails.id) {
+                this.currentUser = { ...user, id: userDetails.id }; 
+                console.log('Current user loaded:', this.currentUser);
+                this.loadTache(userDetails.id);
+                this.loadTeamsByChef(userDetails.id);
+              } else {
+                console.error('User details invalid or ID missing.');
+              }
+            },
+            error: (error) => {
+              console.error('Error fetching user details:', error);
+            }
+          });
         } else {
-          console.error(' Utilisateur non connecté ou username manquant.');
+          console.error('User not logged in or username missing.');
         }
       },
       error: (error) => {
-        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
+        console.error('Error loading current user:', error);
       }
     });
   }
@@ -82,6 +103,7 @@ export class ListComponent {
         if (userDetails && userDetails.id) {
           console.log(' ID utilisateur reçu :', userDetails.id);
           this.loadTache(userDetails.id);
+          this.loadTeamsByChef(userDetails.id);
         } else {
           console.error(' Données utilisateur invalides ou ID manquant');
         }
@@ -143,41 +165,66 @@ export class ListComponent {
       complexite: ComplexiteTache.SIMPLE,
       dateDebut: new Date(),
       dateFin: new Date(),
-      userId: 7
+      userId: 0  
     };
   }
 
   addTask(): void {
   }
 
-  openAssignModal(taskId: number): void {
+ openAssignModal(taskId: number): void {
     this.selectedTaskId = taskId;
     this.showAssignModal = true;
+
+    if (this.teamId !== null) {
+      this.loadCollaborators(this.teamId);
+    } else {
+      console.error('Aucune équipe sélectionnée.');
+    }
   }
 
   closeAssignModal(): void {
     this.showAssignModal = false;
     this.selectedTaskId = null;
+    this.selectedCollaborateurId = null;
   }
 
   assignTaskToCollaborator(tacheId: number): void {
-    if (this.selectedCollaborateurId !== null) {
-      this.tacheS.assignTacheToCollaborator(tacheId,7 ,this.selectedCollaborateurId).subscribe({
-        next: (assignedTache) => {
-          console.log('Task successfully assigned:', assignedTache);
-          this.closeAssignModal();
-          this.loadTache(this.currentUser?.id || 0); 
-        },
-        error: (error) => {
-          console.error('Error assigning task:', error);
-          alert('Failed to assign task. Please try again.');
-        }
-      });
-    } else {
-      alert('Please select a collaborator.');
+    if (!this.currentUser || !this.currentUser.id) {
+      console.error('Current user ID is not available.');
+      alert('Current user information is not available. Please try again.');
+      return;
     }
-  }
+  
+    if (this.selectedCollaborateurId === null) {
+      alert('Please select a collaborator.');
+      return;
+    }
+  
+    const chefId = this.currentUser.id;
+  
+    this.tacheS.assignTacheToCollaborator(tacheId, chefId, this.selectedCollaborateurId).subscribe({
+      next: (assignedTache) => {
+        console.log('Task successfully assigned:', assignedTache);
+        this.closeAssignModal();
+        this.ngOnInit();
+        const notification: Notifications = {
+          message: 'Une nouvelle tâche vous a été assignée',
+          type: 'info',
+          userId: this.selectedCollaborateurId!,
+          createdAt: new Date(Date.now()) 
 
+        };
+        console.log('Notification created:', notification);
+        this.notificationService.addNotification(notification);
+      },
+      error: (error) => {
+        console.error('Error assigning task:', error);
+        alert('Failed to assign task. Please try again.');
+      },
+    });
+  }
+  
   openDetailsModal(taskId: number): void {
     this.isLoading = true;
     this.tacheS.getTacheById(taskId).subscribe({
@@ -205,5 +252,41 @@ export class ListComponent {
 
   closeDescriptionModal(): void {
     this.showDescModal = false;
+  }
+
+
+
+  loadTeamsByChef(chefId: number): void {
+    this.teamService.getTeamsByChef(chefId).subscribe({
+      next: (teams) => {
+        if (teams && teams.length > 0) {
+          this.teamId = teams[0].id;
+          if (this.teamId !== null) { 
+            this.loadCollaborators(this.teamId);
+          } else {
+            console.error('ID d\'équipe invalide.');
+          }
+        } else {
+          console.error('Aucune équipe trouvée pour ce chef.');
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des équipes :', error);
+      }
+    });
+  }
+
+  loadCollaborators(teamId: number): void {
+    this.teamService.getCollaboratorsByTeam(teamId).subscribe({
+      next: (collaborators) => {
+        this.collaborateurs = collaborators.map(collaborator => ({
+          id: collaborator.id,
+          name: collaborator.username 
+        }));
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des collaborateurs :', error);
+      }
+    });
   }
 }

@@ -39,12 +39,17 @@ export class EmailComponent {
   loadCandidatures(): void {
     this.candidatService.getCandidatures().subscribe((data) => {
       console.log('Données reçues :', data);
-      this.mailbox = data;
+  
+      this.mailbox = data.sort((a, b) => {
+        const dateA = new Date(a.datepostule).getTime();
+        const dateB = new Date(b.datepostule).getTime();
+        return dateB - dateA; 
+      });
+  
       this.totalPages = Math.ceil(this.mailbox.length / this.itemsPerPage);
       this.updatePaginatedMailbox();
     });
   }
-
 
   updatePaginatedMailbox(): void {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;

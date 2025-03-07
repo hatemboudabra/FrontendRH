@@ -75,63 +75,77 @@
                         </div>
                     </div>
                     <!---->
-                    <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">
-                        <button
-                          mndropdownToggle
-                          type="button"
-                          class="inline-flex justify-center relative items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar rounded-md dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200 group-data-[topbar=dark]:text-topbar-item-dark"
-                          id="notificationDropdown"
-                          data-bs-toggle="dropdown"
-                        >
-                          <lucide-angular
-                            name="bell-ring"
-                            [class]="'inline-block size-5 stroke-1 fill-slate-100 group-data-[topbar=dark]:fill-topbar-item-bg-hover-dark group-data-[topbar=brand]:fill-topbar-item-bg-hover-brand'"
-                          ></lucide-angular>
-                          <span class="absolute top-0 right-0 flex size-1.5">
-                            <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-sky-400"></span>
-                            <span class="relative inline-flex size-1.5 rounded-full bg-sky-500"></span>
+
+                    <div mndropdown 
+                    [placement]="'bottom-start'" 
+                    class="relative flex items-center dropdown h-header"
+                  >
+                    <button
+                      mndropdownToggle
+                      type="button"
+                      class="inline-flex justify-center relative items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar rounded-md dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover"
+                      id="notificationDropdown"
+                      data-bs-toggle="dropdown"
+                    >
+                      <lucide-angular
+                        name="bell-ring"
+                        [class]="'inline-block size-5 stroke-1 fill-slate-100'"
+                      ></lucide-angular>
+                      <span class="absolute top-0 right-0 flex size-1.5">
+                        <span class="absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping bg-sky-400"></span>
+                        <span class="relative inline-flex size-1.5 rounded-full bg-sky-500"></span>
+                      </span>
+                    </button>
+                    
+                    <div
+                      mndropdownMenu
+                      class="absolute z-50 ltr:text-left rtl:text-right bg-white rounded-md shadow-md !top-4 dropdown-menu min-w-[20rem] lg:min-w-[26rem] dark:bg-zink-600"
+                      aria-labelledby="notificationDropdown"
+                    >
+                      <div class="p-4">
+                        <h6 class="mb-4 text-16">
+                          Notifications
+                          <span class="inline-flex items-center justify-center size-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-orange-500 border-orange-500">
+                            {{ notifyList?.length }}
                           </span>
-                        </button>
-                        <div
-                          mndropdownMenu
-                          class="absolute z-50 ltr:text-left rtl:text-right bg-white rounded-md shadow-md !top-4 dropdown-menu min-w-[20rem] lg:min-w-[26rem] dark:bg-zink-600"
-                          aria-labelledby="notificationDropdown"
+                        </h6>
+                        <button 
+                          (click)="currentUser && loadAllNotifications(currentUser.id)" 
+                          class="text-blue-500 hover:underline"
+                          [disabled]="!currentUser?.id"
                         >
-                          <div class="p-4">
-                            <h6 class="mb-4 text-16">
-                              Notifications
-                              <span class="inline-flex items-center justify-center size-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-orange-500 border-orange-500">{{
-                                notifyList?.length
-                              }}</span>
-                            </h6>
-                          </div>
-                          <ngx-simplebar class="max-h-[350px]">
-                            <!-- Afficher les notifications -->
-                            <div *ngFor="let notification of notifyList" class="p-2 border-b border-slate-200 dark:border-zink-500">
-                              <div class="flex items-center gap-2">
-                                <div [ngClass]="{
-                                    'text-green-500': notification.type === 'success',
-                                    'text-red-500': notification.type === 'error',
-                                    'text-blue-500': notification.type === 'info'
-                                  }">
-                                  <lucide-angular name="bell" [class]="'inline-block size-4'"></lucide-angular>
-                                </div>
-                                <div>{{ notification.message }}</div>
-                              </div>
-                            </div>
-                          </ngx-simplebar>
-                        </div>
-                      </div>
-               
-<!--
-                    <div class="relative items-center hidden h-header md:flex">
-                        <button [DrawerTrigger]="'customizerButton'" type="button" class="inline-flex justify-center items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar group-data-[topbar=dark]:text-topbar-item-dark rounded-md btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200">
-                            <lucide-angular name="settings" [class]="'inline-block size-5 stroke-1 fill-slate-100 group-data-[topbar=dark]:fill-topbar-item-bg-hover-dark group-data-[topbar=brand]:fill-topbar-item-bg-hover-brand'"></lucide-angular>
+                          Voir toutes les notifications
                         </button>
+                      </div>
+                      <ngx-simplebar class="max-h-[350px]">
+                        <div *ngFor="let notification of notifyList" class="p-2 border-b border-slate-200 dark:border-zink-500">
+                          <div class="flex items-center gap-2">
+                            <div [ngClass]="{
+                                'text-green-500': notification.type === 'success',
+                                'text-red-500': notification.type === 'error',
+                                'text-blue-500': notification.type === 'info'
+                              }">
+                              <lucide-angular name="bell" [class]="'inline-block size-4'"></lucide-angular>
+                            </div>
+                            <div class="flex flex-col">
+                              <span>{{ notification.message }}</span>
+                              <span class="text-xs text-gray-500">
+                                Reçu le : {{ notification.createdAt | date: 'dd/MM/yyyy à HH:mm' }}
+                              </span>
+                              <span class="text-xs text-gray-500">
+                                {{ notification.createdAt ? formatTimeFromNow(notification.createdAt) : 'Date inconnue' }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </ngx-simplebar>
                     </div>
+                  </div>
+                  
+               
+
                  
 
-                -->
                     <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">
                         <button mndropdownToggle type="button" class="inline-block p-0 transition-all duration-200 ease-linear bg-topbar rounded-full text-topbar-item dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:text-topbar-item-dark group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200" id="dropdownMenuButton" data-bs-toggle="dropdown">
                             <div class="bg-pink-100 rounded-full">

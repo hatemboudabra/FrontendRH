@@ -11,6 +11,8 @@ import { DemandeService } from '../../../core/services/demande.service';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { User } from '../../../store/Authentication/auth.models';
+import { Notifications } from '../../../data/notif';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-listdemande',
@@ -34,7 +36,9 @@ export class ListdemandeComponent implements OnInit {
   endIndex: any;
 
   constructor(private demandeService: DemandeService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+        private notificationService: NotificationService 
+    
   ) {}
   ngOnInit(): void {
     this.loadCurrentUser();
@@ -60,7 +64,7 @@ export class ListdemandeComponent implements OnInit {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log('ID utilisateur reçu :', userDetails.id);
           this.loadDemandes(userDetails.id); 
         } else {
           console.error('Données utilisateur invalides ou ID manquant');
@@ -142,6 +146,13 @@ export class ListdemandeComponent implements OnInit {
           this.allDemandes[index] = updatedDemande;
           this.updatePagedOrders();
         }
+        const notification: Notifications = {
+          message: `Le statut de la demande "${updatedDemande.title}" a été mis à jour.`,
+          type: newStatus === Status.APPROVED ? 'success' : newStatus === Status.REJECTED ? 'error' : 'info',
+         userId: updatedDemande.userId,
+         createdAt: new Date(Date.now()) 
+        };
+        this.notificationService.addNotification(notification); 
       },
       error: (error) => {
         console.error('Error updating status:', error);

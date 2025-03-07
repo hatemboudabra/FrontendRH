@@ -26,6 +26,7 @@ export class UserdemandeComponent {
   allDemandes: Demande[] = [];
   Type = Type;
   Status = Status;
+  searchQuery: string = '';
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
@@ -126,15 +127,30 @@ export class UserdemandeComponent {
   updatePagedOrders(): void {
     this.startIndex = (this.currentPage - 1) * this.itemsPerPage;
     this.endIndex = this.getEndIndex();
-    this.demandes = this.allDemandes.slice(this.startIndex, this.endIndex);
+    this.searchDemandes(); 
   }
 
+  searchDemandes(): void {
+    if (!this.searchQuery.trim()) {
+      this.demandes = this.allDemandes.slice(this.startIndex, this.endIndex);
+      return;
+    }
+  
+    const lowerQuery = this.searchQuery.toLowerCase();
+    this.demandes = this.allDemandes
+      .filter(d =>
+        d.title.toLowerCase().includes(lowerQuery) ||
+        d.description.toLowerCase().includes(lowerQuery)||
+        d.type.toLowerCase().includes(lowerQuery)
+      )
+      .slice(this.startIndex, this.endIndex);
+  }
   columns = [
     { name: 'Title', prop: 'title' },
     { name: 'Description', prop: 'description' },
     { name: 'Type', prop: 'type' },
     { name: 'Date', prop: 'date' },
     { name: 'Status', prop: 'status' },
-    { name: 'Action', prop: 'actions' }
+   { name: 'Action', prop: 'actions' }
   ];
 }

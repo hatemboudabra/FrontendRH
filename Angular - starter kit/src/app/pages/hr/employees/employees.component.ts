@@ -108,24 +108,26 @@ export class EmployeesComponent implements OnInit {
     this.selectedEmployeeId = employeeId;
   }
   
-  // Method to delete the employee
   deleteEmployee(): void {
     if (!this.selectedEmployeeId) {
       return;
     }
-    
   
-    
+    this.isLoading = true;
+  
     this.authService.deleteCollCHE(this.selectedEmployeeId).subscribe({
       next: () => {
-        // Remove the employee from the list
         this.allemployee = this.allemployee.filter(employee => employee.id !== this.selectedEmployeeId);
         this.totalItems = this.allemployee.length;
         this.updatePagedOrders();
-        this.isLoading = false;
-        this.selectedEmployeeId = null;
         
-        // Success message could be displayed here
+        this.selectedEmployeeId = null;
+        this.isLoading = false;
+        
+        const modalCloseButton = document.getElementById('deleteRecord-close');
+        if (modalCloseButton) {
+          modalCloseButton.click();
+        }
       },
       error: (error) => {
         this.errorMessage = 'Failed to delete employee. Please try again later.';
@@ -133,5 +135,6 @@ export class EmployeesComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  } 
+  }
+  
 }

@@ -11,11 +11,13 @@ import { getLayout, getLayoutmode, getSidebarcolor, getSidebarsize, getTopbarcol
 import { changeMode, changesidebarcolor, changesidebarsize, changetopbarcolor } from '../../store/layout/layout-action';
 import { SimplebarAngularModule } from 'simplebar-angular';
 import { notification, cart } from '../../data';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { CommonModule, DatePipe, DOCUMENT } from '@angular/common';
 import { User } from '../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../core/services/auth.service';
 import { Notifications } from '../../data/notif';
 import { NotificationService } from '../../core/services/notification.service';
+import { NotificationApiService } from '../../core/services/apinotif.service';
+import { interval, Subscription } from 'rxjs';
 
 
 @Component({
@@ -25,10 +27,11 @@ import { NotificationService } from '../../core/services/notification.service';
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA,],
-  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }, LanguageService],
+  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }, LanguageService, DatePipe,],
 })
 export class TopbarComponent {
   notifyList: Notifications[] = [];
+  private updateSubscription: Subscription;
   cookieValue: any;
   flagvalue: any;
 
@@ -57,8 +60,10 @@ export class TopbarComponent {
     public _cookiesService: CookieService,
     private authService:AuthenticationService,
     private notificationService: NotificationService,
+    private notifservice : NotificationApiService,
     private renderer: Renderer2) {
     translate.setDefaultLang('en');
+    this.updateSubscription = new Subscription();
   }
 
 
@@ -114,18 +119,65 @@ export class TopbarComponent {
 
 */
 
-this.loadCurrentUser();
-this.notificationService.notifications$.subscribe((notifications) => {
-  this.notifyList = notifications; 
-});
+ this.loadCurrentUser();
+  this.notificationService.notifications$.subscribe((notifications) => {
+    this.notifyList = notifications;
+  }); 
+  this.updateSubscription = interval(1000).subscribe(() => {
+    this.notifyList = [...this.notifyList];
+  });
   }
+
+  formatTimeFromNow(date: Date): string {
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
+    if (seconds < 60) {
+      return `il y a ${seconds} s`; 
+    }
+  
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+  
+    if (minutes < 60) {
+      return `il y a ${minutes} min ${remainingSeconds} s`;
+    }
+  
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+  
+    return `il y a ${hours} h ${remainingMinutes} min ${remainingSeconds} s`;
+  }
+  ngOnDestroy(): void {
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe();
+    }
+  }
+
+  loadAllNotifications(userId: number): void {
+    if (userId) {
+      this.notifservice.getActiveNotificationsForUser(userId).subscribe({
+        next: (notifications) => {
+          this.notifyList = notifications.map((notification) => ({
+            ...notification,
+            createdAt: notification.createdAt ? new Date(notification.createdAt) : new Date(),
+          }));
+        },
+        error: (error) => {
+          console.error('Erreur lors du chargement des notifications :', error);
+        },
+      });
+    } else {
+      console.error('User ID is not available.');
+    }
+  }
   loadCurrentUser(): void {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
         if (user && user.username) {
           this.currentUser = user;
-          this.getUserIdByUsername(user.username); 
+          this.getUserIdByUsername(user.username);
+        
         } else {
           console.error(' Utilisateur non connecté ou username manquant.');
         }

@@ -12,6 +12,7 @@ export enum Status{
     REJECTED = 'REJECTED'
 }
 export interface Demande{
+    user: any;
     id : number;
     title: String ;
     description: string;

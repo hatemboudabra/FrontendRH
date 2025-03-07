@@ -14,7 +14,20 @@ export class NotificationService {
     this.notificationsSubject.next([...currentNotifications, notification]);
   }
 
+  getNotificationsForUser(userId: number): Notifications[] {
+    return this.notificationsSubject.value.filter(
+      (notification) => notification.userId === userId
+    );
+  }
+
   clearNotifications() {
     this.notificationsSubject.next([]);
   }
+
+
+  setNotifications(notifications: Notifications[]) {
+    this.notificationsSubject.next(notifications);
+  }
+
+ 
 }

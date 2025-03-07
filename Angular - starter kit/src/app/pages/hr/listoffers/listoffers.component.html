@@ -46,6 +46,10 @@
                                 <input formControlName="publicationDate" id="publicationDateInput" type="date" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
                             </div>
                             <div class="xl:col-span-6">
+                                <label for="expirationDateInput" class="inline-block mb-2 text-base font-medium">Expiration Date</label>
+                                <input formControlName="expirationDate" id="expirationDateInput" type="date" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
+                              </div>
+                            <div class="xl:col-span-6">
                                 <label for="educationLevelInput" class="inline-block mb-2 text-base font-medium">Education Level</label>
                                 <input formControlName="educationLevel" id="educationLevelInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Enter education level">
                             </div>
@@ -87,6 +91,7 @@
                         <p class="text-muted small line-clamp-3">{{ offer.description }}</p>
                         <div class="d-flex justify-content-between text-muted small mt-4">
                             <span>📅 <strong>Posted:</strong> {{ formatDate(offer.publicationDate) }}</span>
+                            <span>⏳ <strong>Expires:</strong> {{ formatDate(offer.expirationDate) }}</span>
                         </div>
                         <div class="d-grid mt-4">
                             <button 
