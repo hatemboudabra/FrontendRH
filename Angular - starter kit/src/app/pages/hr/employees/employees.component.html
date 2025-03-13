@@ -5,8 +5,11 @@
         <div class="flex items-center gap-3 mb-4">
             <h6 class="text-15 grow">Employee (<b class="total-Employs">{{employes?.length}}</b>)</h6>
             <div class="shrink-0">
-                <a href="javascript:void(0);" [appModalTrigger]="'addEmployeeModal'" type="button" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20 add-employee"><lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> <span class="align-middle">Add Employee</span></a>
-            </div>
+                <a href="javascript:void(0);" [appModalTrigger]="'addChefModal'" type="button" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                  <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> 
+                  <span class="align-middle">Add Chef</span>
+                </a>
+              </div>
             <div class="shrink-0">
                 <a href="javascript:void(0);" (click)="exportToJasper()" type="button" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20 add-employee">
                 <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> 
@@ -32,9 +35,12 @@
                         </a>
                          }@else if(column.prop === 'action') {
                         <div class="flex gap-3">
-                            <a class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500" routerLink="/pages-account"><lucide-angular name="eye" [class]="'inline-block size-3'"></lucide-angular> </a>
-                            <a href="javascript:void(0);" [appModalTrigger]="'addEmployeeModal'" class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md edit-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"><lucide-angular name="pencil" [class]="'size-4'"></lucide-angular></a>
-                            <a href="javascript:void(0);" [appModalTrigger]="'deleteModal'"(click)="prepareDelete(row.id)" class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md remove-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"> <lucide-angular name="trash-2" [class]="'size-4'"></lucide-angular></a>
+                            <a class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500" 
+                            [appModalTrigger]="'userDetailsModal'" 
+                            (click)="showUserDetails(row)">
+                            <lucide-angular name="eye" [class]="'inline-block size-3'"></lucide-angular>
+                         </a>
+                         <a href="javascript:void(0);" [appModalTrigger]="'deleteModal'"(click)="prepareDelete(row.id)" class="flex items-center justify-center size-8 transition-all duration-200 ease-linear rounded-md remove-item-btn bg-slate-100 text-slate-500 hover:text-custom-500 hover:bg-custom-100 dark:bg-zink-600 dark:text-zink-200 dark:hover:bg-custom-500/20 dark:hover:text-custom-500"> <lucide-angular name="trash-2" [class]="'size-4'"></lucide-angular></a>
                         </div>
                         }@else {
                         {{ value }}
@@ -61,77 +67,37 @@
 
 
 
-<ng-modals id="addEmployeeModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4 ">
+<ng-modals id="addChefModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4 ">
     <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
         <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
-            <h5 class="text-16" id="addEmployeeLabel">Add Employee</h5>
-            <button data-modal-close="addEmployeeModal" dismissModal [ModalDismiss]="'addEmployeeModal'" id="addEmployee" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500"><lucide-angular name="x" [class]="'size-5'"></lucide-angular></button>
+            <h5 class="text-16" id="addChefLabel">Add Chef</h5>
+            <button data-modal-close="addChefModal" dismissModal [ModalDismiss]="'addChefModal'" id="addChef" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500"><lucide-angular name="x" [class]="'size-5'"></lucide-angular></button>
         </div>
         
         <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
-            <form action="javascript:void(0);" class="create-form" id="create-form">
-                <input type="hidden" value="" name="id" id="id">
-                <input type="hidden" value="add" name="action" id="action">
-                <input type="hidden" id="id-field">
-                <div id="alert-error-msg" class="hidden px-4 py-3 text-sm text-red-500 border border-transparent rounded-md bg-red-50 dark:bg-red-500/20"></div>
+            <form [formGroup]="chefForm" (ngSubmit)="submitChef()" class="create-form" id="create-chef-form">
+                <div id="chef-alert-error-msg" class="hidden px-4 py-3 text-sm text-red-500 border border-transparent rounded-md bg-red-50 dark:bg-red-500/20"></div>
                 <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
                     <div class="xl:col-span-12">
-                        <div class="relative size-24 mx-auto mb-4 rounded-full shadow-md bg-slate-100 profile-user dark:bg-zink-500">
-                            <img src="assets/images/users/user-dummy-img.jpg" alt="" class="object-cover w-full h-full rounded-full user-profile-image">
-                            <div class="absolute bottom-0 flex items-center justify-center size-8 rounded-full ltr:right-0 rtl:left-0 profile-photo-edit">
-                                <input id="profile-img-file-input" name="profile-img-file-input" type="file" class="hidden profile-img-file-input">
-                                <label for="profile-img-file-input" class="flex items-center justify-center size-8 bg-white rounded-full shadow-lg cursor-pointer dark:bg-zink-600 profile-photo-edit">
-                                    <lucide-angular name="image-plus" class="size-4 text-slate-500 fill-slate-200 dark:text-zink-200 dark:fill-zink-500"></lucide-angular>
-                                </label>
-                            </div>
-                        </div>
+                        <label for="chefName" class="inline-block mb-2 text-base font-medium">Username</label>
+                        <input type="text" id="chefName" formControlName="username" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Chef name">
                     </div>
                     <div class="xl:col-span-12">
-                        <label for="employeeId" class="inline-block mb-2 text-base font-medium">Employee ID</label>
-                        <input type="text" id="employeeId" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" value="" disabled>
+                        <label for="chefEmail" class="inline-block mb-2 text-base font-medium">Email</label>
+                        <input type="email" id="chefEmail" formControlName="email" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="chef@example.com" required>
                     </div>
                     <div class="xl:col-span-12">
-                        <label for="employeeInput" class="inline-block mb-2 text-base font-medium">Name</label>
-                        <input type="text" id="employeeInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Employee name">
+                        <label for="chefPassword" class="inline-block mb-2 text-base font-medium">Password</label>
+                        <input type="password" id="chefPassword" formControlName="password" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Enter password" required>
                     </div>
-                    <div class="xl:col-span-12">
-                        <label for="emailInput" class="inline-block mb-2 text-base font-medium">Email</label>
-                        <input type="text" id="emailInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="example@tailwick.com" required>
-                    </div>
-                    <div class="xl:col-span-6">
-                        <label for="phoneNumberInput" class="inline-block mb-2 text-base font-medium">Phone Number</label>
-                        <input type="text" id="phoneNumberInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Enter phone number" required>
-                    </div>
-                    <div class="xl:col-span-6">
-                        <label for="locationInput" class="inline-block mb-2 text-base font-medium">Location</label>
-                        <input type="text" id="locationInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Enter location" required>
-                    </div>
-                    <div class="xl:col-span-6">
-                        <label for="joiningDateInput" class="inline-block mb-2 text-base font-medium">Joining Date</label>
-                        <input type="text" id="joiningDateInput" mwlFlatpickr class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Select date" data-provider="flatpickr" data-date-format="d M, Y">
-                    </div>
-                    <div class="xl:col-span-6">
-                        <label for="experienceInput" class="inline-block mb-2 text-base font-medium">Experience</label>
-                        <input type="text" id="experienceInput" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="0.0" required>
-                    </div>
-                    <div class="xl:col-span-12">
-                        <label for="designationSelect" class="inline-block mb-2 text-base font-medium">Designation</label>
-                        <select class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:bg-zink-700 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200" data-choices data-choices-search-false name="designationSelect" id="typeSelect">
-                            <option value="Angular Developer">Angular Developer</option>
-                            <option value="React Developer">React Developer</option>
-                            <option value="Project Manager">Project Manager</option>
-                            <option value="Web Designer">Web Designer</option>
-                            <option value="Team Leader">Team Leader</option>
-                            <option value="VueJs Developer">VueJs Developer</option>
-                            <option value="NodeJS Developer">NodeJS Developer</option>
-                            <option value="ASP.Net Developer">ASP.Net Developer</option>
-                            <option value="UI / UX Designer">UI / UX Designer</option>
-                        </select>
-                    </div>
+                  
                 </div>
                 <div class="flex justify-end gap-2 mt-4">
-                    <button type="reset" id="close-modal" dismissModal [ModalDismiss]="'addEmployeeModal'" class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-600 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">Cancel</button>
-                    <button type="submit" id="addNew" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20 ">Add Employee</button>
+                    <button type="reset" dismissModal [ModalDismiss]="'addChefModal'" class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-600 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">Annuler</button>
+                    <button type="submit" [disabled]="chefForm.invalid || isLoading" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+                        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        Ajouter Chef
+                    </button>
                 </div>
             </form>
         </div>
@@ -156,3 +122,41 @@
         </div>
     </div>
 </ng-modals>
+<ng-modals id="userDetailsModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4">
+    <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
+      <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
+       <!-- <h5 class="text-16" id="userDetailsLabel">User Details</h5>-->
+        <button data-modal-close="userDetailsModal" dismissModal [ModalDismiss]="'userDetailsModal'" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500">
+          <lucide-angular name="x" [class]="'size-5'"></lucide-angular>
+        </button>
+      </div>
+      <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
+        <div *ngIf="selectedUserDetails">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="space-y-5">
+              <div>
+                <h6 class="text-sm font-medium text-gray-700">Username</h6>
+                <p class="mt-1 text-gray-900 font-semibold">{{ selectedUserDetails.username }}</p>
+              </div>
+              <div>
+                <h6 class="text-sm font-medium text-gray-700">Email</h6>
+                <p class="mt-1 text-gray-600">{{ selectedUserDetails.email }}</p>
+              </div>
+            </div>
+            <div class="space-y-5">
+              <div>
+                <h6 class="text-sm font-medium text-gray-700">Roles</h6>
+                <p class="mt-1 text-gray-600">{{ selectedUserDetails.roles.join(', ') }}</p>
+              </div>
+              <div>
+                <h6 class="text-sm font-medium text-gray-700">Post</h6>
+                <p class="mt-1 text-gray-600">{{ selectedUserDetails.post }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </ng-modals>
+  

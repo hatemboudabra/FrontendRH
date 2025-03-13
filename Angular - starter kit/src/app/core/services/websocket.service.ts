@@ -26,7 +26,7 @@ export class WebsocketService {
         const parsedNotification: Notifications = JSON.parse(notification.body);
         console.log('Notification reçue via WebSocket :', parsedNotification);
         this.notificationService.addNotification(parsedNotification);
-      });
+    });
     });
   }
 }

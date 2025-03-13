@@ -83,12 +83,12 @@ export class StatComponent {
       (data) => this.initChartEvaluation(data),
       (error) => console.error('Erreur lors de la récupération des notes des utilisateurs', error)
     );
-    /*this.demandeService.getDemandesCountByStatusForDocumentTrainingOrLeave().subscribe(
+    this.demandeService.getDemandesCountByStatusForDocumentTrainingOrLeave().subscribe(
       (data) => this.initChartDemandes(data),
       (error) => console.error('Erreur lors de la récupération des stats des demandes', error)
-    );*/
+    );
   }
-  /*initChartDemandes(data: any): void {
+  initChartDemandes(data: any): void {
     let dataObj: {[key: string]: number};
     
     if (data instanceof Map) {
@@ -174,161 +174,171 @@ export class StatComponent {
         }
       ]
     };
-  }*/
-  initChartStatut(data: { [key: string]: number }): void {
-    this.chartStatut = {
-      series: [{ 
-        name: 'Tâches par statut', 
-        data: Object.values(data) 
-      }],
-      chart: {
-        type: 'bar',
-        height: 350,
-        toolbar: {
-          show: true
-        },
-        animations: {
-          enabled: true,
-          easing: 'easeinout',
-          speed: 800,
-          animateGradually: {
-            enabled: true,
-            delay: 150
-          },
-          dynamicAnimation: {
-            enabled: true,
-            speed: 350
-          }
-        },
-        dropShadow: {
-          enabled: true,
-          color: '#000',
-          top: 0,
-          left: 0,
-          blur: 3,
-          opacity: 0.1
-        }
+  }
+ initChartStatut(data: { [key: string]: number }): void {
+  const categories = Object.keys(data);
+  const values = Object.values(data);
+  
+  this.chartStatut = {
+    series: [
+      {
+        name: 'Tâches par statut',
+        type: 'column',
+        data: values
       },
-      plotOptions: {
-        bar: {
-          borderRadius: 10,
-          columnWidth: '40%',
-          distributed: true,
-          rangeBarOverlap: true,
-          colors: {
-            ranges: [{
-              from: 0,
-              to: 100,
-              color: undefined
-            }],
-            backgroundBarColors: ['#f3f4f6'],
-            backgroundBarOpacity: 0.2,
-          },
-        }
+      {
+        name: 'Progression',
+        type: 'line',
+        data: values
+      }
+    ],
+    chart: {
+      height: 250,
+      type: 'line',
+      stacked: false,
+      toolbar: {
+        show: true
       },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          type: 'vertical',
-          shadeIntensity: 0.5,
-          gradientToColors: undefined,
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 0.8,
-          stops: [0, 100]
-        }
-      },
-      dataLabels: {
+      animations: {
         enabled: true,
+        easing: 'easeinout',
+        speed: 800
+      },
+      dropShadow: {
+        enabled: true,
+        color: '#000',
+        top: 0,
+        left: 0,
+        blur: 3,
+        opacity: 0.1
+      }
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 8,
+        columnWidth: '40%',
+        dataLabels: {
+          position: 'top'
+        }
+      }
+    },
+    dataLabels: {
+      enabled: true,
+      style: {
+        fontSize: '12px',
+        fontWeight: 600
+      },
+      offsetY: -20,
+      formatter: function (val: number) {
+        return val.toString();
+      }
+    },
+    stroke: {
+      width: [0, 3],
+      curve: 'smooth'
+    },
+    fill: {
+      type: ['solid', 'gradient'],
+      gradient: {
+        shade: 'light',
+        type: 'vertical',
+        shadeIntensity: 0.5,
+        gradientToColors: undefined,
+        inverseColors: true,
+        opacityFrom: 1,
+        opacityTo: 0.8,
+        stops: [0, 100]
+      }
+    },
+    xaxis: {
+      categories: categories,
+      labels: {
         style: {
-          fontSize: '14px',
-          fontWeight: 600,
-          colors: ['#ffffff']
-        },
-        offsetY: -20,
-        formatter: function (val: number) {
-          return val.toString();
+          colors: '#6b7280',
+          fontSize: '8px',
+          fontWeight: 500
         }
       },
-      xaxis: {
-        categories: Object.keys(data),
-        labels: {
-          style: {
-            colors: '#6b7280',
-            fontSize: '7px',
-            fontWeight: 500
-          }
-        },
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        }
+      axisBorder: {
+        show: false
       },
-      yaxis: {
+      axisTicks: {
+        show: false
+      }
+    },
+    yaxis: [
+      {
         title: {
           text: 'Nombre de tâches',
           style: {
             color: '#6b7280',
-            fontSize: '13px',
+            fontSize: '11px',
             fontWeight: 600
           }
         },
         labels: {
           style: {
             colors: '#6b7280',
-            fontSize: '12px'
+            fontSize: '10px'
           }
         }
       },
-      colors: [
-        '#3b82f6',
-        '#10b981',
-        '#f59e0b',
-        '#ef4444',
-        '#8b5cf6'
-      ],
-      grid: {
-        show: true,
-        borderColor: '#e2e8f0',
-        strokeDashArray: 4,
-        position: 'back',
-        xaxis: {
-          lines: {
-            show: false
+      {
+        opposite: true,
+        title: {
+          text: 'Progression',
+          style: {
+            color: '#6b7280',
+            fontSize: '11px',
+            fontWeight: 600
           }
         },
-        yaxis: {
-          lines: {
-            show: true
+        labels: {
+          style: {
+            colors: '#6b7280',
+            fontSize: '10px'
           }
-        },
-        padding: {
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0
+        }
+      }
+    ],
+    colors: ['#3b82f6', '#f59e0b'],
+    markers: {
+      size: 4,
+      strokeWidth: 0,
+      fillOpacity: 1,
+      strokeOpacity: 1,
+      hover: {
+        size: 6
+      }
+    },
+    grid: {
+      show: true,
+      borderColor: '#e2e8f0',
+      strokeDashArray: 4,
+      position: 'back',
+      xaxis: {
+        lines: {
+          show: false
         }
       },
-      tooltip: {
-        theme: 'light',
-        shared: false,
-        intersect: true,
-        style: {
-          fontSize: '12px'
-        },
-        y: {
-          formatter: function (val: number) {
-            return val + ' tâches';
-          }
-        },
-        marker: {
+      yaxis: {
+        lines: {
           show: true
         }
       }
-    };
-  }
+    },
+    tooltip: {
+      theme: 'light',
+      shared: true,
+      intersect: false,
+      y: {
+        formatter: function (val: number) {
+          return val + ' tâches';
+        }
+      }
+    }
+  };
+}
 
   initChartCollaborateur(data: { [key: string]: number }): void {
     this.chartCollaborateur = {

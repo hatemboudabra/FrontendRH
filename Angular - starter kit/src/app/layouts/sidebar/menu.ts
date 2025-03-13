@@ -84,7 +84,7 @@ export const MENU: MenuItem[] = [
         roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'], 
         subItems: [
             { id: 901, label: 'Liste des Formations', link: '/listformation', parentId: 9, roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'] },
-            { id: 902, label: 'Ajouter une Formation', link: '/listformation/addformations', parentId: 9, roles: ['ROLE_CHEF'] } // Seul le chef peut ajouter
+            { id: 902, label: 'Ajouter une Formation', link: '/listformation/addformations', parentId: 9, roles: ['ROLE_CHEF'] } 
         ]
     },
     {

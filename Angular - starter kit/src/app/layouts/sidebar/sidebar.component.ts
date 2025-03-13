@@ -10,7 +10,6 @@ import { CutomDropdownComponent } from '../../Component/customdropdown';
 import { Store } from '@ngrx/store';
 import { getLayout, getSidebarsize } from '../../store/layout/layout-selector';
 import { CommonModule } from '@angular/common';
-import { changesidebarsize } from '../../store/layout/layout-action';
 import { AuthenticationService } from '../../core/services/auth.service';
 
 @Component({
@@ -51,14 +50,14 @@ export class SidebarComponent {
     }
   }
 
-  filterMenuByRole(menuItems: MenuItem[], userRole: string): MenuItem[] {
+filterMenuByRole(menuItems: MenuItem[], userRole: string): MenuItem[] {
     return menuItems.filter(item => {
-      if (item.subItems) {
-        item.subItems = this.filterMenuByRole(item.subItems, userRole);
-      }
-      return !item.roles || item.roles.includes(userRole);
+        if (item.subItems) {
+            item.subItems = this.filterMenuByRole(item.subItems, userRole);
+        }
+        return !item.roles || item.roles.includes(userRole);
     });
-  }
+}
 
   ngOnInit(): void {
     this.auth.getCurrentUser().subscribe(
@@ -91,7 +90,6 @@ export class SidebarComponent {
       }
     );
   
-    // Abonnement pour obtenir le layout et ajuster le menu
     this.store.select(getLayout).subscribe((data) => {
       this.layout = data;
       if (this.layout === 'horizontal') {
@@ -103,7 +101,6 @@ export class SidebarComponent {
       }
     });
   
-    // Abonnement pour obtenir la taille de la sidebar
     this.store.select(getSidebarsize).subscribe((data) => {
       this.size = data;
     });
@@ -139,7 +136,12 @@ export class SidebarComponent {
       }
     );
   }
-
+  updateUserRole(newRole: string): void {
+    this.userRole = newRole;
+    this.filteredMenuItems = this.filterMenuByRole(MENU, this.userRole);
+    this.menuItems = this.filteredMenuItems;
+    this.cdr.detectChanges(); 
+  }
   ngAfterViewInit() {
     if (this.layout == 'horizontal') {
       setTimeout(() => {

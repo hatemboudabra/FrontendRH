@@ -59,7 +59,7 @@ export class LoginComponent {
         document.getElementById('successAlert')?.classList.remove('hidden');
       
         this.router.navigate(['']);
-     
+       
       },
       error: (err) => {
         console.error('Login failed', err);

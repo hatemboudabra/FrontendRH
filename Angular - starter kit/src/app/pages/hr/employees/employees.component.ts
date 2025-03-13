@@ -9,6 +9,8 @@ import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { NGXPagination } from '../../../Component/pagination';
 import { RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/auth.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-employees',
@@ -21,7 +23,9 @@ import { AuthenticationService } from '../../../core/services/auth.service';
     NGXPagination,
     MDModalModule,
     FlatpickrModule,
-    RouterLink
+    RouterLink,
+    ReactiveFormsModule,
+    NgxDatatableModule, LucideAngularModule
   ],
   templateUrl: './employees.component.html',
   styles: ``,
@@ -31,7 +35,6 @@ import { AuthenticationService } from '../../../core/services/auth.service';
 export class EmployeesComponent implements OnInit {
   allemployee: any[] = [];
   employes: any[] = [];
-  
   isLoading: boolean = false;
   errorMessage: string | null = null;
   //currentUser: User | null = null;
@@ -41,21 +44,85 @@ export class EmployeesComponent implements OnInit {
   totalItems: number = 0;
   startIndex: number = 0;
   endIndex: number = 0;
-
+ // selectedEmployee: any = null
+ chefForm: FormGroup;
+successMessage: string | null = null;
+selectedUserDetails: any = null;
+isUserDetailsModalVisible: boolean = false
   columns = [
     { name: 'ID', prop: 'id' },
     { name: 'Username', prop: 'username' },
     { name: 'Email', prop: 'email' },
     {name: 'Roles', prop:'roles'},
+    {name:'Post',prop:'post'},
     { name: 'Action', prop: 'action' }
   ];
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(private authService: AuthenticationService,private formBuilder: FormBuilder,private toastr: ToastrService) {
+    this.chefForm = this.formBuilder.group({
+      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
+  }
 
   ngOnInit(): void {
     this.fetchAllUsers();
   }
 
+
+
+  resetChefForm(): void {
+    this.chefForm.reset({
+      username: '',
+      email: '',
+      password: '',
+      post: '',
+      roles: ['CHEF'] 
+    });
+  }
+  submitChef(): void {
+    if (this.chefForm.invalid) {
+      this.errorMessage = 'Please fill all required fields correctly.';
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+  
+    const chefData = {
+      ...this.chefForm.value,
+      roles: [this.chefForm.value.roles]
+    };
+  
+    this.authService.addChef(chefData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.successMessage = response.message || 'Chef added successfully!';
+          this.resetChefForm();
+          this.isLoading = false;
+          this.fetchAllUsers();
+  
+          const modalCloseButton = document.getElementById('addChef');
+          if (modalCloseButton) {
+            modalCloseButton.click();
+          }
+  
+          this.toastr.success(this.successMessage ?? 'Chef added successfully!', 'Success');
+        } else {
+          this.errorMessage = response.message || 'Failed to add chef. Please try again.';
+          this.isLoading = false;
+  
+          this.toastr.error(this.errorMessage ?? 'Failed to add chef. Please try again.', 'Error');
+        }
+      },
+      error: (error) => {
+        this.errorMessage = error.error?.message || 'Failed to add chef. Please try again.';
+        this.isLoading = false;
+        this.toastr.error(this.errorMessage ?? 'Failed to add chef. Please try again.', 'Error');
+      }
+    });
+  }
   fetchAllUsers(): void {
     this.isLoading = true;
     this.errorMessage = null;
@@ -136,5 +203,17 @@ export class EmployeesComponent implements OnInit {
       }
     });
   }
-  
+  showUserDetails(user: any): void {
+    this.selectedUserDetails = user;
+      const modalElement = document.getElementById('userDetailsModal');
+    if (modalElement) {
+    const event = new Event('click');
+      modalElement.dispatchEvent(event);
+    }
+  }
+
+  closeUserDetailsModal(): void {
+    this.selectedUserDetails = null;
+    this.isUserDetailsModalVisible = false; 
+  }
 }

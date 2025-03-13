@@ -10,10 +10,12 @@ import { User } from '../../../store/Authentication/auth.models';
 import { ComplexiteTache, StatusTache, Tache } from '../../../data/tache.model';
 import { NotificationService } from '../../../core/services/notification.service';
 import { Notifications } from '../../../data/notif';
+
 export interface Collaborator {
   id: number;
   name: string;
 }
+
 @Component({
   selector: 'app-list',
   standalone: true,
@@ -33,13 +35,14 @@ export class ListComponent {
   showTaskForm = false;
   newTask: Tache = this.initNewTask();
   currentUser: User | null = null;
-  selectedCollaborateurId: number | null = null;
+  selectedCollaborateurId: number = 0;  
   showAssignModal = false;
   selectedTaskId: number | null = null;
   showDescModal = false;
   selectedRowDescription = '';
   collaborateurs: Collaborator[] = [];
-  teamId: number | null = null; 
+  teamId: number | null = null;
+
   columns = [
     { prop: 'title', name: 'Title' },
     { prop: 'description', name: 'Description' },
@@ -50,18 +53,12 @@ export class ListComponent {
     { name: 'Assigned Collaborator' },
     { name: 'Actions' }
   ];
-/*
-  collaborateurs = [
-    { id: 11, name: 'farhat' },
-    { id: 10, name: 'youusef' },
-    { id: 9, name: 'lou' }
-  ];*/
 
   constructor(
     private tacheS: TacheService,
     private teamService: TeamService,
     private authService: AuthenticationService,
-  private notificationService: NotificationService 
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -75,7 +72,7 @@ export class ListComponent {
           this.authService.getUserByUsername(user.username).subscribe({
             next: (userDetails) => {
               if (userDetails && userDetails.id) {
-                this.currentUser = { ...user, id: userDetails.id }; 
+                this.currentUser = { ...user, id: userDetails.id };
                 console.log('Current user loaded:', this.currentUser);
                 this.loadTache(userDetails.id);
                 this.loadTeamsByChef(userDetails.id);
@@ -93,23 +90,6 @@ export class ListComponent {
       },
       error: (error) => {
         console.error('Error loading current user:', error);
-      }
-    });
-  }
-
-  getUserIdByUsername(username: string): void {
-    this.authService.getUserByUsername(username).subscribe({
-      next: (userDetails) => {
-        if (userDetails && userDetails.id) {
-          console.log(' ID utilisateur reçu :', userDetails.id);
-          this.loadTache(userDetails.id);
-          this.loadTeamsByChef(userDetails.id);
-        } else {
-          console.error(' Données utilisateur invalides ou ID manquant');
-        }
-      },
-      error: (error) => {
-        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       }
     });
   }
@@ -165,14 +145,14 @@ export class ListComponent {
       complexite: ComplexiteTache.SIMPLE,
       dateDebut: new Date(),
       dateFin: new Date(),
-      userId: 0  
+      userId: 0
     };
   }
 
   addTask(): void {
   }
 
- openAssignModal(taskId: number): void {
+  openAssignModal(taskId: number): void {
     this.selectedTaskId = taskId;
     this.showAssignModal = true;
 
@@ -183,21 +163,16 @@ export class ListComponent {
     }
   }
 
-  closeAssignModal(): void {
-    this.showAssignModal = false;
-    this.selectedTaskId = null;
-    this.selectedCollaborateurId = null;
-  }
-
   assignTaskToCollaborator(tacheId: number): void {
     if (!this.currentUser || !this.currentUser.id) {
       console.error('Current user ID is not available.');
       alert('Current user information is not available. Please try again.');
       return;
     }
+      console.log('Selected Collaborateur ID before assignment:', this.selectedCollaborateurId);
   
-    if (this.selectedCollaborateurId === null) {
-      alert('Please select a collaborator.');
+    if (this.selectedCollaborateurId === 0) {
+      alert('Veuillez sélectionner un collaborateur.');
       return;
     }
   
@@ -206,17 +181,19 @@ export class ListComponent {
     this.tacheS.assignTacheToCollaborator(tacheId, chefId, this.selectedCollaborateurId).subscribe({
       next: (assignedTache) => {
         console.log('Task successfully assigned:', assignedTache);
-        this.closeAssignModal();
-        this.ngOnInit();
+        console.log('Selected Collaborateur ID:', this.selectedCollaborateurId); 
         const notification: Notifications = {
           message: 'Une nouvelle tâche vous a été assignée',
           type: 'info',
-          userId: this.selectedCollaborateurId!,
-          createdAt: new Date(Date.now()) 
-
+          userId: this.selectedCollaborateurId, 
+          createdAt: new Date(Date.now())
         };
+  
         console.log('Notification created:', notification);
         this.notificationService.addNotification(notification);
+        this.closeAssignModal();
+        this.selectedCollaborateurId = 0; 
+        this.ngOnInit();
       },
       error: (error) => {
         console.error('Error assigning task:', error);
@@ -225,6 +202,11 @@ export class ListComponent {
     });
   }
   
+  closeAssignModal(): void {
+    this.showAssignModal = false;
+    this.selectedTaskId = null;
+  }
+
   openDetailsModal(taskId: number): void {
     this.isLoading = true;
     this.tacheS.getTacheById(taskId).subscribe({
@@ -245,6 +227,7 @@ export class ListComponent {
     this.showDetailsModal = false;
     this.selectedTaskDetails = undefined;
   }
+
   openDescriptionModal(row: any): void {
     this.selectedRowDescription = row.description;
     this.showDescModal = true;
@@ -254,14 +237,12 @@ export class ListComponent {
     this.showDescModal = false;
   }
 
-
-
   loadTeamsByChef(chefId: number): void {
     this.teamService.getTeamsByChef(chefId).subscribe({
       next: (teams) => {
         if (teams && teams.length > 0) {
           this.teamId = teams[0].id;
-          if (this.teamId !== null) { 
+          if (this.teamId !== null) {
             this.loadCollaborators(this.teamId);
           } else {
             console.error('ID d\'équipe invalide.');
@@ -281,7 +262,7 @@ export class ListComponent {
       next: (collaborators) => {
         this.collaborateurs = collaborators.map(collaborator => ({
           id: collaborator.id,
-          name: collaborator.username 
+          name: collaborator.username
         }));
       },
       error: (error) => {

@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { getLayout, getLayoutmode, getSidebarcolor, getSidebarsize, getTopbarcolor } from '../../store/layout/layout-selector';
 import { changeMode, changesidebarcolor, changesidebarsize, changetopbarcolor } from '../../store/layout/layout-action';
 import { SimplebarAngularModule } from 'simplebar-angular';
-import { notification, cart } from '../../data';
+//import { notification, cart } from '../../data';
 import { CommonModule, DatePipe, DOCUMENT } from '@angular/common';
 import { User } from '../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../core/services/auth.service';

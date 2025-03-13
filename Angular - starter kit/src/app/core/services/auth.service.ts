@@ -56,8 +56,16 @@ private userRoleSubject = new BehaviorSubject<string | null>(null);
     );
   }
 
-  register(user: User): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/register`, user);
+  register(user: UserDTO): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/register`, user, { responseType: 'text' }).pipe(
+      map(response => {
+        try {
+          return JSON.parse(response);
+        } catch (e) {
+          return { message: response };
+        }
+      })
+    );
   }
 
   logout(): void {

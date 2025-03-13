@@ -48,7 +48,7 @@
     "@popperjs/core": "^2.11.8",
     "@siemens/ngx-datatable": "^22.0.0",
     "@stomp/ng2-stompjs": "^8.0.0",
-    "@stomp/stompjs": "^7.0.0",
+    "@stomp/stompjs": "^7.0.1",
     "@types/prismjs": "^1.26.3",
     "angular-ng-stepper": "^2.0.0",
     "angularx-flatpickr": "^7.3.0",

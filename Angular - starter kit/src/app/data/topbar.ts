@@ -4,7 +4,7 @@ const avatar3 = "assets/images/users/avatar-3.png";
 const avatar5 = "assets/images/users/avatar-5.png";
 const avatar7 = "assets/images/users/avatar-7.png";
 
-const notification = [
+/*const notification = [
     {
         id: 1,
         type: "follower",
@@ -69,6 +69,6 @@ const cart = [
         "quantity": 4,
         "total": 2186.96
     }
-]
+]*/
 
-export { notification,cart }
+//export { notification,cart }
