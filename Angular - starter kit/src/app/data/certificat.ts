@@ -1,7 +1,7 @@
 export interface Certificat{
-    nom : String;
-    description: String;
-    url:String;
+    nom : string;
+    description: string;
+    url:string;
     dateExpiration : Date;
     formationId :  number;
 }

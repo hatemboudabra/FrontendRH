@@ -1,10 +1,16 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { catchError, map, Observable } from "rxjs";
 interface Collaborator {
   id: number;
   username: string;
 }
+interface TeamInfo {
+  teamId?: number;
+  teamName?: string;
+  role?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TeamService {
     private baseUrl = 'http://localhost:8082/';
@@ -55,5 +61,25 @@ export class TeamService {
     getTeamByCollaboratorId(collaboratorId: number): Observable<any[]> {
       return this.http.get<any[]>(`${this.baseUrl}bycollaborator/${collaboratorId}`);
   }
+
   
+  leaveTeam(teamId: number, collaboratorId: number): Observable<string> {
+    const url = `${this.baseUrl}${teamId}/collaborators/${collaboratorId}`;
+    return this.http.delete(url, { responseType: 'text' }).pipe(
+        map(response => response),
+        catchError(error => {
+            if (error.status === 404) {
+                throw new Error('Team or collaborator not found');
+            } else if (error.status === 400) {
+                throw new Error('Collaborator is not part of the team');
+            } else {
+                throw new Error('An error occurred while leaving the team');
+            }
+        })
+    );
+}
+
+getTeamInfoByUserId(userId: number): Observable<TeamInfo> {
+  return this.http.get<TeamInfo>(`${this.baseUrl}chatteam/${userId}`);
+}
 }

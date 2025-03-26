@@ -3,9 +3,9 @@ import { Competance } from "./competance";
 
 export interface Formation{
     id : number;
-    nom:String;
-    description:String;
+    nom:string;
+    description:string;
     userId:number;
-    certificats?: Certificat[]; 
-  competances?: Competance[]; 
+    certificats?: Certificat[];
+    competances?: Competance[]; 
 }

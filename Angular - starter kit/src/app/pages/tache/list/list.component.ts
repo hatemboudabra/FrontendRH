@@ -50,7 +50,8 @@ export class ListComponent {
     { prop: 'complexite', name: 'Complexity' },
     { prop: 'dateDebut', name: 'Start Date' },
     { prop: 'dateFin', name: 'End Date' },
-    { name: 'Assigned Collaborator' },
+    { name: 'Assigned Collaborator ' },
+    { prop: 'projet.name', name: 'Project Name' },
     { name: 'Actions' }
   ];
 
@@ -145,7 +146,8 @@ export class ListComponent {
       complexite: ComplexiteTache.SIMPLE,
       dateDebut: new Date(),
       dateFin: new Date(),
-      userId: 0
+      userId: 0,
+      projectId:0
     };
   }
 

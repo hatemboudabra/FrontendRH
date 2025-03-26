@@ -25,6 +25,8 @@ import { StatistiqueComponent } from "./hr/statistique/statistique.component";
 import { UpdateProfileComponent } from "../account/profile/update-profile/update-profile.component";
 import { ListtemcollaboeateurComponent } from "./team/listtemcollaboeateur/listtemcollaboeateur.component";
 import { AddnoteComponent } from "./note/addnote/addnote.component";
+import { AddprojectComponent } from "./tache/addproject/addproject.component";
+import { ListprojectComponent } from "./tache/listproject/listproject.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -53,7 +55,9 @@ export const PAGE_ROUTES: Route[] = [
    {path:'updateProfile', component:UpdateProfileComponent},
    {path:'listteamcoolaborateur',component:ListtemcollaboeateurComponent},
  //  {path:'listnote',component:ListnoteComponent}
-    {path:'addnote',component:AddnoteComponent}
+    {path:'addnote',component:AddnoteComponent},
+    {path:'addproject',component:AddprojectComponent},
+    {path:'listproject',component:ListprojectComponent}
 
 
 

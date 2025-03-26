@@ -1,83 +1,94 @@
 
 <br>
-<br><div class="w-full bg-white dark:bg-zinc-800 rounded-lg shadow-sm">
-    <div class="overflow-x-auto">
-      <ngx-datatable
-        [rows]="teams"
-        [columns]="columns"
-        class="material w-full"
-        [loadingIndicator]="isLoading"
-        [columnMode]="'force'"
-        [headerHeight]="50"
-        [footerHeight]="0"
-        [rowHeight]="'auto'"
-        [scrollbarH]="true"
-        [sorts]="[{ prop: 'teamName', dir: 'desc' }]"
-        [limit]="9999"
+<br>
+<div class="w-full bg-white dark:bg-zinc-800 rounded-lg shadow-sm">
+  <div class="overflow-x-auto">
+    <ngx-datatable
+    [rows]="teams"
+    [columns]="columns"
+    class="material w-full"
+    [loadingIndicator]="isLoading"
+    [columnMode]="'force'"
+    [headerHeight]="50"
+    [footerHeight]="0"
+    [rowHeight]="'auto'"
+    [scrollbarH]="true"
+    [sorts]="[{ prop: 'teamName', dir: 'desc' }]"
+    [limit]="9999"
+>
+      <ngx-datatable-column
+        *ngFor="let column of columns"
+        [name]="column.name"
+        [prop]="column.prop"
+        [width]="column.prop === 'teamId' ? 100 : 200"
       >
-        <ngx-datatable-column
-          *ngFor="let column of columns"
-          [name]="column.name"
-          [prop]="column.prop"
-          [width]="column.prop === 'teamId' ? 100 : 200"
-        >
-          <!-- Header Template -->
-          <ng-template ngx-datatable-header-template>
-            <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">
-              {{ column.name }}
-            </span>
-          </ng-template>
-  
-          <!-- Cell Template -->
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-            <ng-container [ngSwitch]="column.prop">
-              <!-- Team ID Column -->
-              <ng-container *ngSwitchCase="'teamId'">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
-                  #{{ value }}
-                </span>
-              </ng-container>
-  
-              <!-- Team Name Column -->
-              <ng-container *ngSwitchCase="'teamName'">
-                <div class="flex items-center">
-                  <div class="h-8 w-8 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
-                    {{ value.charAt(0).toUpperCase() }}
-                  </div>
-                  <div class="ml-3">
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ value }}</p>
-                  </div>
-                </div>
-              </ng-container>
-  
-              <!-- Chef Username Column -->
-              <ng-container *ngSwitchCase="'chefUsername'">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0">
-                    <div class="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      <lucide-icon name="user" class="h-4 w-4 text-gray-500 dark:text-gray-400"></lucide-icon>
-                    </div>
-                  </div>
-                  <div class="ml-2">
-                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ value }}</p>
-                  </div>
-                </div>
-              </ng-container>
-  
-              <!-- Note Column -->
-              <ng-container *ngSwitchCase="'note'">
-                <div *ngIf="collaboratorNote !== null">
-                  <span *ngFor="let star of [1, 2, 3, 4, 5]" class="text-yellow-400">
-                    {{ star <= collaboratorNote ? '★' : '☆' }}
-                  </span>
-                </div>
-                <div *ngIf="collaboratorNote === null">
-                  Aucune note disponible
-                </div>
-              </ng-container>
+        <ng-template ngx-datatable-header-template>
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+            {{ column.name }}
+          </span>
+        </ng-template>
+
+        <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+          <ng-container [ngSwitch]="column.prop">
+            <ng-container *ngSwitchCase="'teamId'">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                #{{ value }}
+              </span>
             </ng-container>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+
+            <ng-container *ngSwitchCase="'teamName'">
+              <div class="flex items-center">
+                <div class="h-8 w-8 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-medium">
+                  {{ value.charAt(0).toUpperCase() }}
+                </div>
+                <div class="ml-3">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ value }}</p>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'chefUsername'">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <div class="h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                    <lucide-icon name="user" class="h-4 w-4 text-gray-500 dark:text-gray-400"></lucide-icon>
+                  </div>
+                </div>
+                <div class="ml-2">
+                  <p class="text-sm text-gray-600 dark:text-gray-300">{{ value }}</p>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'note'">
+              <div *ngIf="collaboratorNote !== null">
+                <span *ngFor="let star of [1, 2, 3, 4, 5]" class="text-yellow-400">
+                  {{ star <= collaboratorNote ? '★' : '☆' }}
+                </span>
+              </div>
+              <div *ngIf="collaboratorNote === null">
+                Aucune note disponible
+              </div>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="'action'">
+              <div class="flex items-center justify-center">
+                <button 
+                (click)="leaveTeam(row.teamId)" 
+                class="group relative inline-flex items-center justify-center p-2 rounded-full bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 transition-colors"
+                title="Leave Team"
+            >
+                <lucide-icon 
+                    name="log-out" 
+                    class="h-4 w-4 text-red-600 dark:text-red-400 group-hover:text-red-700 dark:group-hover:text-red-300 transition-colors"
+                ></lucide-icon>
+                <span class="sr-only">Leave Team</span>
+            </button>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
   </div>
+</div>

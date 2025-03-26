@@ -11,6 +11,8 @@ import { User } from '../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { MDModalModule } from '../../../Component/modals';
 import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
+import { Formation } from '../../../data/Formation';
+import { Competance, NiveauC } from '../../../data/competance';
 
 @Component({
   selector: 'app-listformationuser',
@@ -21,8 +23,8 @@ import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
   providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
 })
 export class ListformationuserComponent {
-  formations: any[] = []; 
-  filteredFormations: any[] = []; 
+  formations: Formation[] = []; 
+  filteredFormations: Formation[] = []; 
   searchTerm: string = '';
   currentPage: number = 1;
   itemsPerPage: number = 7;
@@ -30,6 +32,9 @@ export class ListformationuserComponent {
   startIndex: number = 0;
   endIndex: number = 0;
  currentUser: User | null = null;
+ showModal: boolean = false;
+ selectedFormation: any = null;
+ competenceScore: number = 0;
   columns = [
   //  { name: 'ID', prop: 'id' },
   { name: 'Username', prop: 'username' },
@@ -89,6 +94,43 @@ export class ListformationuserComponent {
       },
       error: (err) => console.error('Failed to load formations', err),
     });
+  }
+  calculateCompetenceScore(competences: Competance[]): number {
+    let score = 0;
+    competences.forEach(competence => {
+      switch (competence.niveauC) {
+        case NiveauC.BEGINNER:
+          score += 1;
+          break;
+        case NiveauC.INTERMEDIATE:
+          score += 2;
+          break;
+        case NiveauC.EXPERT:
+          score += 3;
+          break;
+        default:
+          break;
+      }
+    });
+    return score;
+  }
+  openCompetenceModal(formation: Formation): void {
+    console.log('Formation sélectionnée :', formation);
+    console.log('Compétences de la formation :', formation.competances);
+    if (formation.competances) {
+      const score = this.calculateCompetenceScore(formation.competances);
+      this.selectedFormation = formation;
+      this.competenceScore = score;
+      this.showModal = true; 
+    } else {
+      console.error('Aucune compétence trouvée pour cette formation.');
+    }
+  }
+  truncateDescription(description: string, maxLength: number = 20): string {
+    if (description && description.length > maxLength) {
+      return description.slice(0, maxLength) + '...'; 
+    }
+    return description || ''; 
   }
 
   onSearch(): void {

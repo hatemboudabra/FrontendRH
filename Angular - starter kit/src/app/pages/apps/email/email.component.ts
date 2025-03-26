@@ -82,22 +82,41 @@ export class EmailComponent {
     this.showComposeEmail = false;
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  }
 
-  getTimeAgo(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    if (diffInMinutes < 60) {
-      return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''}`;
-    } else {
-      const diffInHours = Math.floor(diffInMinutes / 60);
-      return `${diffInHours} heure${diffInHours > 1 ? 's' : ''}`;
-    }
+
+formatDateLikeGmail(dateString: string): string {
+  if (!dateString) return 'Date inconnue'; 
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return 'Date inconnue'; 
+
+  const now = new Date();
+  const diffInMilliseconds = now.getTime() - date.getTime();
+  const diffInMinutes = Math.floor(diffInMilliseconds / (1000 * 60));
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'short', 
+    day: 'numeric',   
+    month: 'long',    
+    hour: '2-digit',  
+    minute: '2-digit' 
+  };
+
+  const formattedDate = date.toLocaleDateString('fr-FR', options);
+
+  if (diffInMinutes < 60) {
+    return `${formattedDate} (il y a ${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''})`;
+  } else if (diffInHours < 24) {
+    return `${formattedDate} (il y a ${diffInHours} heure${diffInHours > 1 ? 's' : ''})`;
+  } else if (diffInDays === 1) {
+    return `${formattedDate} (hier)`;
+  } else if (diffInDays < 7) {
+    return `${formattedDate} (il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''})`;
+  } else {
+    return formattedDate; 
   }
+}
   showDeletedCandidates(): void {
     this.showDeletedCandidatesList = true;
     this.showEmailList = false;

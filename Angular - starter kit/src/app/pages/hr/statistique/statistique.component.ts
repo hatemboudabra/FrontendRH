@@ -80,7 +80,6 @@ export class StatistiqueComponent implements OnInit {
     
     this.demandeService.getDemandecountsbystatusavancepret().subscribe(
       (data) => {
-        // Convert object to array of { status, count }
         const arrayData = Object.entries(data).map(([status, count]) => ({ status, count }));
         this.initDemandeChart(arrayData);
       },
@@ -90,345 +89,148 @@ export class StatistiqueComponent implements OnInit {
   }
 
   initRoleChart(roleCounts: Record<string, number>): void {
+    const roles = Object.keys(roleCounts);
+    const counts = Object.values(roleCounts);
+    const cumulativeData = counts.map((_, i) => counts.slice(0, i + 1).reduce((a, b) => a + b, 0));
+  
     this.roleChartOptions = {
-      series: Object.values(roleCounts),
-      chart: {
-        type: 'donut',
-        height: 350,
-        toolbar: {
-          show: true
-        },
-        animations: {
-          enabled: true,
-          easing: 'easeinout',
-          speed: 800,
-          animateGradually: {
-            enabled: true,
-            delay: 150
-          },
-          dynamicAnimation: {
-            enabled: true,
-            speed: 350
-          }
-        },
-        dropShadow: {
-          enabled: true,
-          color: '#000',
-          top: 0,
-          left: 0,
-          blur: 3,
-          opacity: 0.1
-        }
-      },
-      labels: Object.keys(roleCounts),
-      colors: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
-      plotOptions: {
-        pie: {
-          donut: {
-            labels: {
-              show: true,
-              total: {
-                show: true,
-                label: 'Total',
-                color: '#373d3f',
-                formatter: (w: any) => {
-                  return w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
-                },
-              },
-            },
-          },
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '14px',
-          fontWeight: 600,
-          colors: ['#ffffff']
-        },
-        formatter: function (val: number, opts: any) {
-          return opts.w.config.labels[opts.seriesIndex] + ': ' + val.toFixed(1) + '%';
-        }
-      },
-      legend: {
-        position: 'bottom',
-        horizontalAlign: 'center',
-        fontSize: '14px',
-        markers: {
-          width: 12,
-          height: 12,
-          radius: 12,
-        },
-      },
-      tooltip: {
-        theme: 'light',
-        shared: false,
-        intersect: true,
-        style: {
-          fontSize: '12px'
-        },
-        y: {
-          formatter: function (val: number) {
-            return val + ' utilisateurs';
-          }
-        }
-      }
-    };
-  }
-
-  initTeamChart(teams: { teamName: string, userCount: number }[]): void {
-    const teamNames = teams.map(team => team.teamName);
-    const userCounts = teams.map(team => team.userCount);
-  
-    const trendData = this.calculateTrend(userCounts);
-  
-    this.teamChartOptions = {
       series: [
         {
-          name: 'Nombre de collaborateurs',
+          name: 'Nombre d\'utilisateurs',
           type: 'bar',
-          data: userCounts
+          data: counts,
         },
         {
-          name: 'Tendance',
-          type: 'line',
-          data: trendData
-        }
+          name: 'Cumul des utilisateurs',
+          type: 'area',
+          data: cumulativeData,
+        },
       ],
       chart: {
         type: 'line',
         height: 350,
         toolbar: {
-          show: true
+          show: true,
+        },
+      },
+      colors: ['#3b82f6', '#10b981'],
+      xaxis: {
+        categories: roles,
+      },
+      yaxis: {
+        title: {
+          text: 'Nombre d\'utilisateurs',
+        },
+      },
+      tooltip: {
+        shared: true,
+      },
+    };
+  }
+initTeamChart(teams: { teamName: string, userCount: number }[]): void {
+  const teamNames = teams.map(team => team.teamName);
+  const userCounts = teams.map(team => team.userCount);
+  const average = userCounts.reduce((a, b) => a + b, 0) / userCounts.length;
+
+  this.teamChartOptions = {
+    series: [
+      {
+        name: 'Nombre de collaborateurs',
+        type: 'bar',
+        data: userCounts,
+      },
+      {
+        name: 'Moyenne',
+        type: 'line',
+        data: Array(teamNames.length).fill(average),
+      },
+    ],
+    chart: {
+      type: 'line',
+      height: 350,
+      toolbar: {
+        show: true,
+      },
+    },
+    stroke: {
+      width: [0, 4],
+      dashArray: [0, 5], 
+    },
+    colors: ['#3b82f6', '#ef4444'],
+    xaxis: {
+      categories: teamNames,
+    },
+    yaxis: {
+      title: {
+        text: 'Nombre de collaborateurs',
+      },
+    },
+    tooltip: {
+      shared: true,
+    },
+  };
+}
+
+  initDemandeChart(demandes: { status: string, count: number }[]): void {
+    const statuses = demandes.map(d => d.status);
+    const counts = demandes.map(d => d.count);
+    const trendData = this.calculateTrend(counts);
+  
+    this.demandeChartOptions = {
+      series: [
+        {
+          name: 'Nombre de demandes',
+          type: 'bar',
+          data: counts,
+        },
+        {
+          name: 'Tendance',
+          type: 'line',
+          data: trendData,
+        },
+      ],
+      chart: {
+        type: 'line',
+        height: 350,
+        toolbar: {
+          show: true,
         },
         animations: {
           enabled: true,
           easing: 'easeinout',
           speed: 800,
         },
-        stacked: false
       },
       plotOptions: {
         bar: {
           borderRadius: 10,
           columnWidth: '40%',
-          dataLabels: {
-            position: 'top',
-            formatter: function (val: number, opts: any) {
-              return `${teamNames[opts.dataPointIndex]}: ${val}`;
-            }
-          }
-        }
+        },
       },
-      fill: {
-        type: ['solid', 'gradient'],
-        gradient: {
-          type: 'vertical',
-          shadeIntensity: 0.5,
-          gradientToColors: undefined,
-          inverseColors: true,
-          opacityFrom: 0.8,
-          opacityTo: 0.2,
-          stops: [0, 100]
-        }
-      },
+      colors: ['#10b981', '#f59e0b'],
       dataLabels: {
         enabled: true,
-        style: {
-          fontSize: '12px',
-          fontWeight: 600,
-          colors: ['#333333']
-        },
-        offsetY: -20,
-        formatter: function (val: number, opts: any) {
-          return val.toString();
-        }
-      },
-      stroke: {
-        width: [0, 3],
-        curve: 'smooth'
       },
       xaxis: {
-        categories: teamNames,
-        labels: {
-          style: {
-            colors: '#6b7280',
-            fontSize: '12px',
-            fontWeight: 500
-          }
-        },
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        }
+        categories: statuses,
       },
       yaxis: [
         {
           title: {
-            text: 'Nombre d\'utilisateurs',
-            style: {
-              color: '#6b7280',
-              fontSize: '13px',
-              fontWeight: 600
-            }
+            text: 'Nombre de demandes',
           },
-          labels: {
-            style: {
-              colors: '#6b7280',
-              fontSize: '12px'
-            }
-          }
         },
         {
           opposite: true,
           title: {
             text: 'Tendance',
-            style: {
-              color: '#6b7280',
-              fontSize: '13px',
-              fontWeight: 600
-            }
           },
-          labels: {
-            style: {
-              colors: '#6b7280',
-              fontSize: '12px'
-            }
-          }
-        }
-      ],
-      colors: ['#3b82f6', '#ef4444'],
-      grid: {
-        show: true,
-        borderColor: '#e2e8f0',
-        strokeDashArray: 4,
-        position: 'back',
-        xaxis: {
-          lines: {
-            show: false
-          }
         },
-        yaxis: {
-          lines: {
-            show: true
-          }
-        }
-      },
+      ],
       tooltip: {
-        theme: 'light',
         shared: true,
         intersect: false,
-        style: {
-          fontSize: '12px'
-        },
-        y: {
-          formatter: function (val: number, opts: any) {
-            return `${teamNames[opts.dataPointIndex]}: ${val} utilisateurs`;
-          }
-        }
-      }
-    };
-  }
-
-  initDemandeChart(demandes: { status: string, count: number }[]): void {
-    const statuses = demandes.map(d => d.status);
-    const counts = demandes.map(d => d.count);
-    
-    this.demandeChartOptions = {
-      series: [{
-        name: 'Demandes',
-        data: counts
-      }],
-      chart: {
-        type: 'bar',
-        height: 350,
-        toolbar: {
-          show: true
-        },
-        animations: {
-          enabled: true,
-          easing: 'easeinout',
-          speed: 800
-        }
       },
-      plotOptions: {
-        bar: {
-          distributed: true,
-          borderRadius: 8,
-          columnWidth: '65%',
-          dataLabels: {
-            position: 'top'
-          }
-        }
-      },
-      colors: ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#ef4444'],
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '12px',
-          fontWeight: 600
-        },
-        offsetY: -20,
-        formatter: function(val: number) {
-          return val.toString();
-        }
-      },
-      legend: {
-        show: false
-      },
-      grid: {
-        show: true,
-        borderColor: '#e2e8f0',
-        strokeDashArray: 4
-      },
-      xaxis: {
-        categories: statuses,
-        labels: {
-          style: {
-            fontSize: '12px',
-            fontWeight: 500,
-            colors: '#6b7280'
-          }
-        },
-        axisBorder: {
-          show: false
-        },
-        axisTicks: {
-          show: false
-        }
-      },
-      yaxis: {
-        title: {
-          text: 'Nombre de demandes',
-          style: {
-            color: '#6b7280',
-            fontSize: '13px',
-            fontWeight: 600
-          }
-        },
-        labels: {
-          style: {
-            fontSize: '12px',
-            colors: '#6b7280'
-          },
-          formatter: function(val: number) {
-            return val.toFixed(0);
-          }
-        }
-      },
-      tooltip: {
-        theme: 'light',
-        x: {
-          show: true
-        },
-        y: {
-          formatter: function(val: number) {
-            return val + ' demandes';
-          }
-        }
-      }
     };
   }
 

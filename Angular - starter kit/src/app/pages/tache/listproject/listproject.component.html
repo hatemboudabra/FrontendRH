@@ -1,0 +1,106 @@
+<br>
+<br>
+<div class="card" id="project">
+    <div class="card-body">
+      <div class="flex items-center gap-3 mb-4">
+        <h6 class="text-15 grow">Projects</h6>
+           </div>
+  
+      <div class="-mx-2 overflow-x-auto">
+        <ngx-datatable
+          class="datatable styled-table"
+          [rows]="projects"
+          [columns]="columns"
+          [loadingIndicator]="isLoading"
+          [columnMode]="'force'"
+          [headerHeight]="36"
+          [footerHeight]="36"
+          [rowHeight]="'auto'">         
+          <ngx-datatable-column name="ID" prop="id" [width]="80">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="flex items-center">
+                <h6 class="text-xs">{{ row.id }}</h6>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Name" prop="name" [width]="150">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="flex items-center">
+                <h6 class="text-xs">{{ row.name }}</h6>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Description" prop="description" [width]="200">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="flex items-center">
+                <h6 class="text-xs cursor-pointer hover:text-blue-500" (click)="openDescriptionModal(row)">
+                  {{ row.description | slice:0:50 }}{{ row.description.length > 50 ? '...' : '' }}
+                </h6>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+            <ngx-datatable-column name="Actions" [width]="150">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <div class="d-flex gap-3 justify-content-center">
+                <button 
+                [disabled]="!currentUser"
+                (click)="openEditModal(row)"
+                class="btn btn-sm btn-outline-warning d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm transition-all hover:bg-warning hover:text-white">
+                <i class="fas fa-edit"></i> <span>Edit</span>
+              </button>
+                <button
+                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm transition-all hover:bg-danger hover:text-white"
+                (click)="deleteProject(row.id)"
+             >
+                <i class="fas fa-trash"></i> <span>Delete</span>
+              </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="showDescModal" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black bg-opacity-50" (click)="closeDescriptionModal()"></div>
+    <div class="bg-white p-6 rounded-lg shadow-lg z-10 max-w-lg w-full mx-4">
+      <h3 class="text-lg font-medium mb-2">Description détaillée</h3>
+      <p class="text-sm mb-4">{{ selectedRowDescription }}</p>
+      <div class="flex justify-end">
+        <button class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600" (click)="closeDescriptionModal()">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showEditModal" class="fixed inset-0 flex items-center justify-center z-50">
+    <div class="absolute inset-0 bg-black bg-opacity-50" (click)="closeEditModal()"></div>
+    <div class="bg-white p-6 rounded-lg shadow-lg z-10 max-w-lg w-full mx-4">
+      <h3 class="text-lg font-medium mb-4">Modifier le projet</h3>
+      <form (ngSubmit)="updateProject()">
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Nom du projet</label>
+          <input type="text" class="w-full p-2 border rounded" 
+                 [(ngModel)]="selectedProject.name" name="name" required>
+        </div>
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-1">Description</label>
+          <textarea class="w-full p-2 border rounded" rows="4"
+                    [(ngModel)]="selectedProject.description" name="description"></textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                  (click)="closeEditModal()">
+            Annuler
+          </button>
+          <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  [disabled]="isLoading">
+            <span *ngIf="!isLoading">Enregistrer</span>
+            <span *ngIf="isLoading">Enregistrement...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>

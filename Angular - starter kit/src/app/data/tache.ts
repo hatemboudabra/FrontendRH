@@ -17,5 +17,5 @@ export interface Tache{
     statusTache: StatusTache;
     complexite: ComplexiteTache;
     userId: number;
-    
+    //projectId : number;
 }

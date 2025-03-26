@@ -145,4 +145,8 @@ deleteCollCHE(id: number): Observable<void> {
   return this.http.delete<void>(`${environment.apiUrl}/coll-che/${id}`);
 }
 
+ListUser(): Observable<any[]> {
+  return this.http.get<any[]>(`${environment.apiUrl}/withspecificroles`);
+}
+
 }

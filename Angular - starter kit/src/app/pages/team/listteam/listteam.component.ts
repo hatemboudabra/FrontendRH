@@ -69,6 +69,11 @@ export class ListteamComponent {
   endIndex: number = 0;
   currentUser: User | null = null;
 
+  isEvaluateModalOpen: boolean = false;
+  currentTeamCollaborators: Collaborator[] = [];
+  selectedCollaboratorId: number | null = null;
+  currentTeamId: number | null = null;
+  
   columns = [
     { name: 'ID', prop: 'id' },
     { name: 'Team Name', prop: 'name' },
@@ -271,23 +276,105 @@ export class ListteamComponent {
     this.collaboratorsToRemoveInput = this.collaboratorsToRemoveInput ? `${this.collaboratorsToRemoveInput},${username}` : `${username}`;
   }
 
-  evaluateCollaborator(collaboratorId: number): void {
-    if (!this.currentUser || !this.currentUser.id) {
-      console.error('Current user or user ID is not defined.');
-      return;
-    }
-
-    const chefId = this.currentUser.id;
-
-    this.evaluationService.evaluateUser(chefId, collaboratorId).subscribe({
-      next: (response) => {
-        console.log('Collaborator evaluated successfully', response);
-        alert('Collaborator evaluated successfully!');
+  openEvaluateModal(teamId: number): void {
+    this.currentTeamId = teamId;
+    this.isEvaluateModalOpen = true;
+    this.selectedCollaboratorId = null;
+    this.errorMessage = null; 
+    
+    this.teamService.getCollaboratorsByTeam(teamId).subscribe({
+      next: (collaborators) => {
+        this.currentTeamCollaborators = collaborators;
+        if (collaborators.length === 0) {
+          this.errorMessage = 'This team has no collaborators to evaluate';
+        }
       },
       error: (error) => {
-        console.error('Failed to evaluate collaborator', error);
-        alert('Failed to evaluate collaborator. Please try again.');
+        console.error('Failed to fetch collaborators', error);
+        this.errorMessage = 'Failed to load collaborators';
       }
     });
   }
+  
+  closeEvaluateModal(): void {
+    this.isEvaluateModalOpen = false;
+    this.currentTeamCollaborators = [];
+    this.selectedCollaboratorId = null;
+    this.currentTeamId = null;
+    this.errorMessage = null; 
+  }
+  
+  submitEvaluation(): void {
+    if (!this.currentUser || !this.currentUser.username) {
+      this.errorMessage = 'Session invalide. Veuillez vous reconnecter.';
+      this.loadCurrentUser();
+      return;
+    }
+  
+    if (!this.currentUser.id) {
+      this.authService.getUserByUsername(this.currentUser.username).subscribe({
+        next: (userDetails) => {
+          if (userDetails?.id) {
+            this.currentUser = {
+              ...this.currentUser!,
+              id: userDetails.id
+            };
+            this.executeEvaluation();
+          } else {
+            this.errorMessage = 'Profil utilisateur incomplet.';
+          }
+        },
+        error: (error) => {
+          console.error('Erreur:', error);
+          this.errorMessage = 'Erreur technique. Veuillez réessayer.';
+        }
+      });
+      return;
+    }
+  
+    this.executeEvaluation();
+  }
+  
+  private executeEvaluation(): void {
+    if (!this.currentUser!.id || !this.selectedCollaboratorId) {
+      this.errorMessage = !this.currentUser!.id 
+        ? 'Session invalide' 
+        : 'Veuillez sélectionner un collaborateur';
+      return;
+    }
+  
+    this.errorMessage = null;
+    this.isLoading = true;
+  
+    this.evaluationService.evaluateUser(this.currentUser!.id, this.selectedCollaboratorId).subscribe({
+      next: (response) => {
+        const message = typeof response === 'string' 
+          ? response 
+          : response.message || 'Évaluation réussie !';
+        
+        alert(message);
+        console.log('Évaluation réussie', response);
+        this.closeEvaluateModal();
+      },
+      error: (error) => {
+        console.error('Erreur:', error);
+        
+        let errorMessage = "Erreur lors de l'envoi";
+        if (typeof error.error === 'string') {
+          errorMessage = error.error;
+        } else if (error.error?.message) {
+          errorMessage = error.error.message;
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        this.errorMessage = errorMessage;
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+  
+ 
 }

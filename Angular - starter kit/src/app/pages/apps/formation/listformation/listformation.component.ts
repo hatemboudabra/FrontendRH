@@ -9,10 +9,12 @@ import { icons, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider } from 'lu
 import { NGXPagination } from '../../../../Component/pagination';
 import { RouterModule } from '@angular/router';
 import { FormationService } from '../../../../core/services/formation.service';
-import { Competance } from '../../../../data/competance';
+import { Competance, NiveauC } from '../../../../data/competance';
 import { Certificat } from '../../../../data/certificat';
 import { User } from '../../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../../core/services/auth.service';
+import { CompetanceService } from '../../../../core/services/competance.service';
+import { CertificatService } from '../../../../core/services/certificat.service';
 interface TableColumn {
   prop: string;
   name: string;
@@ -35,6 +37,13 @@ export class ListformationComponent {
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
   currentUser: User | null = null;
+  public isModalOpen: boolean = false;
+  public selectedFormation: Formation | null = null
+
+  public showCertificatForm: boolean = false;
+  public showCompetanceForm: boolean = false;
+  public newCertificat: Certificat = this.initCertificat();
+  public newCompetance: Competance = this.initCompetance();
 
   public columns: any[] = [
     { name: 'Formation', prop: 'nom' },
@@ -44,13 +53,32 @@ export class ListformationComponent {
     { name: 'Actions', prop: 'actions' }
   ];
 
-  constructor(private formationService: FormationService ,    private authService: AuthenticationService
+  constructor(private formationService: FormationService ,    private authService: AuthenticationService   , private certificatService: CertificatService,
+    private competanceService: CompetanceService
    ) {}
 
    ngOnInit(): void {
     this.loadCurrentUser(); 
+    this.loadFormations
+  }
+  
+  private initCertificat(): Certificat {
+    return {
+      nom: '',
+      description: '',
+      url: '',
+      dateExpiration: new Date(),
+      formationId: 0,
+    };
   }
 
+  private initCompetance(): Competance {
+    return {
+      nom: '',
+      niveauC: NiveauC.BEGINNER,
+      formationId: 0,
+    };
+  }
   loadCurrentUser(): void {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
@@ -58,11 +86,11 @@ export class ListformationComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -71,14 +99,14 @@ export class ListformationComponent {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log('✅ ID utilisateur reçu :', userDetails.id);
+          console.log('ID utilisateur reçu :', userDetails.id);
           this.loadFormations(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error('Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -160,4 +188,68 @@ export class ListformationComponent {
     return this.formations.reduce((total, formation) =>
       total + (formation.competances ? formation.competances.length : 0), 0);
   }
+
+  public openModal(formation: Formation): void {
+    this.selectedFormation = formation;
+    this.isModalOpen = true;
+  }
+
+  public closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedFormation = null;
+  }
+  public truncateText(text: string, maxLength: number = 35): string {
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+}
+
+public openCertificatModal(formation: Formation): void {
+  this.selectedFormation = formation;
+  this.newCertificat.formationId = formation.id; 
+  this.showCertificatForm = true;
+}
+
+public closeCertificatModal(): void {
+  this.showCertificatForm = false;
+  this.newCertificat = this.initCertificat(); 
+}
+
+public openCompetanceModal(formation: Formation): void {
+  this.selectedFormation = formation;
+  this.newCompetance.formationId = formation.id; 
+  this.showCompetanceForm = true;
+}
+
+public closeCompetanceModal(): void {
+  this.showCompetanceForm = false;
+  this.newCompetance = this.initCompetance(); 
+}
+public addCertificat(): void {
+  if (this.newCertificat) {
+    this.certificatService.addCertificat(this.newCertificat).subscribe({
+      next: (response) => {
+        console.log('Certificat ajouté avec succès:', response);
+        this.closeCertificatModal();
+        this.loadFormations(this.currentUser?.id || 0); 
+      },
+      error: (error) => {
+        console.error('Erreur lors de l\'ajout du certificat:', error);
+      },
+    });
+  }
+}
+
+public addCompetance(): void {
+  if (this.newCompetance) {
+    this.competanceService.addCompetance(this.newCompetance).subscribe({
+      next: (response) => {
+        console.log('Compétence ajoutée avec succès:', response);
+        this.closeCompetanceModal();
+        this.loadFormations(this.currentUser?.id || 0); 
+      },
+      error: (error) => {
+        console.error('Erreur lors de l\'ajout de la compétence:', error);
+      },
+    });
+  }
+}
 }

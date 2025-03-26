@@ -33,6 +33,7 @@ export class UpdateStatusComponent implements OnInit {
     { name: 'Complexity', prop: 'complexite' },
     { name: 'Start Date', prop: 'dateDebut' },
     { name: 'End Date', prop: 'dateFin' },
+    { prop: 'projet.name', name: 'Project Name' },
     { name: 'Actions' },
   ];
 

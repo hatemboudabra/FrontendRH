@@ -15,4 +15,9 @@ import { Observable } from "rxjs";
   getCandidatures(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/allcandidat`);
 }
-  }
+deleteCandidat(id: number): Observable<void> {
+  return this.http.delete<void>(`${this.apiUrl}/Candidat/${id}`);
+}
+
+
+}

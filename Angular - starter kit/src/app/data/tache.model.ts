@@ -1,3 +1,5 @@
+import { Project } from "./project";
+
 export enum ComplexiteTache {
     SIMPLE = 'SIMPLE',
     INTERMEDIAIRE = 'INTERMEDIAIRE',
@@ -23,4 +25,6 @@ export enum ComplexiteTache {
     statusTache: StatusTache;
     complexite: ComplexiteTache;
     userId: number;
+    projectId : number;
+    projet?: Project; 
   }

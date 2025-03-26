@@ -22,13 +22,15 @@ export const MENU: MenuItem[] = [
     },
     {
         id: 5, 
-        label: 'Tache', 
+        label: 'Project', 
         icon: 'calendar-days', 
         roles: ['ROLE_CHEF', 'ROLE_COLLABORATEUR'],
         subItems: [
-            { id: 501, label: 'Ajouter Tâche', link: '/add', parentId: 5, roles: ['ROLE_CHEF'] },
-            { id: 502, label: 'Liste des Tâches', link: '/list-tache', parentId: 5, roles: ['ROLE_CHEF'] },
-            { id: 503, label: 'Mettre à jour le statut', link: '/updateStatus', parentId: 5, roles: ['ROLE_COLLABORATEUR'] }
+            { id: 501, label: 'Ajouter Projet', link: '/addproject', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 505, label: 'Liste des Projets', link: '/listproject', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 502, label: 'Ajouter Tâche', link: '/add', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 503, label: 'Liste des Tâches', link: '/list-tache', parentId: 5, roles: ['ROLE_CHEF'] },
+            { id: 504, label: 'Mettre à jour le statut', link: '/updateStatus', parentId: 5, roles: ['ROLE_COLLABORATEUR'] },
         ]
     },
     {
