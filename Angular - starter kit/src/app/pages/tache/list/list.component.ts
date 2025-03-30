@@ -190,7 +190,6 @@ export class ListComponent {
           userId: this.selectedCollaborateurId, 
           createdAt: new Date(Date.now())
         };
-  
         console.log('Notification created:', notification);
         this.notificationService.addNotification(notification);
         this.closeAssignModal();

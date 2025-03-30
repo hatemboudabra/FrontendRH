@@ -16,11 +16,18 @@ import { AuthenticationService } from '../../../core/services/auth.service';
 import { User } from '../../../store/Authentication/auth.models';
 import { BehaviorSubject } from 'rxjs';
 import { TeamService } from '../../../core/services/team.service';
+import { MessagChatService } from '../../../core/services/message.service';
 
 interface Collaborator {
   id: number;
   username: string;
   post: string;
+}
+
+interface TeamInfo {
+  role: string;
+  teamId?: number;
+  teamName?: string;
 }
 
 @Component({
@@ -56,46 +63,27 @@ export class ChatComponent implements OnInit {
   chatMode: 'private' | 'team' = 'private';
   messages$ = new BehaviorSubject<ChatMessageDTO[]>([]);
   searchQuery: string = '';
-  teamId: string = '1';
+  teamId: string = '0'; 
   currentUserTeamId: number | null = null;
   currentUserTeamName: string | null = null;
+
   constructor(
     private formBuilder: UntypedFormBuilder,
     private chatService: ChatService,
     private authService: AuthenticationService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private messageService: MessagChatService
+
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadCurrentUser();
+    this.loadCurrentUser(); 
     this.loadCollaborators();
     this.setupMessageSubscription();
-    
-    if (this.selectedCollaboratorId) {
-    //  this.loadMessages();
-    }
-  }/*
-  loadMessages(): void {
-    if (this.chatMode === 'private' && this.selectedCollaboratorId) {
-      this.chatService.getPrivateMessages(this.selectedCollaboratorId.toString()).subscribe({
-        next: (messages) => {
-          this.allMessages = messages;
-          this.filterMessages();
-        },
-        error: (error) => console.error('Error loading private messages:', error)
-      });
-    } else if (this.chatMode === 'team') {
-      this.chatService.getTeamMessages(this.teamId).subscribe({
-        next: (messages) => {
-          this.allMessages = messages;
-          this.filterMessages();
-        },
-        error: (error) => console.error('Error loading team messages:', error)
-      });
-    }
+//  this.loadChatHistory()
   }
-*/
+
   private initializeForm(): void {
     this.formData = this.formBuilder.group({
       chatMsg: [{ value: '', disabled: this.shouldDisableInput() }, [Validators.required]]
@@ -115,12 +103,16 @@ export class ChatComponent implements OnInit {
     }
   }
 
+
   loadCurrentUser(): void {
     this.authService.getCurrentUser().subscribe({
       next: (user) => {
         if (user?.username) {
           this.currentUser = user;
           this.getUserIdByUsername(user.username);
+          if (user.id) {
+            this.loadTeamInfo(user.id); 
+          }
         }
       },
       error: (error) => console.error('Error loading user:', error)
@@ -132,14 +124,36 @@ export class ChatComponent implements OnInit {
       next: (userDetails) => {
         if (userDetails?.id) {
           this.currentUserId = userDetails.id.toString();
-          this.currentUser!.id = userDetails.id;
+          if (this.currentUser) {
+            this.currentUser.id = userDetails.id;
+          }
           this.filterCollaborators();
         }
       },
       error: (error) => console.error('Error getting user ID:', error)
     });
   }
-
+  loadTeamInfo(userId: number): void {
+    this.teamService.getTeamInfoByUserId(userId).subscribe({
+      next: (teamInfo) => {
+        this.currentUserTeamId = teamInfo.teamId ?? null;
+        this.currentUserTeamName = teamInfo.teamName ?? null;
+        this.teamId = teamInfo.teamId?.toString() ?? '0';
+        
+        console.log('Team info loaded:', {
+          teamId: this.teamId,
+          teamName: this.currentUserTeamName
+        });
+        if (this.chatMode === 'team') {
+          this.loadChatHistory();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading team info:', error);
+        this.teamId = '0'; 
+      }
+    });
+  }
   loadCollaborators(): void {
     this.authService.ListUser().subscribe({
       next: (users) => {
@@ -160,7 +174,11 @@ export class ChatComponent implements OnInit {
   toggleChatMode(mode: 'private' | 'team'): void {
     this.chatMode = mode;
     this.updateInputState();
-    this.filterMessages();
+    if (mode === 'team' && this.currentUser?.id) {
+      this.loadTeamInfo(this.currentUser.id);
+    } else {
+      this.filterMessages();
+    }
   }
 
   filterCollaborators(): void {
@@ -169,99 +187,131 @@ export class ChatComponent implements OnInit {
     );
   }
 
-  filterMessages(): void {
-    // Vérification optimisée de l'utilisateur courant
-    if (!this.currentUser) {
-        console.debug('Utilisateur non chargé - filtrage différé');
-        this.displayedMessages = [];
-        return;
+  private filterMessages(): void {
+    if (!this.currentUserId) {
+      this.displayedMessages = [];
+      return;
     }
-
-    // Si mode privé mais aucun collaborateur sélectionné
-    if (this.chatMode === 'private' && !this.selectedCollaboratorId) {
-        this.displayedMessages = [];
-        return;
-    }
-
-    const currentUserIdStr = this.currentUser.id.toString();
-    const selectedIdStr = this.selectedCollaboratorId?.toString() ?? '';
-
-    this.displayedMessages = this.allMessages.filter(message => {
-        // Validation basique du message
-        if (!message?.sender || !message?.chatRoomId || !message?.type || !message?.timestamp) {
-            return false;
+    const uniqueMessages = new Map<string, ChatMessageDTO>();
+    this.allMessages.forEach(message => {
+      if (!message) return;
+  
+      const messageKey = `${message.content}-${message.sender}-${message.timestamp}`;
+      
+      if (this.chatMode === 'private') {
+        if (message.type === 'PRIVATE' && 
+            ((message.sender === this.currentUserId && message.recipientId === this.selectedCollaboratorId?.toString()) ||
+             (message.sender === this.selectedCollaboratorId?.toString() && message.recipientId === this.currentUserId))) {
+          uniqueMessages.set(messageKey, message);
         }
-
-        // Filtrage selon le mode
-        if (this.chatMode === 'private') {
-            return message.type === 'PRIVATE' && 
-                  ((message.sender === currentUserIdStr && message.chatRoomId === selectedIdStr) ||
-                   (message.sender === selectedIdStr && message.chatRoomId === currentUserIdStr));
-        } 
-        
-        // Mode team
-        return message.type === 'TEAM' && message.chatRoomId === this.teamId;
+      } else {
+        if (message.type === 'TEAM' && message.chatRoomId === this.teamId) {
+          uniqueMessages.set(messageKey, message);
+        }
+      }
     });
-
-    // Tri chronologique sécurisé
-    try {
-        this.displayedMessages.sort((a, b) => 
-            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        );
-    } catch (e) {
-        console.error('Erreur lors du tri des messages', e);
-    }
-}
-setupMessageSubscription(): void {
-  this.chatService.getMessages().subscribe({
+    this.displayedMessages = Array.from(uniqueMessages.values()).sort((a, b) => 
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+  }
+  private setupMessageSubscription(): void {
+    this.chatService.getMessages().subscribe({
       next: (message) => {
-          if (!message || typeof message !== 'object') {
-              console.error('Message rejeté - format invalide');
-              return;
-          }
-
-          console.log('Nouveau message reçu:', message);
+        if (!message || typeof message !== 'object') {
+          console.error('Message rejeté - format invalide');
+          return;
+        }
+        if (!message.senderUsername && message.sender === this.currentUserId) {
+          message.senderUsername = this.currentUser?.username || 'Vous';
+        }
+        console.log('Nouveau message reçu:', message);
+        const isRelevant = this.isMessageRelevant(message);
+        if (isRelevant) {
           this.allMessages.push(message);
           this.filterMessages();
+          this.messages$.next([...this.allMessages]);
+        }
       },
       error: (err) => console.error('Erreur WebSocket:', err)
-  });
-}
-sendMessage(): void {
-  if (this.formData.invalid || !this.currentUserId) return;
+    });
+  }
+  
+  private isMessageRelevant(message: ChatMessageDTO): boolean {
+    if (this.chatMode === 'private') {
+      return message.type === 'PRIVATE' && 
+            ((message.sender === this.currentUserId && message.recipientId === this.selectedCollaboratorId?.toString()) ||
+             (message.sender === this.selectedCollaboratorId?.toString() && message.recipientId === this.currentUserId));
+    } else {
+      return message.type === 'TEAM' && message.chatRoomId === this.teamId;
+    }
+  }
 
-  const content = this.formData.get('chatMsg')?.value?.trim();
-  if (!content) return;
+  getSelectedCollaboratorPost(): string {
+    if (this.chatMode === 'team') {
+      return this.currentUserTeamName ? `Équipe ${this.currentUserTeamName}` : 'Équipe';
+    }
+    
+    const collaborator = this.collaborators.find(c => c.id === this.selectedCollaboratorId);
+    return collaborator?.post || 'Poste non spécifié';
+  }
 
-  const message: ChatMessageDTO = {
-      sender: this.currentUserId,
+  sendMessage(): void {
+    if (this.formData.invalid || !this.currentUserId) {
+      console.warn('Formulaire invalide ou utilisateur non connecté');
+      return;
+    }
+  
+    const content = this.formData.get('chatMsg')?.value?.trim();
+    if (!content) {
+      console.warn('Le message ne peut pas être vide');
+      return;
+    }
+  
+    const message: ChatMessageDTO = {
+      sender: this.currentUserId!,
       content: content,
       timestamp: new Date().toISOString(),
       type: this.chatMode === 'private' ? 'PRIVATE' : 'TEAM',
-      senderUsername: this.currentUser?.username || 'Utilisateur',
-      senderTeamName: 'hala',
-      chatRoomId: this.chatMode === 'private' 
-          ? this.selectedCollaboratorId?.toString() || ''
-          : this.teamId
-  };
-
-  if (this.chatMode === 'private' && this.selectedCollaboratorId) {
-      this.chatService.sendPrivateMessage(
+      senderUsername: this.currentUser?.username,
+      senderTeamName: this.currentUserTeamName || 'Équipe inconnue',
+      chatRoomId: this.chatMode === 'team' ? this.teamId : this.selectedCollaboratorId?.toString() || '',
+      recipientId: this.chatMode === 'private' 
+          ? this.selectedCollaboratorId?.toString() || null
+          : null
+    };
+    this.allMessages.push(message);
+    this.filterMessages();
+    this.formData.reset();
+    try {
+      if (this.chatMode === 'private') {
+        if (!this.selectedCollaboratorId) {
+          console.error('Aucun collaborateur sélectionné');
+          return;
+        }
+        this.chatService.sendPrivateMessage(
           this.selectedCollaboratorId.toString(), 
           message
-      );
-  } else {
-      this.chatService.sendTeamMessage(this.teamId, message);
+        );
+      } else {
+        if (this.teamId === '0') {
+          console.error('Aucune équipe assignée');
+          return;
+        }
+        this.chatService.sendTeamMessage(this.teamId, message);
+      }
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi:', error);
+    }
   }
-
-  this.formData.reset();
-}
-
-  selectCollaborator(collaboratorId: number): void {
-    this.selectedCollaboratorId = collaboratorId;
-    console.log("Selected collaborator ID set to:", this.selectedCollaboratorId);
-    this.updateInputState();
+ selectCollaborator(collaboratorId: number): void {
+  this.selectedCollaboratorId = collaboratorId;
+  console.log("Selected collaborator ID set to:", this.selectedCollaboratorId);
+  this.updateInputState();
+  if (this.chatMode === 'private' && this.currentUser?.id) {
+    this.loadChatHistory();
+  } else {
     this.filterMessages();
+  }
 }
 
   isCurrentUserMessage(message: ChatMessageDTO): boolean {
@@ -284,17 +334,12 @@ sendMessage(): void {
   }
 
   getSelectedCollaboratorName(): string {
-    if (this.chatMode === 'team') return 'Équipe';
+    if (this.chatMode === 'team') {
+      return this.currentUserTeamName || 'Équipe';
+    }
     
     const collaborator = this.collaborators.find(c => c.id === this.selectedCollaboratorId);
     return collaborator?.username || 'Collaborateur';
-  }
-
-  getSelectedCollaboratorPost(): string {
-    if (this.chatMode === 'team') return 'Équipe';
-    
-    const collaborator = this.collaborators.find(c => c.id === this.selectedCollaboratorId);
-    return collaborator?.post || 'Poste non spécifié';
   }
 
   filterCollaboratorsBySearch(): void {
@@ -307,4 +352,45 @@ sendMessage(): void {
       this.filterCollaborators();
     }
   }
+  
+  private loadChatHistory(): void {
+    if (this.chatMode === 'team' && this.teamId && this.teamId !== '0') {
+      this.messageService.getTeamMessages(Number(this.teamId)).subscribe({
+        next: (messages) => {
+          this.allMessages = (messages || []).map(msg => ({
+            ...msg,
+            senderUsername: msg.senderUsername || this.getUsernameFromId(msg.sender)
+          }));
+          this.filterMessages();
+        },
+        error: (err) => console.error("Erreur historique équipe", err)
+      });
+    } else if (this.chatMode === 'private' && this.currentUser?.id && this.selectedCollaboratorId) {
+      this.messageService.getPrivateMessages(
+        this.currentUser.id, 
+        this.selectedCollaboratorId
+      ).subscribe({
+        next: (messages) => {
+          this.allMessages = (messages || []).map(msg => ({
+            ...msg,
+            senderUsername: msg.senderUsername || this.getUsernameFromId(msg.sender)
+          }));
+          this.filterMessages();
+        },
+        error: (err) => console.error("Erreur historique privé", err)
+      });
+    } else {
+      this.allMessages = [];
+      this.filterMessages();
+    }
+  }
+  
+  private getUsernameFromId(userId: string): string {
+    if (userId === this.currentUserId) {
+      return this.currentUser?.username || 'Vous';
+    }
+    const collaborator = this.collaborators.find(c => c.id.toString() === userId);
+    return collaborator?.username || 'Utilisateur';
+  }
+  
 }

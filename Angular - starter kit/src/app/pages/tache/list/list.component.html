@@ -233,7 +233,10 @@
                 <h6 class="text-sm font-medium text-gray-700">Start Date</h6>
                 <p class="mt-1 text-gray-600">{{ selectedTaskDetails.dateDebut | date:'mediumDate' }}</p>
               </div>
-  
+             <!-- <div>
+                <h6 class="text-sm font-medium text-gray-700">Project</h6>
+                <p class="mt-1 text-gray-900 font-semibold">{{ selectedTaskDetails.projet?.name || 'No project assigned' }}</p>
+              </div>-->
               <div>
                 <h6 class="text-sm font-medium text-gray-700">End Date</h6>
                 <p class="mt-1 text-gray-600">{{ selectedTaskDetails.dateFin | date:'mediumDate' }}</p>

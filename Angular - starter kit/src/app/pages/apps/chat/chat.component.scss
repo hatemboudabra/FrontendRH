@@ -1,6 +1,7 @@
-:host {
-  display: block;
-  height: 100%;
+.container-fluid {
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 .card {
@@ -9,44 +10,156 @@
   height: 100%;
 }
 
-.card-body, .relative {
+.card-header {
+  padding: 1rem;
+}
+
+.card-body {
   flex: 1;
   overflow: hidden;
 }
 
-.form-input {
-  transition: all 0.3s ease;
+.card-footer {
+  padding: 1rem;
+}
 
-  &:focus {
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
+.form-input {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
 }
 
 .bg-custom-500 {
   background-color: #6366f1;
 }
 
-.hover\:bg-custom-600:hover {
-  background-color: #4f46e5;
+.bg-custom-100 {
+  background-color: #e0e7ff;
 }
 
-.dark {
-  .bg-custom-900\/20 {
-    background-color: rgba(30, 41, 59, 0.2);
-  }
+
+
+.dark .bg-zink-600 {
+  background-color: #1e293b;
 }
 
-.size-10 {
-  width: 2.5rem;
-  height: 2.5rem;
+.dark .bg-zink-700 {
+  background-color: #0f172a;
 }
 
-.size-9 {
-  width: 2.25rem;
-  height: 2.25rem;
+.dark .text-zink-200 {
+  color: #e2e8f0;
 }
 
-.size-3 {
-  width: 0.75rem;
-  height: 0.75rem;
+.dark .text-zink-300 {
+  color: #cbd5e1;
+}
+
+.dark .text-zink-400 {
+  color: #94a3b8;
+}
+
+.dark .border-zink-500 {
+  border-color: #64748b;
+}
+
+.message {
+  margin-bottom: 1.5rem;
+}
+
+.message.current-user {
+  justify-content: flex-end;
+}
+
+.message-content {
+  max-width: 75%;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+
+.rounded-full {
+  border-radius: 9999px;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+.hover\:bg-slate-100:hover {
+  background-color: #f1f5f9;
+}
+
+.dark .hover\:bg-zink-600:hover {
+  background-color: #1e293b;
+}
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.p-4 {
+  padding: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.bottom-0 {
+  bottom: 0;
+}
+
+.right-0 {
+  right: 0;
 }

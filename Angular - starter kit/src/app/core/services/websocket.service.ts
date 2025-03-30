@@ -10,23 +10,31 @@ import { Notifications } from "../../data/notif";
 })
 export class WebsocketService {
   private stompClient!: Stomp.Client;
+  private userId?: number;
 
-  constructor(private notificationService: NotificationService) {
-    this.connect();
-  }
+  constructor(private notificationService: NotificationService) {}
 
-  connect() {
+  public connect(userId: number): void {
+    this.userId = userId;
+    
+    if (this.stompClient?.connected) {
+      return;
+    }
+
     const socket = new SockJS('http://localhost:8082/ws');
     this.stompClient = Stomp.over(socket);
 
-    this.stompClient.connect({}, frame => {
+    this.stompClient.connect({}, (frame) => {
       console.log('Connected: ' + frame);
 
-      this.stompClient.subscribe('/user/queue/notifications', notification => {
+      this.stompClient.subscribe(`/user/queue/notifications`, (notification) => {
         const parsedNotification: Notifications = JSON.parse(notification.body);
-        console.log('Notification reçue via WebSocket :', parsedNotification);
-        this.notificationService.addNotification(parsedNotification);
-    });
+        
+        if (parsedNotification.userId === this.userId) {
+          console.log('Notification reçue :', parsedNotification);
+          this.notificationService.addNotification(parsedNotification);
+        }
+      });
     });
   }
 }
