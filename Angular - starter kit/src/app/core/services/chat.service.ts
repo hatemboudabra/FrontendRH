@@ -56,18 +56,7 @@ export class ChatService {
       setTimeout(() => this.connect(teamId), 1000);
     };
 
-    this.stompClient.onWebSocketClose = (event) => {
-      console.log('WebSocket fermé:', event);
-      this.isConnected = false;
-      setTimeout(() => this.connect(teamId), 1000);
-    };
-
-    this.stompClient.onWebSocketError = (event) => {
-      console.error('Erreur WebSocket:', event);
-      this.isConnected = false;
-      setTimeout(() => this.connect(teamId), 1000);
-    };
-
+    
     this.stompClient.activate();
   }
 
