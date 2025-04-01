@@ -29,12 +29,12 @@ export class WebsocketService {
 
       this.stompClient.subscribe(`/user/queue/notifications`, (notification) => {
         const parsedNotification: Notifications = JSON.parse(notification.body);
-        
         if (parsedNotification.userId === this.userId) {
-          console.log('Notification reçue :', parsedNotification);
-          this.notificationService.addNotification(parsedNotification);
+            console.log('Notification reçue :', parsedNotification);
+            this.notificationService.addNotification(parsedNotification);
         }
-      });
+    });
+    
     });
   }
 }

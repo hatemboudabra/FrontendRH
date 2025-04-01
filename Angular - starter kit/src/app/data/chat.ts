@@ -7,4 +7,5 @@ export interface ChatMessageDTO {
   timestamp: string;
   senderUsername?: string;
   senderTeamName?: string;
+  //file?: string; 
 }

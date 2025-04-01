@@ -66,7 +66,7 @@ export class ChatComponent implements OnInit {
   teamId: string = '0'; 
   currentUserTeamId: number | null = null;
   currentUserTeamName: string | null = null;
-
+  
   constructor(
     private formBuilder: UntypedFormBuilder,
     private chatService: ChatService,
@@ -82,6 +82,10 @@ export class ChatComponent implements OnInit {
     this.loadCollaborators();
     this.setupMessageSubscription();
 //  this.loadChatHistory()
+/*
+if (this.chatMode === 'private') {
+  this.chatService.connect('private');
+}*/
   }
 
   private initializeForm(): void {
@@ -111,11 +115,11 @@ export class ChatComponent implements OnInit {
           this.currentUser = user;
           this.getUserIdByUsername(user.username);
           if (user.id) {
-            this.loadTeamInfo(user.id); 
+            this.loadTeamInfo(user.id);
           }
         }
       },
-      error: (error) => console.error('Error loading user:', error)
+      error: (error) => console.error('Erreur lors du chargement de l’utilisateur:', error)
     });
   }
 
@@ -139,18 +143,19 @@ export class ChatComponent implements OnInit {
         this.currentUserTeamId = teamInfo.teamId ?? null;
         this.currentUserTeamName = teamInfo.teamName ?? null;
         this.teamId = teamInfo.teamId?.toString() ?? '0';
-        
-        console.log('Team info loaded:', {
+
+        console.log('Info équipe chargée:', {
           teamId: this.teamId,
           teamName: this.currentUserTeamName
         });
-        if (this.chatMode === 'team') {
+        if (this.chatMode === 'team' && this.teamId !== '0') {
+          this.chatService.connect(this.teamId);
           this.loadChatHistory();
         }
       },
       error: (error) => {
-        console.error('Error loading team info:', error);
-        this.teamId = '0'; 
+        console.error('Erreur lors du chargement des informations équipe:', error);
+        this.teamId = '0';
       }
     });
   }
@@ -268,20 +273,19 @@ export class ChatComponent implements OnInit {
     }
   
     const message: ChatMessageDTO = {
-      sender: this.currentUserId!,
+      sender: this.currentUserId,
       content: content,
       timestamp: new Date().toISOString(),
       type: this.chatMode === 'private' ? 'PRIVATE' : 'TEAM',
       senderUsername: this.currentUser?.username,
       senderTeamName: this.currentUserTeamName || 'Équipe inconnue',
       chatRoomId: this.chatMode === 'team' ? this.teamId : this.selectedCollaboratorId?.toString() || '',
-      recipientId: this.chatMode === 'private' 
-          ? this.selectedCollaboratorId?.toString() || null
-          : null
+      recipientId: this.chatMode === 'private' ? this.selectedCollaboratorId?.toString() || null : null
     };
-    this.allMessages.push(message);
-    this.filterMessages();
+  
+    
     this.formData.reset();
+  
     try {
       if (this.chatMode === 'private') {
         if (!this.selectedCollaboratorId) {
@@ -303,6 +307,7 @@ export class ChatComponent implements OnInit {
       console.error('Erreur lors de l\'envoi:', error);
     }
   }
+  
  selectCollaborator(collaboratorId: number): void {
   this.selectedCollaboratorId = collaboratorId;
   console.log("Selected collaborator ID set to:", this.selectedCollaboratorId);
