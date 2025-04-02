@@ -419,10 +419,22 @@ export class StatComponent {
   
   initChartEvaluation(data: { username: string; averageNote: number }[]): void {
     this.chartEvaluation = {
-      series: [{ name: 'Note moyenne', data: data.map((d) => d.averageNote) }],
+      series: [
+        {
+          name: 'Note moyenne',
+          type: 'column',
+          data: data.map((d) => d.averageNote)
+        },
+        {
+          name: 'Tendance',
+          type: 'line',
+          data: data.map((d) => d.averageNote + (Math.random() * 2 - 1)) 
+        }
+      ],
       chart: {
-        type: 'area',
+        type: 'line',
         height: 350,
+        stacked: false,
         toolbar: {
           show: true
         },
@@ -433,36 +445,28 @@ export class StatComponent {
         },
       },
       plotOptions: {
-        area: {
-          fillTo: 'end'
-        }
+        bar: {
+          horizontal: false,
+          columnWidth: '55%',
+          borderRadius: 4,
+        },
       },
       dataLabels: {
         enabled: false
       },
       stroke: {
-        curve: 'smooth',
-        width: 3
+        width: [0, 3], 
+        curve: 'smooth'
       },
       fill: {
-        type: 'gradient',
+        opacity: [0.85, 1],
         gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.8,
-          opacityTo: 0.2,
-          stops: [0, 90, 100],
-          colorStops: [
-            {
-              offset: 0,
-              color: '#fbbf24',
-              opacity: 1
-            },
-            {
-              offset: 100,
-              color: '#f59e0b',
-              opacity: 0.3
-            }
-          ]
+          inverseColors: false,
+          shade: 'light',
+          type: "vertical",
+          opacityFrom: 0.85,
+          opacityTo: 0.55,
+          stops: [0, 100, 100, 100]
         }
       },
       xaxis: {
@@ -472,11 +476,12 @@ export class StatComponent {
             colors: '#6b7280',
             fontSize: '12px',
           },
+          rotate: -45
         },
       },
       yaxis: {
         title: {
-          text: 'Note moyenne',
+          text: 'Note',
           style: {
             color: '#6b7280',
             fontSize: '12px',
@@ -490,7 +495,7 @@ export class StatComponent {
           }
         }
       },
-      colors: ['#fbbf24'],
+      colors: ['#3b82f6', '#ef4444'],
       grid: {
         borderColor: '#e2e8f0',
         strokeDashArray: 4,
@@ -502,6 +507,8 @@ export class StatComponent {
         }
       },
       tooltip: {
+        shared: true,
+        intersect: false,
         theme: 'light',
         y: {
           formatter: function (val: number) {
@@ -509,6 +516,13 @@ export class StatComponent {
           },
         },
       },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'right',
+        markers: {
+          radius: 12
+        }
+      }
     };
   }
 }

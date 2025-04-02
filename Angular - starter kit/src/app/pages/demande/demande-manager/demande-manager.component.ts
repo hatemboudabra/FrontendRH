@@ -35,6 +35,7 @@ export class DemandeManagerComponent {
   startIndex: number = 0;
   endIndex: any;
   currentUser: User | null = null;
+  searchQuery: string = '';
   constructor(private demandeService: DemandeService,
     private authService: AuthenticationService,
     private notificationService: NotificationService 
@@ -138,6 +139,7 @@ export class DemandeManagerComponent {
     { name: 'Type', prop: 'type' },
     { name: 'Date', prop: 'date' },
     { name: 'Status', prop: 'status' },
+    {name:'CreatedBy',prop:'username'},
     { name: 'Action', prop: 'actions' }
   ];
   updateStatus(id: number, newStatus: Status): void {
@@ -162,5 +164,21 @@ export class DemandeManagerComponent {
         console.error('Erreur lors de la mise à jour du statut:', error);
       },
     });
+  }
+
+  searchDemandes(): void {
+    if (!this.searchQuery.trim()) {
+      this.demandes = this.allDemandes.slice(this.startIndex, this.endIndex);
+      return;
+    }
+  
+    const lowerQuery = this.searchQuery.toLowerCase();
+    this.demandes = this.allDemandes
+      .filter(d =>
+        d.title.toLowerCase().includes(lowerQuery) ||
+        d.description.toLowerCase().includes(lowerQuery)||
+        d.type.toLowerCase().includes(lowerQuery)
+      )
+      .slice(this.startIndex, this.endIndex);
   }
 }

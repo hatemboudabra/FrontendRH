@@ -51,11 +51,11 @@ export class UserdemandeComponent {
           this.currentUser = user;
           this.getUserIdByUsername(user.username); 
         } else {
-          console.error('❌ Utilisateur non connecté ou username manquant.');
+          console.error(' Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors du chargement de l\'utilisateur :', error);
+        console.error(' Erreur lors du chargement de l\'utilisateur :', error);
       },
     });
   }
@@ -67,11 +67,11 @@ export class UserdemandeComponent {
           console.log('✅ ID utilisateur reçu :', userDetails.id);
           this.loadDemandes(userDetails.id); 
         } else {
-          console.error('❌ Données utilisateur invalides ou ID manquant');
+          console.error(' Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error('❌ Erreur lors de la récupération des données utilisateur :', error);
+        console.error(' Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -85,7 +85,7 @@ export class UserdemandeComponent {
         this.updatePagedOrders();
       },
       error: (error) => {
-        console.error('❌ Error loading demandes:', error);
+        console.error('Error loading demandes:', error);
       }
     });
   }
@@ -151,6 +151,6 @@ export class UserdemandeComponent {
     { name: 'Type', prop: 'type' },
     { name: 'Date', prop: 'date' },
     { name: 'Status', prop: 'status' },
-   { name: 'Action', prop: 'actions' }
+   //{ name: 'Action', prop: 'actions' }
   ];
 }

@@ -101,7 +101,6 @@ loadOffers(userId: number): void {
   this.subscriptions.add(
     this.offersService.getAllOffers().subscribe({
       next: (data) => {
-        // les offers pas expirer
         const currentDate = new Date();
         this.offers = data.filter(offer => new Date(offer.expirationDate) > currentDate);
         this.loading = false;

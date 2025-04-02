@@ -75,7 +75,8 @@ export class OffersComponent implements OnInit {
     this.subscriptions.add(
       this.offersService.getAllOffers().subscribe({
         next: (data) => {
-          this.offers = data;
+          const now = new Date();
+          this.offers = data.filter(offer => new Date(offer.expirationDate) >= now);
           this.loading = false;
         },
         error: (err) => {
@@ -85,6 +86,7 @@ export class OffersComponent implements OnInit {
       })
     );
   }
+  
 
   toggleAddOffer(): void {
     this.isAddingOffer = !this.isAddingOffer;

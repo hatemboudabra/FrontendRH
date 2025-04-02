@@ -52,8 +52,8 @@ export class ChatService {
 
     this.stompClient.onStompError = (error) => {
       console.error('Erreur STOMP:', error);
-      this.isConnected = false;
-      setTimeout(() => this.connect(teamId), 1000);
+     // this.isConnected = false;
+    //  setTimeout(() => this.connect(teamId), 1000);
     };
 
     
