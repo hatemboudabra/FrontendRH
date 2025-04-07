@@ -57,6 +57,12 @@ export class AddTacheComponent implements OnInit {
   }
   ngOnInit(): void {
     this.loadCurrentUser(); 
+    this.taskForm.get('dateDebut')?.valueChanges.subscribe(() => {
+      this.validateDates();
+    });
+    this.taskForm.get('dateFin')?.valueChanges.subscribe(() => {
+      this.validateDates();
+    });
   }
   
   loadCurrentUser(): void {
@@ -117,6 +123,7 @@ export class AddTacheComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.validateDates();
     if (this.taskForm.valid && this.currentUser && this.currentUser.id) {
       this.loading = true;
       const chefId = this.currentUser.id;
@@ -159,4 +166,27 @@ export class AddTacheComponent implements OnInit {
       }
     });
   }
+  validateDates(): void {
+    const dateDebutControl = this.taskForm.get('dateDebut');
+    const dateFinControl = this.taskForm.get('dateFin');
+  
+    if (dateDebutControl && dateFinControl) {
+      const dateDebut = new Date(dateDebutControl.value);
+      const dateFin = new Date(dateFinControl.value);
+      if (dateDebut >= dateFin) {
+        dateFinControl.setErrors({ dateInvalid: true });
+      } else {
+        const errors = dateFinControl.errors;
+        if (errors) {
+          delete errors['dateInvalid'];
+          if (Object.keys(errors).length === 0) {
+            dateFinControl.setErrors(null);
+          } else {
+            dateFinControl.setErrors(errors);
+          }
+        }
+      }
+    }
+  }
+  
 }

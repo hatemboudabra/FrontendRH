@@ -43,4 +43,8 @@ export class DemandeService {
     getDemandecountsbystatusavancepret(): Observable<Map<string, number>> {
       return this.http.get<Map<string, number>>(`${this.baseUrl}countRh`);
     }
+
+    getDemandesCountByMonth(): Observable<Map<string, number>> {
+      return this.http.get<Map<string, number>>(`${this.baseUrl}stats/mois`);
+  }
 }

@@ -122,5 +122,12 @@ export const MENU: MenuItem[] = [
             { id: 1201, label: 'Ajouter une évaluation', link: '/addnote', parentId: 12, roles: ['ROLE_CHEF'] },
            
         ]
-    }*/
+    }*/,
+        {
+            id: 13,
+            label: 'Calendrier',
+            icon: 'calendar',
+            link: '/calendar',
+            roles: ['ROLE_CHEF', 'ROLE_RESPONSABLE_RH']
+        }
 ];

@@ -27,6 +27,8 @@ import { ListtemcollaboeateurComponent } from "./team/listtemcollaboeateur/listt
 import { AddnoteComponent } from "./note/addnote/addnote.component";
 import { AddprojectComponent } from "./tache/addproject/addproject.component";
 import { ListprojectComponent } from "./tache/listproject/listproject.component";
+import { calendarReducer } from "../store/Calendar/calendar.reducer";
+import { CalendarComponent } from "./calendar/calendar/calendar.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -57,7 +59,8 @@ export const PAGE_ROUTES: Route[] = [
  //  {path:'listnote',component:ListnoteComponent}
     {path:'addnote',component:AddnoteComponent},
     {path:'addproject',component:AddprojectComponent},
-    {path:'listproject',component:ListprojectComponent}
+    {path:'listproject',component:ListprojectComponent},
+    {path:'calendar',component:CalendarComponent}
 
 
 
