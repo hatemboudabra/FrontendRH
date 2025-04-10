@@ -352,7 +352,7 @@ export class ListteamComponent {
           ? response 
           : response.message || 'Évaluation réussie !';
         
-        alert(message);
+       // alert(message);
         console.log('Évaluation réussie', response);
         this.closeEvaluateModal();
       },

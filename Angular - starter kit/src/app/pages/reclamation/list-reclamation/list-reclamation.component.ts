@@ -11,6 +11,7 @@ import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { User } from '../../../store/Authentication/auth.models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-list-reclamation',
@@ -103,17 +104,37 @@ export class ListReclamationComponent {
     { name: 'Action', prop: 'action' }
   ];
   deleteReclamation(id: number) {
-    if (confirm("Voulez-vous vraiment supprimer cette réclamation ?")) {
-      this.reclamationService.deleteclaims(id).subscribe({
-        next: () => {
-          console.log(" Réclamation supprimée avec succès !");
-          this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
-        },
-        error: (err) => {
-          console.error(" Erreur lors de la suppression :", err);
-        }
-      });
-    }
+    Swal.fire({
+      title: 'Êtes-vous sûr?',
+      text: "Vous ne pourrez pas annuler cette action!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Oui, supprimer!',
+      cancelButtonText: 'Annuler'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.reclamationService.deleteclaims(id).subscribe({
+          next: () => {
+            Swal.fire(
+              'Supprimé!',
+              'La réclamation a été supprimée.',
+              'success'
+            );
+            this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
+          },
+          error: (err) => {
+            console.error("Erreur lors de la suppression :", err);
+            Swal.fire(
+              'Erreur!',
+              'Une erreur est survenue lors de la suppression.',
+              'error'
+            );
+          }
+        });
+      }
+    });
   }
   
 }

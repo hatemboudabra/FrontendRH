@@ -61,7 +61,7 @@ export class TopbarComponent {
     private authService:AuthenticationService,
     private notificationService: NotificationService,
     private notifservice : NotificationApiService,
-    private renderer: Renderer2) {
+      private renderer: Renderer2) {
     translate.setDefaultLang('en');
     this.updateSubscription = new Subscription();
   }

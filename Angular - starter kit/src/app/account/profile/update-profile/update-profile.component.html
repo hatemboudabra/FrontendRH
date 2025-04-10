@@ -1,55 +1,131 @@
-<div class="update-profile-container">
-    <h2>Mettre à jour votre profil</h2>
-    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="username">Nom d'utilisateur</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          placeholder="Entrez votre nom d'utilisateur"
-        />
-        <div *ngIf="profileForm.get('username')?.invalid && profileForm.get('username')?.touched">
-          Le nom d'utilisateur est requis.
+<div class="profile-container">
+  <div class="profile-card">
+    <h2 class="profile-title">Mise à jour du profil</h2>
+    
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="profile-form">
+      <div class="form-section">
+        <h3 class="section-title">Informations personnelles</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur <span class="required">*</span></label>
+            <input id="username" type="text" formControlName="username" class="form-control" required>
+            <div *ngIf="profileForm.get('username')?.invalid && (profileForm.get('username')?.touched || profileForm.get('username')?.dirty)" class="error-message">
+              Ce champ est requis
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email <span class="required">*</span></label>
+            <input id="email" type="email" formControlName="email" class="form-control" required>
+            <div *ngIf="profileForm.get('email')?.invalid && (profileForm.get('email')?.touched || profileForm.get('email')?.dirty)" class="error-message">
+              <span *ngIf="profileForm.get('email')?.errors?.['required']">Ce champ est requis</span>
+              <span *ngIf="profileForm.get('email')?.errors?.['email']">Veuillez entrer un email valide</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="sexe">Sexe</label>
+            <select id="sexe" formControlName="sexe" class="form-control">
+              <option value="">Sélectionner</option>
+              <option value="M">Masculin</option>
+              <option value="F">Féminin</option>
+              <option value="O">Autre</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="dateOfBirth">Date de naissance</label>
+            <input id="dateOfBirth" type="date" formControlName="dateOfBirth" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="civilStatus">État civil</label>
+            <select id="civilStatus" formControlName="civilStatus" class="form-control">
+              <option value="">Sélectionner</option>
+              <option value="Célibataire">Célibataire</option>
+              <option value="Marié(e)">Marié(e)</option>
+              <option value="Divorcé(e)">Divorcé(e)</option>
+              <option value="Veuf/Veuve">Veuf/Veuve</option>
+            </select>
+          </div>
         </div>
       </div>
-  
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="Entrez votre email"
-        />
-        <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
-          Veuillez entrer un email valide.
+      
+      <div class="form-section">
+        <h3 class="section-title">Coordonnées</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="phone1">Téléphone principal</label>
+            <input id="phone1" type="tel" formControlName="phone1" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="address">Adresse</label>
+            <textarea id="address" formControlName="address" class="form-control" rows="2"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="city">Ville</label>
+            <input id="city" type="text" formControlName="city" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="postalCode">Code postal</label>
+            <input id="postalCode" type="text" formControlName="postalCode" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="country">Pays</label>
+            <input id="country" type="text" formControlName="country" class="form-control">
+          </div>
         </div>
       </div>
-  
-      <div class="form-group">
-        <label for="password">Mot de passe</label>
-        <input
-          id="password"
-          type="password"
-          formControlName="password"
-          placeholder="Entrez votre mot de passe"
-        />
-    <!--    <div *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
-          Le mot de passe doit contenir au moins 6 caractères.
-        </div>-->
+      
+      <div class="form-section">
+        <h3 class="section-title">Informations professionnelles</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="post">Poste</label>
+            <input id="post" type="text" formControlName="post" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="nationality">Nationalité</label>
+            <input id="nationality" type="text" formControlName="nationality" class="form-control">
+          </div>
+          
+          <div class="form-group">
+            <label for="language">Langue</label>
+            <select id="language" formControlName="language" class="form-control">
+              <option value="FR">Français</option>
+              <option value="EN">Anglais</option>
+              <option value="ES">Espagnol</option>
+              <option value="DE">Allemand</option>
+            </select>
+          </div>
+        </div>
       </div>
-  
-      <div class="form-group">
-        <label for="post">Poste</label>
-        <input
-          id="post"
-          type="text"
-          formControlName="post"
-          placeholder="Entrez votre poste"
-        />
+      
+      <div class="form-section">
+        <h3 class="section-title">Sécurité</h3>
+        <div class="form-group">
+          <label for="password">Nouveau mot de passe</label>
+          <div class="password-input">
+            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" class="form-control">
+            <button type="button" (click)="togglePasswordVisibility()" class="toggle-password">
+              <span class="icon">{{ showPassword ? '👁️' : '👁️‍🗨️' }}</span>
+            </button>
+          </div>
+          <div class="hint">Laissez vide pour ne pas modifier</div>
+        </div>
       </div>
-  
-      <button type="submit" [disabled]="profileForm.invalid">Mettre à jour</button>
+      
+      <div class="form-actions">
+        <button type="submit" [disabled]="profileForm.invalid || isLoading" class="submit-btn">
+          <span *ngIf="isLoading" class="spinner"></span>
+          {{ isLoading ? 'Enregistrement...' : 'Mettre à jour' }}
+        </button>
+      </div>
     </form>
   </div>
+</div>

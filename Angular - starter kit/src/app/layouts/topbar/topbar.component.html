@@ -55,7 +55,6 @@
                         </button>
                     </div>
                     
-                    <!-- Message Notification 
                     <div mndropdown [placement]="'bottom-start'" class="relative flex items-center dropdown h-header">
                         <button mndropdownToggle type="button" class="inline-flex justify-center relative items-center p-0 text-topbar-item transition-all size-[37.5px] duration-200 ease-linear bg-topbar rounded-md dropdown-toggle btn hover:bg-topbar-item-bg-hover hover:text-topbar-item-hover group-data-[topbar=dark]:bg-topbar-dark group-data-[topbar=dark]:hover:bg-topbar-item-bg-hover-dark group-data-[topbar=dark]:hover:text-topbar-item-hover-dark group-data-[topbar=brand]:bg-topbar-brand group-data-[topbar=brand]:hover:bg-topbar-item-bg-hover-brand group-data-[topbar=brand]:hover:text-topbar-item-hover-brand group-data-[topbar=dark]:dark:bg-zink-700 group-data-[topbar=dark]:dark:hover:bg-zink-600 group-data-[topbar=brand]:text-topbar-item-brand group-data-[topbar=dark]:dark:hover:text-zink-50 group-data-[topbar=dark]:dark:text-zink-200 group-data-[topbar=dark]:text-topbar-item-dark" id="messageDropdown" data-bs-toggle="dropdown">
                             <lucide-angular name="message-circle" [class]="'inline-block size-5 stroke-1 fill-slate-100 group-data-[topbar=dark]:fill-topbar-item-bg-hover-dark group-data-[topbar=brand]:fill-topbar-item-bg-hover-brand'"></lucide-angular>
@@ -76,8 +75,7 @@
                   
                         </div>
                     </div>
-                     -->
-                    <!---->
+                
 
                     <div mndropdown 
                     [placement]="'bottom-start'" 
@@ -109,7 +107,7 @@
                         <h6 class="mb-4 text-16">
                           Notifications
                           <span class="inline-flex items-center justify-center size-5 ml-1 text-[11px] font-medium border rounded-full text-white bg-orange-500 border-orange-500">
-                            {{ notifyList?.length }}
+                            {{ notifyList.length }}
                           </span>
                         </h6>
                         <button 

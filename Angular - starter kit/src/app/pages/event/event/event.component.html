@@ -1,0 +1,118 @@
+<div class="card">
+    <div class="card-body">
+        <!-- Header avec titre et boutons -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <h5 class="text-lg font-semibold">
+                <lucide-angular name="calendar-days" class="inline-block size-5 mr-2 text-custom-500"></lucide-angular>
+                Événements à venir
+            </h5>
+            <div class="flex items-center gap-2">
+                <button class="btn bg-custom-500 text-white border-custom-500 hover:bg-custom-600 hover:border-custom-600"
+                        (click)="createNewEvent()">
+                    <lucide-angular name="plus" class="inline-block size-4 mr-1"></lucide-angular>
+                    Nouvel événement
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Recherche -->
+            <div class="relative">
+                <input type="text" class="form-input pl-10" placeholder="Rechercher..." 
+                       [(ngModel)]="searchQuery" (input)="filterEvents()">
+                <lucide-angular name="search" class="absolute left-3 top-2.5 size-4 text-gray-400"></lucide-angular>
+            </div>
+
+            <!-- Catégorie -->
+            <select class="form-select" [(ngModel)]="selectedCategory" (change)="filterEvents()">
+                <option *ngFor="let category of eventCategories" [value]="category">{{category}}</option>
+            </select>
+
+            <!-- Date -->
+            <div class="relative">
+                <input class="form-input pl-10 date-range-input" placeholder="Sélectionner une période" 
+                       [(ngModel)]="dateRange">
+                <lucide-angular name="calendar" class="absolute left-3 top-2.5 size-4 text-gray-400"></lucide-angular>
+            </div>
+        </div>
+
+        <!-- Liste des événements -->
+        <div *ngIf="!isLoading; else loading" class="space-y-4">
+            <!-- Carte d'événement -->
+            <div *ngFor="let event of filteredEvents" 
+                 class="border rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-200 border-gray-200 dark:border-zink-500">
+                <div class="p-5">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <!-- Infos de base -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3">
+                                <h6 class="text-lg font-semibold hover:text-custom-500 cursor-pointer"
+                                    (click)="openEventDetails(event)">
+                                    {{event.title}}
+                                </h6>
+                                <span class="px-2.5 py-0.5 text-xs font-medium rounded-full {{getStatusBadgeClass(event.status)}}">
+                                    {{event.status}}
+                                </span>
+                            </div>
+                            <p class="mt-1 text-gray-500 dark:text-zink-300 line-clamp-2">
+                                {{event.description}}
+                            </p>
+                            <div class="flex flex-wrap items-center gap-3 mt-3 text-sm">
+                                <span class="flex items-center gap-1.5 text-gray-600 dark:text-zink-200">
+                                    <lucide-angular name="calendar" class="size-4"></lucide-angular>
+                                    {{event.startDate | date:'dd/MM/yyyy HH:mm'}} - {{event.endDate | date:'HH:mm'}}
+                                </span>
+                                <span class="flex items-center gap-1.5 text-gray-600 dark:text-zink-200">
+                                    <lucide-angular name="map-pin" class="size-4"></lucide-angular>
+                                    {{event.location}}
+                                </span>
+                                <span class="flex items-center gap-1.5 text-gray-600 dark:text-zink-200">
+                                    <lucide-angular name="users" class="size-4"></lucide-angular>
+                                    {{event.participants}} participants
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-2">
+                            <button class="btn bg-white border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500/20"
+                                    (click)="editEvent(event)">
+                                <lucide-angular name="edit" class="size-4"></lucide-angular>
+                            </button>
+                            <button class="btn bg-white border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 dark:bg-zink-600 dark:border-zink-500 dark:text-zink-200 dark:hover:bg-zink-500/20"
+                                    (click)="deleteEvent(event)">
+                                <lucide-angular name="trash-2" class="size-4"></lucide-angular>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-gray-50 dark:bg-zink-600 border-t border-gray-200 dark:border-zink-500 flex justify-between items-center">
+                    <span class="text-sm text-gray-500 dark:text-zink-300">
+                        <lucide-angular name="tag" class="inline-block size-3.5 mr-1"></lucide-angular>
+                        {{event.category}}
+                    </span>
+                    <button class="text-sm text-custom-500 hover:text-custom-600 flex items-center gap-1"
+                            (click)="openEventDetails(event)">
+                        Voir détails
+                        <lucide-angular name="arrow-right" class="size-4"></lucide-angular>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Aucun résultat -->
+            <div *ngIf="filteredEvents.length === 0" class="text-center py-8">
+                <lucide-angular name="calendar-x" class="inline-block size-10 text-gray-400 mb-3"></lucide-angular>
+                <h6 class="text-lg font-medium">Aucun événement trouvé</h6>
+                <p class="text-gray-500 dark:text-zink-300 mt-1">Essayez de modifier vos critères de recherche</p>
+            </div>
+        </div>
+
+        <!-- Loading state -->
+        <ng-template #loading>
+            <div class="flex justify-center items-center py-12">
+                <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-custom-500"></div>
+            </div>
+        </ng-template>
+    </div>
+</div>

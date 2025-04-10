@@ -29,6 +29,7 @@ import { AddprojectComponent } from "./tache/addproject/addproject.component";
 import { ListprojectComponent } from "./tache/listproject/listproject.component";
 import { calendarReducer } from "../store/Calendar/calendar.reducer";
 import { CalendarComponent } from "./calendar/calendar/calendar.component";
+import { EventComponent } from "./event/event/event.component";
 
 export const PAGE_ROUTES: Route[] = [
     { path: '', component: IndexComponent },
@@ -60,7 +61,8 @@ export const PAGE_ROUTES: Route[] = [
     {path:'addnote',component:AddnoteComponent},
     {path:'addproject',component:AddprojectComponent},
     {path:'listproject',component:ListprojectComponent},
-    {path:'calendar',component:CalendarComponent}
+    {path:'calendar',component:CalendarComponent},
+    {path:'event',component:EventComponent}
 
 
 

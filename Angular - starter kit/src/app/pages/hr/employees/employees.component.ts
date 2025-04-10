@@ -49,6 +49,9 @@ export class EmployeesComponent implements OnInit {
 successMessage: string | null = null;
 selectedUserDetails: any = null;
 isUserDetailsModalVisible: boolean = false
+//
+activeTab: string = 'info';
+
   columns = [
     { name: 'ID', prop: 'id' },
     { name: 'Username', prop: 'username' },
@@ -204,16 +207,35 @@ isUserDetailsModalVisible: boolean = false
     });
   }
   showUserDetails(user: any): void {
-    this.selectedUserDetails = user;
-      const modalElement = document.getElementById('userDetailsModal');
-    if (modalElement) {
-    const event = new Event('click');
-      modalElement.dispatchEvent(event);
-    }
+    this.isLoading = true;
+    this.authService.getUserById(user.id).subscribe({
+      next: (userDetails) => {
+        this.selectedUserDetails = {
+          ...user,
+          ...userDetails 
+        };
+        this.isUserDetailsModalVisible = true;
+        this.isLoading = false;
+        
+        const modalElement = document.getElementById('userDetailsModal');
+        if (modalElement) {
+          const event = new Event('click');
+          modalElement.dispatchEvent(event);
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des détails:', error);
+        this.isLoading = false;
+        this.toastr.error('Erreur lors du chargement des détails de l\'employé', 'Erreur');
+      }
+    });
   }
 
   closeUserDetailsModal(): void {
     this.selectedUserDetails = null;
     this.isUserDetailsModalVisible = false; 
+  }
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
   }
 }

@@ -3,7 +3,7 @@
 <div class="card" id="employeeTable">
     <div class="card-body">
         <div class="flex items-center gap-3 mb-4">
-            <h6 class="text-15 grow">Employee (<b class="total-Employs">{{employes?.length}}</b>)</h6>
+            <h6 class="text-15 grow">Employee (<b class="total-Employs">{{employes.length}}</b>)</h6>
             <div class="shrink-0">
                 <a href="javascript:void(0);" [appModalTrigger]="'addChefModal'" type="button" class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
                   <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> 
@@ -122,41 +122,184 @@
         </div>
     </div>
 </ng-modals>
+
 <ng-modals id="userDetailsModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4">
-    <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
-      <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
-       <!-- <h5 class="text-16" id="userDetailsLabel">User Details</h5>-->
-        <button data-modal-close="userDetailsModal" dismissModal [ModalDismiss]="'userDetailsModal'" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500">
-          <lucide-angular name="x" [class]="'size-5'"></lucide-angular>
-        </button>
-      </div>
-      <div class="max-h-[calc(theme('height.screen')_-_180px)] p-4 overflow-y-auto">
-        <div *ngIf="selectedUserDetails">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="space-y-5">
-              <div>
-                <h6 class="text-sm font-medium text-gray-700">Username</h6>
-                <p class="mt-1 text-gray-900 font-semibold">{{ selectedUserDetails.username }}</p>
-              </div>
-              <div>
-                <h6 class="text-sm font-medium text-gray-700">Email</h6>
-                <p class="mt-1 text-gray-600">{{ selectedUserDetails.email }}</p>
-              </div>
-            </div>
-            <div class="space-y-5">
-              <div>
-                <h6 class="text-sm font-medium text-gray-700">Roles</h6>
-                <p class="mt-1 text-gray-600">{{ selectedUserDetails.roles.join(', ') }}</p>
-              </div>
-              <div>
-                <h6 class="text-sm font-medium text-gray-700">Post</h6>
-                <p class="mt-1 text-gray-600">{{ selectedUserDetails.post }}</p>
-              </div>
-            </div>
-          </div>
+    <div class="w-screen md:w-[50rem] bg-white shadow-lg rounded-lg dark:bg-zink-700 overflow-hidden">
+        <div class="flex items-center justify-between p-5 bg-gradient-to-r from-blue-500 to-indigo-600 border-b dark:border-zink-500">
+            <h5 class="text-xl font-semibold text-white" id="userDetailsLabel">
+                {{selectedUserDetails?.username || 'Employé'}}
+                <span class="block mt-1 text-sm font-normal text-blue-100">
+                     {{selectedUserDetails?.post}}
+                </span>
+            </h5>
+            <button data-modal-close="userDetailsModal" dismissModal [ModalDismiss]="'userDetailsModal'" class="transition-all duration-200 ease-linear text-white/80 hover:text-white hover:bg-white/20 p-1.5 rounded-full">
+                <lucide-angular name="x" [class]="'size-5'"></lucide-angular>
+            </button>
         </div>
-      </div>
-      
+        
+        <div class="max-h-[calc(theme('height.screen')_-_180px)] p-5 overflow-y-auto bg-gray-50 dark:bg-zink-800">
+            <div *ngIf="selectedUserDetails" class="space-y-6">
+                <div class="flex border-b border-gray-200 dark:border-zink-600 bg-white dark:bg-zink-700 rounded-t-lg shadow-sm">
+                    <button (click)="activeTab = 'info'" [class]="activeTab === 'info' ? 'px-6 py-3 font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-blue-500 hover:border-blue-300 transition-all duration-200 dark:text-gray-300 dark:hover:text-blue-300'">Informations</button>
+                    <button (click)="activeTab = 'contact'" [class]="activeTab === 'contact' ? 'px-6 py-3 font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-blue-500 hover:border-blue-300 transition-all duration-200 dark:text-gray-300 dark:hover:text-blue-300'">Contact</button>
+                    <button (click)="activeTab = 'pro'" [class]="activeTab === 'pro' ? 'px-6 py-3 font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-blue-500 hover:border-blue-300 transition-all duration-200 dark:text-gray-300 dark:hover:text-blue-300'">Professionnel</button>
+                    <button (click)="activeTab = 'docs'" [class]="activeTab === 'docs' ? 'px-6 py-3 font-medium border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 dark:border-blue-400' : 'px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-blue-500 hover:border-blue-300 transition-all duration-200 dark:text-gray-300 dark:hover:text-blue-300'">Documents</button>
+                </div>
+
+                <!-- Information Tab -->
+                <div *ngIf="activeTab === 'info'" class="p-6 bg-white rounded-lg shadow-sm dark:bg-zink-700 border border-gray-100 dark:border-zink-600">
+                    <h6 class="mb-5 text-lg font-semibold flex items-center text-gray-800 dark:text-white">
+                        <lucide-angular name="user" [class]="'size-5 mr-2 text-blue-500'"></lucide-angular>
+                        Informations personnelles
+                    </h6>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-5">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Nom complet</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">{{ selectedUserDetails.username || '-' }}</p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Date de naissance</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded flex items-center">
+                                    <lucide-angular name="calendar" [class]="'size-4 mr-2 text-gray-400'"></lucide-angular>
+                                    {{ selectedUserDetails.dateOfBirth ? (selectedUserDetails.dateOfBirth | date: 'dd/MM/yyyy') : '-' }}
+                                </p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Nationalité</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">{{ selectedUserDetails.nationality || '-' }}</p>
+                            </div>
+                        </div>                      
+                        <div class="space-y-5">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Sexe</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">
+                                    {{ selectedUserDetails.sexe === 'M' ? 'Masculin' : 
+                                       selectedUserDetails.sexe === 'F' ? 'Féminin' : 
+                                       selectedUserDetails.sexe === 'O' ? 'Autre' : '-' }}
+                                </p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">État civil</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">{{ selectedUserDetails.civilStatus || '-' }}</p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Langue</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">
+                                    {{ selectedUserDetails.language === 'FR' ? 'Français' : 
+                                       selectedUserDetails.language === 'EN' ? 'Anglais' : 
+                                       selectedUserDetails.language === 'ES' ? 'Espagnol' : 
+                                       selectedUserDetails.language === 'DE' ? 'Allemand' : 
+                                       selectedUserDetails.language || '-' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Tab -->
+                <div *ngIf="activeTab === 'contact'" class="p-6 bg-white rounded-lg shadow-sm dark:bg-zink-700 border border-gray-100 dark:border-zink-600">
+                    <h6 class="mb-5 text-lg font-semibold flex items-center text-gray-800 dark:text-white">
+                        <lucide-angular name="phone" [class]="'size-5 mr-2 text-blue-500'"></lucide-angular>
+                        Informations de contact
+                    </h6>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-5">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Email</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded flex items-center">
+                                    <lucide-angular name="mail" [class]="'size-4 mr-2 text-gray-400'"></lucide-angular>
+                                    {{ selectedUserDetails.email || '-' }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="space-y-5">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Téléphone</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded flex items-center">
+                                    <lucide-angular name="phone" [class]="'size-4 mr-2 text-gray-400'"></lucide-angular>
+                                    {{ selectedUserDetails.phone1 || '-' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <div class="group">
+                            <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Adresse complète</label>
+                            <div class="bg-gray-50 dark:bg-zink-600 p-4 rounded">
+                                <p class="text-gray-900 dark:text-zink-100 leading-relaxed">
+                                    {{ selectedUserDetails.address || '-' }}<br>
+                                    {{ selectedUserDetails.postalCode || '' }} {{ selectedUserDetails.city || '' }}<br>
+                                    {{ selectedUserDetails.country || '' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Professional Tab -->
+                <div *ngIf="activeTab === 'pro'" class="p-6 bg-white rounded-lg shadow-sm dark:bg-zink-700 border border-gray-100 dark:border-zink-600">
+                    <h6 class="mb-5 text-lg font-semibold flex items-center text-gray-800 dark:text-white">
+                        <lucide-angular name="briefcase" [class]="'size-5 mr-2 text-blue-500'"></lucide-angular>
+                        Informations professionnelles
+                    </h6>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-5">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Poste</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded">{{ selectedUserDetails.post || '-' }}</p>
+                            </div>
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Date d'embauche</label>
+                                <p class="text-gray-900 dark:text-zink-100 font-medium bg-gray-50 dark:bg-zink-600 p-2.5 rounded flex items-center">
+                                    <lucide-angular name="calendar-check" [class]="'size-4 mr-2 text-gray-400'"></lucide-angular>
+                                    {{ selectedUserDetails.hireDate ? (selectedUserDetails.hireDate | date: 'dd/MM/yyyy') : '-' }}
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-5 md:col-span-2">
+                            <div class="group">
+                                <label class="block text-sm font-medium text-gray-500 dark:text-zink-300 mb-1.5">Rôles</label>
+                                <div class="bg-gray-50 dark:bg-zink-600 p-2.5 rounded">
+                                    <span *ngFor="let role of selectedUserDetails.roles" class="inline-flex items-center px-3 py-1 m-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full dark:bg-blue-500/20 dark:text-blue-300">
+                                        <lucide-angular name="shield" [class]="'size-3.5 mr-1'"></lucide-angular>
+                                        {{ role }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Tab -->
+                <div *ngIf="activeTab === 'docs'" class="p-6 bg-white rounded-lg shadow-sm dark:bg-zink-700 border border-gray-100 dark:border-zink-600">
+                    <h6 class="mb-5 text-lg font-semibold flex items-center text-gray-800 dark:text-white">
+                        <lucide-angular name="file-text" [class]="'size-5 mr-2 text-blue-500'"></lucide-angular>
+                        Documents
+                    </h6>
+                    
+                    <div class="text-center py-8">
+                        <lucide-angular name="file" [class]="'size-12 mx-auto text-gray-300 dark:text-gray-600 mb-3'"></lucide-angular>
+                        <p class="text-gray-500 dark:text-gray-400">Aucun document disponible</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div *ngIf="isLoading" class="flex items-center justify-center p-16">
+                <div class="relative">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-blue-200 border-t-blue-500"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <lucide-angular name="user" [class]="'size-6 text-blue-500'"></lucide-angular>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </ng-modals>
+</ng-modals>
+
   

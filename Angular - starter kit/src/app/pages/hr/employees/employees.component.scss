@@ -1,0 +1,19 @@
+/* employees.component.css */
+.tab-button {
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    color: #3b82f6;
+    border-bottom-color: #3b82f6;
+}
+
+.info-section {
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.dark .info-section {
+    background-color: #1e293b;
+}

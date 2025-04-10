@@ -77,7 +77,7 @@
                       </h5>
                       <div class="d-flex align-items-center my-3 text-muted">
                           <span class="badge bg-secondary">🏷️ {{ offer.contractType ? offer.contractType : 'N/A' }}</span>
-                          <span class="ms-3 fw-medium">💰 ${{ offer.salary?.toLocaleString() }}/year</span>
+                          <span class="ms-3 fw-medium">💰 ${{ offer.salary.toLocaleString() }}/year</span>
                           <span class="ms-3">🕒 {{ offer.experience || 0 }} years exp.</span>
                       </div>
                       <p class="text-muted small">🎓 {{ offer.educationLevel }}</p>

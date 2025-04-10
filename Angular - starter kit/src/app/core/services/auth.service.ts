@@ -148,5 +148,9 @@ deleteCollCHE(id: number): Observable<void> {
 ListUser(): Observable<any[]> {
   return this.http.get<any[]>(`${environment.apiUrl}/withspecificroles`);
 }
+getUserById(userId: number): Observable<any> {
+  const url = `${environment.apiUrl}/chatuser/${userId}`;
+  return this.http.get<any>(url);
+}
 
 }

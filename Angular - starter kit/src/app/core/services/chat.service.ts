@@ -79,9 +79,12 @@ export class ChatService {
         body: JSON.stringify(message)
       });
     } else {
-      console.error('WebSocket non connecté.');
+      console.error('WebSocket non connecté. Nouvelle tentative dans 1 seconde...');
+      setTimeout(() => this.sendPrivateMessage(userId, message), 1000);
     }
   }
+  
+  
 
   getMessages(): Observable<ChatMessageDTO> {
     return this.messageSubject.asObservable();

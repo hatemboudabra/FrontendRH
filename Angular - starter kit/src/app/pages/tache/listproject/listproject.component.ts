@@ -8,6 +8,7 @@ import { Project } from '../../../data/project';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listproject',
@@ -109,22 +110,47 @@ openDetailsModal(projectId: number): void {
 }
 
 deleteProject(id: number): void {
-  if (confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-    this.projectService.deleteProject(id).subscribe({
-      next: () => {
-        this.projects = this.projects.filter(project => project.id !== id);
-        console.log('Projet supprimé avec succès');
-      },
-      error: (error) => {
-        if (error instanceof HttpErrorResponse) {
-          console.error(`HTTP Error: ${error.status} - ${error.message}`);
-          console.error('Full error:', error.error);
-        } else {
-          console.error('Unknown Error:', error);
+  Swal.fire({
+    title: 'Êtes-vous sûr?',
+    text: 'Vous ne pourrez pas revenir en arrière après cette action!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Oui, supprimer!',
+    cancelButtonText: 'Annuler'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.projectService.deleteProject(id).subscribe({
+        next: () => {
+          this.projects = this.projects.filter(project => project.id !== id);
+          Swal.fire(
+            'Supprimé!',
+            'Le projet a été supprimé avec succès.',
+            'success'
+          );
+        },
+        error: (error) => {
+          if (error instanceof HttpErrorResponse) {
+            console.error(`HTTP Error: ${error.status} - ${error.message}`);
+            console.error('Full error:', error.error);
+            Swal.fire(
+              'Erreur!',
+              `La suppression a échoué: ${error.status}`,
+              'error'
+            );
+          } else {
+            console.error('Unknown Error:', error);
+            Swal.fire(
+              'Erreur!',
+              'Une erreur inconnue est survenue',
+              'error'
+            );
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 }
 
 openEditModal(project: Project): void {

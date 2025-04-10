@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PageTitleComponent } from '../../../shared/page-title/page-title.component';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SimplebarAngularModule } from 'simplebar-angular';
@@ -72,7 +72,8 @@ export class ChatComponent implements OnInit {
     private chatService: ChatService,
     private authService: AuthenticationService,
     private teamService: TeamService,
-    private messageService: MessagChatService
+    private messageService: MessagChatService,
+   // private cdr: ChangeDetectorRef
 
   ) {}
 
@@ -81,11 +82,11 @@ export class ChatComponent implements OnInit {
     this.loadCurrentUser(); 
     this.loadCollaborators();
     this.setupMessageSubscription();
-//  this.loadChatHistory()
-/*
+    this.loadChatHistory()
+
 if (this.chatMode === 'private') {
   this.chatService.connect('private');
-}*/
+}
   }
 
   private initializeForm(): void {
@@ -283,30 +284,34 @@ if (this.chatMode === 'private') {
       recipientId: this.chatMode === 'private' ? this.selectedCollaboratorId?.toString() || null : null
     };
   
-    
+    // Réinitialise le formulaire après récupération du contenu.
     this.formData.reset();
   
-    try {
-      if (this.chatMode === 'private') {
-        if (!this.selectedCollaboratorId) {
-          console.error('Aucun collaborateur sélectionné');
-          return;
-        }
-        this.chatService.sendPrivateMessage(
-          this.selectedCollaboratorId.toString(), 
-          message
-        );
-      } else {
-        if (this.teamId === '0') {
-          console.error('Aucune équipe assignée');
-          return;
-        }
-        this.chatService.sendTeamMessage(this.teamId, message);
+    if (this.chatMode === 'private') {
+      if (!this.selectedCollaboratorId) {
+        console.error('Aucun collaborateur sélectionné');
+        return;
       }
-    } catch (error) {
-      console.error('Erreur lors de l\'envoi:', error);
+      // Ajout immédiat du message dans la liste pour un affichage en temps réel.
+      this.allMessages.push(message);
+      this.filterMessages();
+      this.messages$.next([...this.allMessages]);
+  
+      // Envoi du message en mode privé via le service.
+      this.chatService.sendPrivateMessage(
+        this.selectedCollaboratorId.toString(), 
+        message
+      );
+    } else {
+      if (this.teamId === '0') {
+        console.error('Aucune équipe assignée');
+        return;
+      }
+      // Pour le chat d’équipe, aucun changement n’est apporté.
+      this.chatService.sendTeamMessage(this.teamId, message);
     }
   }
+  
   
  selectCollaborator(collaboratorId: number): void {
   this.selectedCollaboratorId = collaboratorId;
