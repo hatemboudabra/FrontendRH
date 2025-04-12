@@ -79,6 +79,7 @@
     "simplebar-angular": "^3.2.4",
     "slick-carousel": "^1.8.1",
     "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "sweetalert2": "^11.10.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

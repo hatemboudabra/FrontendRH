@@ -19,6 +19,8 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { LoginComponent } from './account/login/login.component';
 import { RegisterComponent } from './account/register/register.component';
 import { UpdateProfileComponent } from './account/profile/update-profile/update-profile.component';
+import { EventComponent } from './pages/event/event/event.component';
+import { OffersComponent } from './pages/hr/offers/offers.component';
 
 export const routes: Routes = [
     { 
@@ -28,9 +30,10 @@ export const routes: Routes = [
         canActivate: [AuthGuard] 
     },
     { path: 'account-login', component: LoginComponent },
-    {path: '', redirectTo:'account-login', pathMatch: 'full'},
+    { path: '', redirectTo: 'offers', pathMatch: 'full' },
     { path: 'account-register', component: RegisterComponent }, 
-    
+    {path:'offers', component:OffersComponent},//homepage
+
 
     { path: 'auth-logout-basic', component: LogoutBasicComponent },
     

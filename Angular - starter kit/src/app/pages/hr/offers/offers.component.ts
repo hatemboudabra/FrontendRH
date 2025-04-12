@@ -10,6 +10,7 @@ import { MDModalModule } from '../../../Component/modals';
 import { NGXPagination } from '../../../Component/pagination';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { Subscription } from 'rxjs';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-offers',
@@ -20,6 +21,8 @@ import { Subscription } from 'rxjs';
     LucideAngularModule,
     MDModalModule,
     FlatpickrModule,
+    RouterModule
+
   ],
   templateUrl: './offers.component.html',
   styleUrls: ['./offers.component.scss'],

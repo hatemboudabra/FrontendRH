@@ -39,7 +39,6 @@ export const PAGE_ROUTES: Route[] = [
     {path:'list-tache' , component:ListComponent},//chef    
     {path:'add' , component: AddTacheComponent},//chef
     {path:'updateStatus' , component:UpdateStatusComponent},//colaborateur
-    {path:'offers', component:OffersComponent},//homepage
     {path:'listoffers',component:ListoffersComponent},//rh
    {path:'listdemande',component:ListdemandeComponent},//rh
    {path:'demandeChef', component:DemandeManagerComponent},//chef
@@ -62,7 +61,6 @@ export const PAGE_ROUTES: Route[] = [
     {path:'addproject',component:AddprojectComponent},
     {path:'listproject',component:ListprojectComponent},
     {path:'calendar',component:CalendarComponent},
-    {path:'event',component:EventComponent}
 
 
 

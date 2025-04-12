@@ -74,7 +74,9 @@ export class ListReclamationComponent {
   loadReclamations(userId: number) {
     this.reclamationService.getAllClaims().subscribe({
       next: (data) => {
-        this.reclamations = data;
+        this.allReclamations = data; 
+        this.totalItems = data.length; 
+        this.updatePagedReclamations();        
       },
       error: (error) => {
         console.error('Error loading reclamations:', error);
@@ -92,7 +94,7 @@ export class ListReclamationComponent {
   
   updatePagedReclamations(): void {
     this.startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.endIndex = this.startIndex + this.itemsPerPage;
+    this.endIndex = Math.min(this.startIndex + this.itemsPerPage, this.totalItems);
     this.reclamations = this.allReclamations.slice(this.startIndex, this.endIndex);
   }
   
@@ -122,7 +124,9 @@ export class ListReclamationComponent {
               'La réclamation a été supprimée.',
               'success'
             );
-            this.reclamations = this.reclamations.filter(reclamation => reclamation.id !== id);
+            this.allReclamations = this.allReclamations.filter(reclamation => reclamation.id !== id);
+            this.totalItems = this.allReclamations.length;
+            this.updatePagedReclamations();
           },
           error: (err) => {
             console.error("Erreur lors de la suppression :", err);

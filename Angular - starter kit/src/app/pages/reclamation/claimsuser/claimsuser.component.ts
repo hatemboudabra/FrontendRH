@@ -75,7 +75,9 @@ export class ClaimsuserComponent {
   loadReclamations(userId: number) {
     this.reclamationService.getReclamationUserId(userId).subscribe({
       next: (data) => {
-        this.reclamations = data;
+        this.allReclamations = data; 
+        this.totalItems = data.length; 
+        this.updatePagedReclamations(); 
       },
       error: (error) => {
         console.error('Error loading reclamations:', error);
@@ -93,7 +95,7 @@ export class ClaimsuserComponent {
   
   updatePagedReclamations(): void {
     this.startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    this.endIndex = this.startIndex + this.itemsPerPage;
+    this.endIndex = Math.min(this.startIndex + this.itemsPerPage, this.totalItems);
     this.reclamations = this.allReclamations.slice(this.startIndex, this.endIndex);
   }
   

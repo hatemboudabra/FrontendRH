@@ -3,8 +3,8 @@
 <div class="card" id="reclamationTable">
     <div class="card-body">
         <div class="flex items-center gap-3 mb-4">
-            <h6 class="text-15 grow">Reclamations (<b class="total-reclamations">{{reclamations.length}}</b>)</h6>
-         <!--   <div class="shrink-0">
+            <h6 class="text-15 grow">Reclamations (<b class="total-reclamations">{{totalItems}}</b>)</h6>
+                     <!--   <div class="shrink-0">
                 <a href="javascript:void(0);" [appModalTrigger]="'addReclamationModal'" type="button" 
                    class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100">
                     <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular>
@@ -62,8 +62,8 @@
                         let-offset="offset">
                         <div class="grow ps-5">
                             <p class="text-slate-500 dark:text-zink-200">
-                                Showing <b>{{getEndIndex()}}</b> of <b>{{totalItems}}</b> Results
-                            </p>
+                                Showing <b>{{startIndex + 1}} </b> of <b>{{totalItems}}</b> Results
+                              </p>
                         </div>
                         @if(totalItems > 0){
                             <pagination-controls 

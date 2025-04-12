@@ -33,7 +33,6 @@ export class AdddemandeComponent implements OnInit {
       type: ['', Validators.required],
       status: ['PENDING'],
       userId: [''],
-      // Champs dynamiques
       documentType: [''], // document
       nbrejour: [''], // congé
       amount: [''], // pret, avance
@@ -52,23 +51,23 @@ export class AdddemandeComponent implements OnInit {
             this.authService.getUserByUsername(user.username).subscribe(
               userDetails => {
                 if (userDetails && userDetails.id) {
-                  console.log("✅ ID utilisateur récupéré :", userDetails.id);
+                  console.log(" ID utilisateur récupéré :", userDetails.id);
                   this.demandeForm.patchValue({ userId: userDetails.id });
                 } else {
-                  console.error("❌ ID utilisateur manquant dans les détails.");
+                  console.error("ID utilisateur manquant dans les détails.");
                 }
               },
               error => {
-                console.error("❌ Erreur lors de la récupération des détails de l'utilisateur :", error);
+                console.error(" Erreur lors de la récupération des détails de l'utilisateur :", error);
               }
             );
           } else {
-            console.warn("⚠️ Le nom d'utilisateur est manquant.");
+            console.warn(" Le nom d'utilisateur est manquant.");
           }
         }
       },
       error => {
-        console.error("❌ Erreur lors de la récupération de l'utilisateur :", error);
+        console.error(" Erreur lors de la récupération de l'utilisateur :", error);
       }
     );
 
@@ -105,7 +104,6 @@ export class AdddemandeComponent implements OnInit {
       this.demandeForm.get('loanType')?.clearValidators();
     }
 
-    // Mettre à jour les contrôles
     this.demandeForm.get('documentType')?.updateValueAndValidity();
     this.demandeForm.get('nbrejour')?.updateValueAndValidity();
     this.demandeForm.get('amount')?.updateValueAndValidity();
@@ -117,7 +115,7 @@ export class AdddemandeComponent implements OnInit {
       const demande: Demande = this.demandeForm.value;
 
       if (!demande.userId) {
-        console.error("❌ L'ID de l'utilisateur est manquant.");
+        console.error(" L'ID de l'utilisateur est manquant.");
         alert("Erreur : ID de l'utilisateur manquant.");
         return;
       }

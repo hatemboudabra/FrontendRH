@@ -14,8 +14,7 @@ export class WebsocketService {
 
   constructor(private notificationService: NotificationService) {}
 
-  public connect(userId: number): void {
-    this.userId = userId;
+  public connect(): void {
     
     if (this.stompClient?.connected) {
       return;
