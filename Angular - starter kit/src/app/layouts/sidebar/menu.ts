@@ -42,9 +42,12 @@ export const MENU: MenuItem[] = [
             { id: 219, label: 'Liste des employés', link: '/hr-employee', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] },
             { id: 220, label: 'Liste des offres', link: '/listoffers', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] },
             { id: 221, label: 'Demandes', link: '/listdemande', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] },
-            { id: 222, label: 'Formations', link: '/listformationuser', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] }
+            { id: 222, label: 'Formations', link: '/listformationuser', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] },
+            { id: 222, label: 'events', link: '/addevent', parentId: 218, roles: ['ROLE_RESPONSABLE_RH'] }
+
         ]
     },
+    
     {
         id: 6,
         label: 'Demandes',
@@ -129,5 +132,7 @@ export const MENU: MenuItem[] = [
             icon: 'calendar',
             link: '/calendar',
             roles: ['ROLE_CHEF', 'ROLE_RESPONSABLE_RH']
-        }
+        },
+        
+
 ];

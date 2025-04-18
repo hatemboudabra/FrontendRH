@@ -11,6 +11,9 @@ import { NGXPagination } from '../../../Component/pagination';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
 import { Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { Events } from '../../../data/event';
+import { EventService } from '../../../core/services/event.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-offers',
@@ -30,12 +33,14 @@ import { RouterModule } from '@angular/router';
 })
 export class OffersComponent implements OnInit {
   offers: Offers[] = [];
+  events:Events[]= [];
   offerForm: FormGroup;
   isAddingOffer = false;
   loading = true;
   error: string | null = null;
  // readonly STATIC_CREATED_BY_ID = 13;
-  
+ activeTab: string = 'offers'; 
+ isMobileMenuOpen: boolean = false;
   selectedOfferId: number | null = null;
   isPostulerModalOpen = false;
   postulerForm: FormGroup;
@@ -46,6 +51,7 @@ export class OffersComponent implements OnInit {
     private offersService: OffersService,
     private fb: FormBuilder,
     private candidatService: CandidatService,
+    private eventService:EventService
   ) {
     this.offerForm = this.fb.group({
       title: ['', Validators.required],
@@ -67,12 +73,56 @@ export class OffersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOffers();
+    this.loadEvents();
+  }
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
-
+  loadEvents(): void {
+    this.loading = true;
+    this.subscriptions.add(
+      this.eventService.getAllEvent().subscribe({
+        next: (data) => {
+          console.log('Événements reçus:', data);
+          
+          data.forEach((event, index) => {
+            console.log(`Événement ${index} - endDate:`, event.endDate, 
+                       'Parsed:', new Date(event.endDate));
+          });
+  
+          const now = new Date();
+          this.events = data.filter(event => {
+            try {
+              const endDate = new Date(event.endDate);
+              const isValid = !isNaN(endDate.getTime()); //vérification si date est valide
+              const isFuture = endDate >= now;
+              
+              if (!isValid) {
+                console.warn('Date invalide pour l\'événement:', event);
+              }
+              
+              return isValid && isFuture;
+            } catch (e) {
+              console.error('Erreur de traitement de l\'événement:', event, e);
+              return false;
+            }
+          });
+          
+          console.log('Événements filtrés:', this.events);
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Erreur:', err);
+          this.error = 'Erreur lors du chargement des événements';
+          this.loading = false;
+        }
+      })
+    );
+  }
   loadOffers(): void {
     this.loading = true;
     this.subscriptions.add(
@@ -135,14 +185,21 @@ export class OffersComponent implements OnInit {
   }
 
   closePostulerModal(): void {
+    console.log('Fermeture du modal déclenchée');
     this.isPostulerModalOpen = false;
     this.postulerForm.reset(); 
+    this.selectedOfferId = null
+    
   }
   onPostulerSubmit(): void {
     if (this.postulerForm.valid) {
       if (this.selectedOfferId === null) {
         console.error('No offer selected');
-        alert('Veuillez sélectionner une offre avant de soumettre votre candidature.');
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Veuillez sélectionner une offre avant de soumettre votre candidature.'
+        });
         return;
       }
   
@@ -160,24 +217,39 @@ export class OffersComponent implements OnInit {
         this.candidatService.postuler(formData).subscribe({
           next: (response) => {
             console.log('Application submitted successfully:', response);
-            alert('Candidature enregistrée avec succès !');
-            this.closePostulerModal();
+            Swal.fire({
+              icon: 'success',
+              title: 'Succès',
+              text: 'Candidature enregistrée avec succès !'
+            }).then(() => {
+              this.closePostulerModal();
+            });
           },
           error: (err) => {
             console.error('Error submitting application:', err);
-            alert('Erreur lors de la candidature. Veuillez réessayer.');
+            Swal.fire({
+              icon: 'error',
+              title: 'Erreur',
+              text: 'Erreur lors de la candidature. Veuillez réessayer.'
+            });
           }
         })
       );
     } else {
       console.error('Form is invalid');
-      alert('Veuillez remplir tous les champs requis.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Erreur',
+        text: 'Veuillez remplir tous les champs requis.'
+      });
     }
   }
+  
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.postulerForm.get('cv')?.setValue(file);
     }
   }
+  
 }

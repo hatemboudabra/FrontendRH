@@ -2,10 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgxDatatableModule } from '@siemens/ngx-datatable';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Plus, Edit, Trash2, Calendar, Users, Ship } from 'lucide-angular';
 import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { FormsModule } from '@angular/forms';
-import flatpickr from 'flatpickr';
+import { User } from '../../../store/Authentication/auth.models';
+import { AuthenticationService } from '../../../core/services/auth.service';
+import { EventService } from '../../../core/services/event.service';
+import Swal from 'sweetalert2';
+import { Events, EventsType } from '../../../data/event';
 
 @Component({
   selector: 'app-event',
@@ -19,172 +23,175 @@ import flatpickr from 'flatpickr';
     FlatpickrModule
   ],
   templateUrl: './event.component.html',
-  styleUrl: './event.component.scss'
+  styleUrls: ['./event.component.scss']
 })
 export class EventComponent implements OnInit {
-  events: any[] = [];
-  filteredEvents: any[] = [];
-  isLoading: boolean = false;
-  selectedEvent: any = null;
-  eventCategories = ['Tous', 'Réunion', 'Formation', 'Événement', 'Congé'];
-  selectedCategory: string = 'Tous';
-  searchQuery: string = '';
-  dateRange: string = '';
-  startDate: Date | null = null;
-  endDate: Date | null = null;
-
-  // Options pour le datepicker
-  datePickerOptions = {
-    altInput: true,
-    altFormat: 'd M Y',
-    dateFormat: 'Y-m-d',
-    mode: 'range',
-    onChange: (selectedDates: Date[]) => this.onDateSelect(selectedDates)
-  };
-
-  ngOnInit(): void {
-    this.loadEvents();
-    
-    // Initialiser le datepicker après le rendu du composant
-    setTimeout(() => {
-      const dateInput = document.querySelector('.date-range-input') as HTMLElement;
-      if (dateInput) {
-      }
-    }, 0);
+  EventsType = EventsType; 
+  plusIcon = Plus;
+  editIcon = Edit;
+  trashIcon = Trash2;
+  calendarIcon = Calendar;
+  
+  currentUser: User | null = null;
+  events: Events[] = [];
+  filteredEvents: Events[] = [];
+  loading = false;
+  searchTerm: string = '';
+  filterType: EventsType | 'ALL' = 'ALL';
+  showEventForm = false;
+  newEvent: Partial<Events> = {
+    title: '',
+    description: '',
+    type: EventsType.TEAM_BUILDING,
+    startDate: new Date(),
+    endDate: new Date(new Date().setHours(new Date().getHours() + 2))
   }
 
-  loadEvents(): void {
-    this.isLoading = true;
-    // Simuler un appel API
-    setTimeout(() => {
-      this.events = [
-        {
-          id: 1,
-          title: 'Réunion trimestrielle',
-          description: 'Revue des objectifs et résultats du trimestre',
-          startDate: new Date('2023-11-15T09:00:00'),
-          endDate: new Date('2023-11-15T11:30:00'),
-          location: 'Salle A1',
-          category: 'Réunion',
-          participants: 12,
-          status: 'confirmé'
-        },
-        {
-          id: 2,
-          title: 'Formation Angular',
-          description: 'Formation avancée sur Angular 16',
-          startDate: new Date('2023-11-18T13:00:00'),
-          endDate: new Date('2023-11-18T17:00:00'),
-          location: 'Salle B2',
-          category: 'Formation',
-          participants: 8,
-          status: 'confirmé'
-        },
-        {
-          id: 3,
-          title: 'Événement de fin d\'année',
-          description: 'Célébration annuelle avec toute l\'équipe',
-          startDate: new Date('2023-12-20T18:00:00'),
-          endDate: new Date('2023-12-20T23:00:00'),
-          location: 'Grand Salon',
-          category: 'Événement',
-          participants: 45,
-          status: 'en attente'
-        },
-        {
-          id: 4,
-          title: 'Planning des congés',
-          description: 'Revue des congés pour le premier trimestre',
-          startDate: new Date('2023-12-05T10:00:00'),
-          endDate: new Date('2023-12-05T11:30:00'),
-          location: 'Salle C3',
-          category: 'Réunion',
-          participants: 6,
-          status: 'confirmé'
-        },
-        {
-          id: 5,
-          title: 'Formation Sécurité',
-          description: 'Formation obligatoire sur les normes de sécurité',
-          startDate: new Date('2023-11-25T09:00:00'),
-          endDate: new Date('2023-11-25T12:00:00'),
-          location: 'Amphithéâtre',
-          category: 'Formation',
-          participants: 30,
-          status: 'confirmé'
+  constructor(
+    private authService: AuthenticationService,
+    private eventService: EventService
+  ) {}
+
+  ngOnInit(): void {
+    this.loadCurrentUser();
+  }
+
+  loadCurrentUser(): void {
+    this.loading = true;
+    this.authService.getCurrentUser().subscribe({
+      next: (user) => {
+        if (user && user.username) {
+          this.currentUser = user;
+          this.getUserIdByUsername(user.username);
+        } else {
+          console.error('User not logged in or username missing.');
+          this.loading = false;
         }
-      ];
-      this.filteredEvents = [...this.events];
-      this.isLoading = false;
-    }, 1000);
+      },
+      error: (error) => {
+        console.error('Error loading user:', error);
+        this.loading = false;
+      },
+    });
+  }
+
+  getUserIdByUsername(username: string): void {
+    this.authService.getUserByUsername(username).subscribe({
+      next: (userDetails) => {
+        if (userDetails && userDetails.id) {
+          this.currentUser = { ...this.currentUser, id: userDetails.id } as User;
+          this.loadEvents(userDetails.id);
+        } else {
+          console.error('Invalid user data or missing ID');
+          this.loading = false;
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching user data:', error);
+        this.loading = false;
+      },
+    });
+  }
+
+  loadEvents(userId: number): void {
+    this.loading = true;
+    this.eventService.getEventsByUser(userId).subscribe({
+      next: (events) => {
+        this.events = events;
+        this.filteredEvents = [...this.events];
+        this.loading = false;
+        //this.ngOnInit()
+      },
+      error: (error) => {
+        console.error('Error loading events:', error);
+        this.loading = false;
+        Swal.fire('Error', 'Failed to load events', 'error');
+      }
+    });
+  }
+
+  addEvent(): void {
+    if (!this.currentUser?.id) return;
+
+    const completeEvent: Events = {
+      ...this.newEvent as Required<Pick<Events, 'title' | 'description' | 'type' | 'startDate' | 'endDate'>>,
+      id: 0,
+      userId: this.currentUser.id
+    };
+
+    this.eventService.addEvent(completeEvent).subscribe({
+      next: (event) => {
+        this.events.push(event);
+        this.filterEvents();
+        this.resetEventForm();
+
+        Swal.fire('Success', 'Event added successfully!', 'success');
+        this.ngOnInit();
+      },
+      error: (error) => {
+        console.error('Error adding event:', error);
+        Swal.fire('Error', 'Failed to add event', 'error');
+      }
+    });
+  }
+
+
+
+  
+
+  resetEventForm(): void {
+    this.newEvent = {
+      title: '',
+      description: '',
+      type: EventsType.TEAM_BUILDING,
+      startDate: new Date(),
+      endDate: new Date(new Date().setHours(new Date().getHours() + 2))
+    };
+    this.showEventForm = false;
+  }
+
+  getEventTypeIcon(type: EventsType) {
+    return type === EventsType.VOYAGE ? Ship : Users;
+  }
+
+  getEventTypeClass(type: EventsType) {
+    return type === EventsType.VOYAGE ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
   }
 
   filterEvents(): void {
     this.filteredEvents = this.events.filter(event => {
-      // Filtrer par catégorie
-      const matchesCategory = this.selectedCategory === 'Tous' || event.category === this.selectedCategory;
+      const matchesSearch = !this.searchTerm || 
+        event.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(this.searchTerm.toLowerCase());
       
-      // Filtrer par recherche (titre ou description)
-      const matchesSearch = !this.searchQuery || 
-                           event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-                           event.description.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesType = this.filterType === 'ALL' || event.type === this.filterType;
       
-      // Filtrer par date
-      let matchesDate = true;
-      if (this.startDate && this.endDate) {
-        const eventDate = new Date(event.startDate);
-        matchesDate = eventDate >= this.startDate && eventDate <= this.endDate;
-      }
-      
-      return matchesCategory && matchesSearch && matchesDate;
+      return matchesSearch && matchesType;
     });
   }
-
-  onDateSelect(selectedDates: Date[]): void {
-    if (selectedDates.length === 2) {
-      this.startDate = selectedDates[0];
-      this.endDate = selectedDates[1];
-      this.filterEvents();
-    } else if (selectedDates.length === 0) {
-      this.startDate = null;
-      this.endDate = null;
-      this.filterEvents();
-    }
-  }
-
-  openEventDetails(event: any): void {
-    this.selectedEvent = event;
-    // Implémentation pour ouvrir une modal avec les détails
-    console.log('Ouverture des détails pour:', event.title);
-  }
-
-  createNewEvent(): void {
-    // Implémentation pour créer un nouvel événement
-    console.log('Création d\'un nouvel événement');
-  }
-
-  editEvent(event: any): void {
-    // Implémentation pour modifier un événement
-    console.log('Modification de l\'événement:', event.title);
-  }
-
-  deleteEvent(event: any): void {
-    // Implémentation pour supprimer un événement
-    console.log('Suppression de l\'événement:', event.title);
-    this.events = this.events.filter(e => e.id !== event.id);
-    this.filterEvents();
-  }
-
-  getStatusBadgeClass(status: string): string {
-    switch (status.toLowerCase()) {
-      case 'confirmé':
-        return 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-400';
-      case 'annulé':
-        return 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-400';
-      case 'en attente':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-400';
-      default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-500/20 dark:text-gray-400';
-    }
+  deleteEvent(eventId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.eventService.deleteEvent(eventId).subscribe({
+          next: () => {
+            this.events = this.events.filter(e => e.id !== eventId);
+            this.filteredEvents = this.filteredEvents.filter(e => e.id !== eventId);
+            Swal.fire('Deleted!', 'Your event has been deleted.', 'success');
+          },
+          error: (error) => {
+            console.error('Error deleting event:', error);
+            Swal.fire('Error', 'Failed to delete event', 'error');
+          }
+        });
+      }
+    });
   }
 }

@@ -1,0 +1,38 @@
+:host {
+    display: block;
+    min-height: calc(100vh - 64px);
+  }
+  
+  .event-card {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    
+    &.upcoming {
+      background-color: #3b82f6;
+    }
+    
+    &.ongoing {
+      background-color: #8b5cf6;
+    }
+    
+    &.completed {
+      background-color: #6b7280;
+    }
+  }
+    @media (max-width: 768px) {
+    .event-grid {
+      grid-template-columns: 1fr;
+    }
+  }

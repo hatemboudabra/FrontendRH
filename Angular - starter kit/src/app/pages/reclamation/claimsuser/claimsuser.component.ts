@@ -11,6 +11,7 @@ import { ReclamationService } from '../../../core/services/reclamation.service';
 import { Reclamation } from '../../../data/reclamation';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { User } from '../../../store/Authentication/auth.models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-claimsuser',
@@ -105,4 +106,39 @@ export class ClaimsuserComponent {
     { name: 'Description', prop: 'description' },
     { name: 'Action', prop: 'action' }
   ];
+    deleteReclamation(id: number) {
+      Swal.fire({
+        title: 'Êtes-vous sûr?',
+        text: "Vous ne pourrez pas annuler cette action!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Oui, supprimer!',
+        cancelButtonText: 'Annuler'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.reclamationService.deleteclaims(id).subscribe({
+            next: () => {
+              Swal.fire(
+                'Supprimé!',
+                'La réclamation a été supprimée.',
+                'success'
+              );
+              this.allReclamations = this.allReclamations.filter(reclamation => reclamation.id !== id);
+              this.totalItems = this.allReclamations.length;
+              this.updatePagedReclamations();
+            },
+            error: (err) => {
+              console.error("Erreur lors de la suppression :", err);
+              Swal.fire(
+                'Erreur!',
+                'Une erreur est survenue lors de la suppression.',
+                'error'
+              );
+            }
+          });
+        }
+      });
+    }
 }

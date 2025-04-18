@@ -41,9 +41,10 @@
                                         <lucide-angular name="eye" class="size-4"></lucide-angular>
                                     </a>
                                  
-                                    <a href="javascript:void(0);" class="text-slate-500 hover:text-red-500">
+                                    <a (click)="deleteReclamation(row.id)" href="javascript:void(0);" class="text-slate-500 hover:text-red-500">
                                         <lucide-angular name="trash-2" class="size-4"></lucide-angular>
-                                    </a>
+                                      </a>
+                                      
                                 </div>
                             }@else{
                                 {{value}}
@@ -61,7 +62,7 @@
                         let-offset="offset">
                         <div class="grow ps-5">
                             <p class="text-slate-500 dark:text-zink-200">
-                                Showing <b>{{startIndex + 1}} to {{endIndex}}</b> of <b>{{totalItems}}</b> Results
+                                Showing <b>{{startIndex + 1}}</b> of <b>{{totalItems}}</b> Results
                               </p>
                         </div>
                         @if(totalItems > 0){

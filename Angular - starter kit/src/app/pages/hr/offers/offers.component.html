@@ -1,123 +1,280 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-    <!-- Header avec boutons style moderne -->
-    <div class="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h1 class="text-2xl font-bold text-gray-800 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          Nos Offres d'Emploi
-        </h1>
-        <div class="flex space-x-3">
-          <a routerLink="/account-login" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-            </svg>
-            Connexion
-          </a>
-          <a routerLink="/account-register" class="px-4 py-2 border-2 border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-50 transition-colors duration-300 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6z" />
-            </svg>
-            Inscription
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div *ngIf="loading" class="p-8 flex flex-col items-center justify-center">
-      <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <p class="mt-4 text-gray-600">Chargement des offres...</p>
-    </div>
-
-    <!-- Empty State -->
-    <div *ngIf="!loading && offers.length === 0" class="p-8 text-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      <h3 class="mt-2 text-lg font-medium text-gray-900">Aucune offre disponible</h3>
-      <p class="mt-1 text-gray-500">Revenez plus tard pour découvrir nos nouvelles opportunités.</p>
-    </div>
-
-    <!-- Offers Grid -->
-    <div *ngIf="!loading && offers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-      <div *ngFor="let offer of offers" class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
-        <div class="p-5">
-          <!-- Offer Header -->
-          <div class="flex justify-between items-start">
-            <h3 class="text-xl font-bold text-gray-800 mb-2">{{ offer.title }}</h3>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {{ offer.contractType || 'N/A' }}
-            </span>
-          </div>
-          
-          <!-- Salary and Experience -->
-          <div class="flex items-center mt-2 text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
-            </svg>
-            <span class="font-medium">${{ offer.salary.toLocaleString() }}/an</span>
-            <span class="mx-2">•</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
-              <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
-            </svg>
-            <span>{{ offer.experience || 0 }} ans d'exp.</span>
-          </div>
-
-          <!-- Education Level -->
-          <div class="mt-3 flex items-center text-gray-600">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
-            </svg>
-            <span>{{ offer.educationLevel || 'Niveau non spécifié' }}</span>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-gray-600 line-clamp-3">{{ offer.description }}</p>
-          </div>
-
-          <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between text-sm text-gray-500">
-            <div class="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
-              </svg>
-              Publié: {{ formatDate(offer.publicationDate) }}
-            </div>
-            <div class="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
-              </svg>
-              Expire: {{ formatDate(offer.expirationDate) }}
-            </div>
-          </div>
+<div class="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+  <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex-shrink-0 flex items-center">
+          <img src="assets/images/logoSociete/logo_arabsoft.png" alt="ArabSoft Logo" 
+               class="h-10 transition-transform duration-300 hover:scale-105">
         </div>
 
-        <div class="px-5 pb-5">
-          <button 
-            [appModalTrigger]="'postulerModal'"
-            (click)="onPostuler(offer.id)"
-            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+        <div class="hidden sm:ml-6 sm:flex sm:space-x-2 mx-auto">
+          <button (click)="activeTab = 'offers'" 
+                  [class]="activeTab === 'offers' 
+                    ? 'bg-blue-50 text-blue-600 rounded-lg px-5 py-3 text-sm font-medium flex items-center transition-all'
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-500 rounded-lg px-5 py-3 text-sm font-medium flex items-center transition-all'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            Postuler maintenant
+            OFFRES
+          </button>
+          <button (click)="activeTab = 'events'" 
+                  [class]="activeTab === 'events' 
+                    ? 'bg-blue-50 text-blue-600 rounded-lg px-5 py-3 text-sm font-medium flex items-center transition-all'
+                    : 'text-gray-700 hover:bg-blue-50 hover:text-blue-500 rounded-lg px-5 py-3 text-sm font-medium flex items-center transition-all'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            ÉVÉNEMENTS
+          </button>
+        </div>
+        
+        <div class="hidden sm:ml-6 sm:flex sm:items-center">
+          <a routerLink="/account-login" class="ml-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-3 rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+            </svg>
+            SE CONNECTER
+          </a>
+        </div>
+        
+        <div class="-mr-2 flex items-center sm:hidden">
+          <button type="button" (click)="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-blue-500 hover:bg-blue-50 focus:outline-none transition duration-150 ease-in-out">
+            <span class="sr-only">Open main menu</span>
+            <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
         </div>
       </div>
     </div>
+
+    <div class="sm:hidden" [class.hidden]="!isMobileMenuOpen">
+      <div class="pt-2 pb-4 space-y-1 px-4">
+        <button (click)="activeTab = 'offers'; isMobileMenuOpen = false" 
+                class="w-full text-left bg-blue-50 text-blue-600 rounded-lg px-4 py-3 text-base font-medium flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          OFFRES
+        </button>
+        <button (click)="activeTab = 'events'; isMobileMenuOpen = false" 
+                class="w-full text-left text-gray-700 hover:bg-blue-50 hover:text-blue-500 rounded-lg px-4 py-3 text-base font-medium flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          ÉVÉNEMENTS
+        </button>
+        <a routerLink="/account-login" 
+           class="block w-full text-left bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-3 rounded-lg text-base font-medium mt-2 text-center">
+          SE CONNECTER
+        </a>
+      </div>
+    </div>
+  </nav>
+
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Offers Section -->
+    <section *ngIf="activeTab === 'offers'" class="mb-20">
+    <!--  <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          Nos dernières offres d'emploi
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Découvrez des opportunités passionnantes pour faire progresser votre carrière
+        </p>
+      </div>-->
+
+
+      <div *ngIf="loading" class="p-12 flex flex-col items-center justify-center bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-6 text-lg text-gray-600">Chargement des offres...</p>
+      </div>
+
+
+      <div *ngIf="!loading && offers.length === 0" class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="mx-auto h-24 w-24 text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="mt-6 text-2xl font-medium text-gray-900">Aucune offre disponible</h3>
+        <p class="mt-2 text-gray-500 max-w-md mx-auto">Revenez plus tard pour découvrir de nouvelles opportunités.</p>
+        <button (click)="activeTab = 'offers'" class="mt-6 bg-blue-50 text-blue-600 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors">
+          Actualiser les offres
+        </button>
+      </div>
+
+ 
+      <div *ngIf="!loading && offers.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let offer of offers" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-xl font-bold text-gray-800 group-hover:text-blue-600 transition-colors">{{ offer.title }}</h3>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                {{ offer.contractType || 'CDI' }}
+              </span>
+            </div>
+            
+          
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                </svg>
+                ${{ offer.salary.toLocaleString() }}/an
+              </span>
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" />
+                  <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" />
+                </svg>
+                {{ offer.experience || 0 }} ans exp.
+              </span>
+            </div>
+
+            <div class="mt-4 flex items-center text-gray-600 bg-blue-50 rounded-lg p-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+              </svg>
+              <span class="text-sm">{{ offer.educationLevel }}</span>
+            </div>
+
+            <div class="mt-4">
+              <p class="text-gray-600 line-clamp-3 text-sm">{{ offer.description }}</p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between text-xs text-gray-500">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                </svg>
+                Publié: {{ formatDate(offer.publicationDate) }}
+              </div>
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                </svg>
+                Expire: {{ formatDate(offer.expirationDate) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6">
+            <button 
+              [appModalTrigger]="'postulerModal'"
+              (click)="onPostuler(offer.id)"
+              class="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 group-hover:shadow-blue-100">
+              Postuler maintenant
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section *ngIf="activeTab === 'events'" class="mb-20">
+      <!--<div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Nos prochains événements
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          Participez à nos événements exclusifs pour réseauter et apprendre
+        </p>
+      </div>
+    -->
+
+ 
+      <div *ngIf="!loading && events.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div *ngFor="let event of events" class="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 group">
+          <div class="relative">
+     
+            <div class="h-48 bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-white opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <span class="absolute top-4 right-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-medium shadow-sm"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': event.type === 'TEAM_BUILDING',
+                    'bg-blue-100 text-blue-800': event.type === 'VOYAGE'
+                  }">
+              {{ event.type === 'TEAM_BUILDING' ? 'Team Building' : 'Voyage' }}
+            </span>
+          </div>
+          
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-gray-800 group-hover:text-green-600 transition-colors mb-2">{{ event.title }}</h3>
+            
+            <div class="mt-4">
+              <p class="text-gray-600 line-clamp-3 text-sm">{{ event.description }}</p>
+            </div>
+
+
+            <div class="mt-6 pt-4 border-t border-gray-100 space-y-3">
+              <div class="flex items-center text-sm text-gray-600">
+                <div class="flex-shrink-0 bg-green-100 p-2 rounded-lg mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Date de début</p>
+                  <p class="font-medium">{{ formatDate(event.startDate) }}</p>
+                </div>
+              </div>
+              <div class="flex items-center text-sm text-gray-600">
+                <div class="flex-shrink-0 bg-red-100 p-2 rounded-lg mr-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Date de fin</p>
+                  <p class="font-medium">{{ formatDate(event.endDate) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6">
+          <!--  <button class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-medium py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 group-hover:shadow-green-100">
+              Participer
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>-->
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && events.length === 0" class="p-12 text-center bg-white rounded-xl shadow-sm border border-gray-100">
+        <div class="mx-auto h-24 w-24 text-gray-400">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 class="mt-6 text-2xl font-medium text-gray-900">Aucun événement programmé</h3>
+        <p class="mt-2 text-gray-500 max-w-md mx-auto">Restez à l'écoute pour nos prochains événements.</p>
+      </div>
+    </section>
   </div>
 </div>
-
 
 <ng-modals id="postulerModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4">
     <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
       <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
-        <h5 class="text-16" id="postulerLabel">Apply for Job</h5>
-        <button data-modal-close="postulerModal" dismissModal [ModalDismiss]="'postulerModal'" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500">
+        <h5 class="text-16" id="postulerLabel">Postuler à l'offre</h5>
+        <button data-modal-close="postulerModal" (click)="closePostulerModal()" class="transition-all duration-200 ease-linear text-slate-400 hover:text-red-500">
           <lucide-angular name="x" [class]="'size-5'"></lucide-angular>
         </button>
       </div>
@@ -126,34 +283,37 @@
           <div id="alert-error-msg" class="hidden px-4 py-3 text-sm text-red-500 border border-transparent rounded-md bg-red-50 dark:bg-red-500/20"></div>
           <div class="grid grid-cols-1 gap-4 xl:grid-cols-12">
             <div class="xl:col-span-6">
-              <label for="nomInput" class="inline-block mb-2 text-base font-medium">First Name</label>
-              <input formControlName="nom" id="nomInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="First name">
+              <label for="nomInput" class="inline-block mb-2 text-base font-medium">Nom</label>
+              <input formControlName="nom" id="nomInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Votre nom">
             </div>
             <div class="xl:col-span-6">
-              <label for="prenomInput" class="inline-block mb-2 text-base font-medium">Last Name</label>
-              <input formControlName="prenom" id="prenomInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Last name">
+              <label for="prenomInput" class="inline-block mb-2 text-base font-medium">Prénom</label>
+              <input formControlName="prenom" id="prenomInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Votre prénom">
             </div>
             <div class="xl:col-span-12">
               <label for="emailInput" class="inline-block mb-2 text-base font-medium">Email</label>
               <input formControlName="email" id="emailInput" type="email" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="example@domain.com">
             </div>
             <div class="xl:col-span-12">
-              <label for="telephoneInput" class="inline-block mb-2 text-base font-medium">Phone Number</label>
-              <input formControlName="telephone" id="telephoneInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Phone number">
+              <label for="telephoneInput" class="inline-block mb-2 text-base font-medium">Téléphone</label>
+              <input formControlName="telephone" id="telephoneInput" type="text" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200" placeholder="Numéro de téléphone">
             </div>
             <div class="xl:col-span-12">
-              <label for="cvInput" class="inline-block mb-2 text-base font-medium">CV (PDF only)</label>
+              <label for="cvInput" class="inline-block mb-2 text-base font-medium">CV (PDF uniquement)</label>
               <input type="file" id="cvInput" (change)="onFileChange($event)" accept="application/pdf" class="form-input border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 placeholder:text-slate-400 dark:placeholder:text-zink-200">
             </div>
           </div>
           <div class="flex justify-end gap-2 mt-4">
-            <button type="reset" dismissModal [ModalDismiss]="'postulerModal'" class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-600 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">Cancel</button>
-            <button 
-            type="submit" 
-            [disabled]="!postulerForm.valid || selectedOfferId === null" 
-            class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
-            Submit Application
-          </button>          </div>
+            <button type="button" (click)="closePostulerModal()" 
+            class="text-red-500 bg-white btn hover:text-red-500 hover:bg-red-100 focus:text-red-500 focus:bg-red-100 active:text-red-500 active:bg-red-100 dark:bg-zink-600 dark:hover:bg-red-500/10 dark:focus:bg-red-500/10 dark:active:bg-red-500/10">
+      Annuler
+    </button>            <button 
+              type="submit" 
+              [disabled]="!postulerForm.valid || selectedOfferId === null" 
+              class="text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
+              Soumettre ma candidature
+            </button>
+          </div>
         </form>
       </div>
     </div>

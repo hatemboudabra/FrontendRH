@@ -61,6 +61,7 @@ export const PAGE_ROUTES: Route[] = [
     {path:'addproject',component:AddprojectComponent},
     {path:'listproject',component:ListprojectComponent},
     {path:'calendar',component:CalendarComponent},
+    {path:'addevent',component:EventComponent}
 
 
 
