@@ -24,7 +24,8 @@ import Swal from 'sweetalert2';
     LucideAngularModule,
     MDModalModule,
     FlatpickrModule,
-    RouterModule
+    RouterModule,
+    NgxDatatableModule
 
   ],
   templateUrl: './offers.component.html',

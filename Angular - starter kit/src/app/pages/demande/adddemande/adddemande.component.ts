@@ -8,6 +8,7 @@ import { User } from '../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { FlatpickrModule } from '../../../Component/flatpickr/flatpickr.module';
 import { PageTitleComponent } from '../../../shared/page-title/page-title.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-adddemande',
@@ -111,28 +112,47 @@ export class AdddemandeComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.demandeForm.valid) {
-      const demande: Demande = this.demandeForm.value;
-
-      if (!demande.userId) {
-        console.error(" L'ID de l'utilisateur est manquant.");
-        alert("Erreur : ID de l'utilisateur manquant.");
-        return;
-      }
-
-      this.demandeService.addDemande(demande).subscribe({
-        next: (response) => {
-          console.log('Demande ajoutée avec succès', response);
-          alert('Demande ajoutée avec succès !');
-          this.router.navigate(['userdemande']);
-        },
-        error: (err) => {
-          console.error('Erreur lors de l\'ajout de la demande', err);
-          alert('Erreur lors de l\'ajout de la demande.');
-        }
+    if (this.demandeForm.invalid) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Formulaire incomplet',
+        text: 'Veuillez remplir tous les champs obligatoires.',
       });
-    } else {
-      alert('Veuillez remplir tous les champs obligatoires.');
+      return;
     }
+
+    const demande: Demande = this.demandeForm.value;
+
+    if (!demande.userId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'ID utilisateur manquant',
+        text: "L'ID de l'utilisateur est requis pour créer une demande.",
+      });
+      return;
+    }
+
+    this.demandeService.addDemande(demande).subscribe({
+      next: (response) => {
+        console.log('Demande ajoutée avec succès', response);
+        Swal.fire({
+          icon: 'success',
+          title: 'Succès',
+          text: 'Votre demande a été ajoutée avec succès !',
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          this.router.navigate(['userdemande']);
+        });
+      },
+      error: (err) => {
+        console.error('Erreur lors de l\'ajout de la demande', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Erreur',
+          text: 'Une erreur est survenue lors de l’ajout de la demande.',
+        });
+      }
+    });
   }
 }

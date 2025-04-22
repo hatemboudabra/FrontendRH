@@ -184,14 +184,13 @@ export class ListComponent {
       next: (assignedTache) => {
         console.log('Task successfully assigned:', assignedTache);
         console.log('Selected Collaborateur ID:', this.selectedCollaborateurId); 
-        const notification: Notifications = {
+    /*    const notification: Notifications = {
           message: 'Une nouvelle tâche vous a été assignée',
           type: 'info',
           userId: this.selectedCollaborateurId, 
           createdAt: new Date(Date.now())
-        };
-        console.log('Notification created:', notification);
-        this.notificationService.addNotification(notification);
+        };*/
+//        this.notificationService.addNotification(notification);
         this.closeAssignModal();
         this.selectedCollaborateurId = 0; 
         this.ngOnInit();

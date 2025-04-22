@@ -18,6 +18,7 @@ import { Notifications } from '../../data/notif';
 import { NotificationService } from '../../core/services/notification.service';
 import { NotificationApiService } from '../../core/services/apinotif.service';
 import { interval, Subscription } from 'rxjs';
+import { WebsocketService } from '../../core/services/websocket.service';
 
 
 @Component({
@@ -61,6 +62,7 @@ export class TopbarComponent {
     private authService:AuthenticationService,
     private notificationService: NotificationService,
     private notifservice : NotificationApiService,
+    private Web:WebsocketService,
       private renderer: Renderer2) {
     translate.setDefaultLang('en');
     this.updateSubscription = new Subscription();
@@ -120,15 +122,38 @@ export class TopbarComponent {
 */
 
  this.loadCurrentUser();
-  this.notificationService.notifications$.subscribe((notifications) => {
+ /* this.notificationService.notifications$.subscribe((notifications) => {
     this.notifyList = notifications;
   }); 
   this.updateSubscription = interval(1000).subscribe(() => {
     this.notifyList = [...this.notifyList];
-  });
+  });*/
+
+    /*if (this.userid) {
+      this.loadAllNotifications(this.userid);
+    }*/
+      this.notificationService.notifications$.subscribe((notifications) => {
+        if (notifications && notifications.length > 0) { 
+          this.notifyList = notifications.map(notif => ({
+            ...notif,
+            createdAt: notif.createdAt ? new Date(notif.createdAt) : new Date()
+          }));
+        }
+      });
+
+      this.Web.connectionStatus$.subscribe(status => {
+        console.log(`État de la connexion WebSocket: ${status}`);
+      });
+      
   }
 
-  formatTimeFromNow(date: Date): string {
+  formatTimeFromNow(dateInput: Date | string): string {
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+    
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      return 'Date invalide';
+    }
+  
     const now = new Date();
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
   
@@ -140,13 +165,18 @@ export class TopbarComponent {
     const remainingSeconds = seconds % 60;
   
     if (minutes < 60) {
-      return `il y a ${minutes} min ${remainingSeconds} s`;
+      return `il y a ${minutes} min`;
     }
   
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
   
-    return `il y a ${hours} h ${remainingMinutes} min ${remainingSeconds} s`;
+    if (hours < 24) {
+      return `il y a ${hours} h ${remainingMinutes} min`;
+    }
+  
+    const days = Math.floor(hours / 24);
+    return `il y a ${days} jour(s)`;
   }
   ngOnDestroy(): void {
     if (this.updateSubscription) {
@@ -158,14 +188,14 @@ export class TopbarComponent {
     if (userId) {
       this.notifservice.getActiveNotificationsForUser(userId).subscribe({
         next: (notifications) => {
-          this.notifyList = notifications.map((notification) => ({
+          this.notifyList = notifications.map(notification => ({
             ...notification,
             createdAt: notification.createdAt ? new Date(notification.createdAt) : new Date(),
           }));
         },
         error: (error) => {
-          console.error('Erreur lors du chargement des notifications :', error);
-        },
+          console.error('Error loading notifications:', error);
+        }
       });
     } else {
       console.error('User ID is not available.');
@@ -176,8 +206,9 @@ export class TopbarComponent {
       next: (user) => {
         if (user && user.username) {
           this.currentUser = user;
+
           this.getUserIdByUsername(user.username);
-        
+      
         } else {
           console.error(' Utilisateur non connecté ou username manquant.');
         }
@@ -194,6 +225,10 @@ export class TopbarComponent {
         if (userDetails && userDetails.id) {
           console.log(' ID utilisateur reçu :', userDetails.id);
           this.currentUser = { ...this.currentUser, id: userDetails.id }; 
+          this.Web.setUserId(userDetails.id);
+        
+        
+          this.Web.connect();
         } else {
           console.error(' Données utilisateur invalides ou ID manquant');
         }

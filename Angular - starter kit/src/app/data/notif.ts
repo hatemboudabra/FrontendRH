@@ -1,7 +1,9 @@
 export interface Notifications {
   id?: number;
-  message: string;
-  type: 'success' | 'error' | 'info';
   userId: number;
+  type: string; 
+  message: string;
   createdAt?: Date;
-  }
+  deleted?: boolean;
+  
+}

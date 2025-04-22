@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { User } from '../../store/Authentication/auth.models';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserDTO } from '../../data/auth.dto';
+import { ResetPasswordDTO } from '../../data/password-dto';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -153,4 +154,16 @@ getUserById(userId: number): Observable<any> {
   return this.http.get<any>(url);
 }
 
+
+// reset and forgot psswd
+forgotPassword(email: string): Observable<any> {
+  return this.http.post(
+    `${environment.apiUrl}/forgot-password?email=${encodeURIComponent(email)}`,
+    null
+  );
+}
+
+resetPassword(token: string, passwordDTO: ResetPasswordDTO): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/reset-password/${token}`, passwordDTO);
+}
 }

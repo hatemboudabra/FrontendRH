@@ -21,6 +21,8 @@ import { RegisterComponent } from './account/register/register.component';
 import { UpdateProfileComponent } from './account/profile/update-profile/update-profile.component';
 import { EventComponent } from './pages/event/event/event.component';
 import { OffersComponent } from './pages/hr/offers/offers.component';
+import { ForgotPasswordComponent } from './account/password/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './account/password/reset-password/reset-password.component';
 
 export const routes: Routes = [
     { 
@@ -33,7 +35,9 @@ export const routes: Routes = [
     { path: '', redirectTo: 'offers', pathMatch: 'full' },
     { path: 'account-register', component: RegisterComponent }, 
     {path:'offers', component:OffersComponent},//homepage
-
+    
+    { path: 'forgot-password', component: ForgotPasswordComponent },
+    { path: 'reset-password/:token', component: ResetPasswordComponent },
 
     { path: 'auth-logout-basic', component: LogoutBasicComponent },
     
