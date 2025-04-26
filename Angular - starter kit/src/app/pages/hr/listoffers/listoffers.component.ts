@@ -9,6 +9,7 @@ import { OffersService } from '../../../core/services/offers.service';
 import { Subscription } from 'rxjs';
 import { User } from '../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../core/services/auth.service';
+import { MatchingService } from '../../../core/services/matching.service';
 
 @Component({
   selector: 'app-listoffers',
@@ -33,13 +34,25 @@ export class ListoffersComponent implements OnInit  {
     error: string | null = null;
     //readonly STATIC_CREATED_BY_ID = 13;
     currentUser: User | null = null;
-    
+    // pour matching_cv
+    showMatchModal = false;
+    matchResults: string = '';
+    currentOfferId: number | null = null;
+    isMatchLoading = false;
+    matchError: string | null = null;
+    extractedName: string = '';
+    extractedScore: string = '';
+    extractedEmail: string = '';
+    extractedPhone: string = '';
+    allCandidates: any[] = [];
+
       private subscriptions: Subscription = new Subscription();
     
      constructor(
         private offersService: OffersService,
         private fb: FormBuilder,
-        private authService:AuthenticationService
+        private authService:AuthenticationService,
+        private matching : MatchingService
       ) {
         this.offerForm = this.fb.group({
           title: ['', Validators.required],
@@ -199,4 +212,47 @@ deleteExpiredOffers(): void {
     }
   });
 }
+
+showMatchResults(offerId: number): void {
+  this.currentOfferId = offerId;
+  this.isMatchLoading = true;
+  this.matchError = null;
+  this.showMatchModal = true;
+  this.allCandidates = [];
+
+  this.matching.getFormattedMatchResults(offerId).subscribe({
+    next: (results) => {
+      this.matchResults = results;
+      this.allCandidates = this.extractSimpleCandidates(results);
+      this.isMatchLoading = false;
+    },
+    error: (err) => {
+      this.matchError = 'Error loading match results';
+      this.isMatchLoading = false;
+      console.error(err);
+    }
+  });
+}
+closeMatchModal(): void {
+  this.showMatchModal = false;
+  this.matchResults = '';
+  this.currentOfferId = null;
+}
+private extractSimpleCandidates(results: string): any[] {
+  const candidates: any[] = [];
+  const candidateSections = results.split(/\d+\.\s+/).filter(s => s.trim().length > 0);
+
+  candidateSections.forEach(section => {
+    const candidate = {
+      name: section.match(/^(.+?)\n/)?.[1]?.trim() || 'N/A',
+      globalScore: section.match(/Score global:\s+([\d.]+)%/)?.[1] || '0',
+      email: section.match(/Email:\s+(.+?)\n/)?.[1]?.trim() || 'N/A',
+      phone: section.match(/Téléphone:\s+(.+?)(\n|$)/)?.[1]?.trim() || 'N/A'
+    };
+    candidates.push(candidate);
+  });
+
+  return candidates;
+}
+
 }

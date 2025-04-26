@@ -1,13 +1,13 @@
 <div class="card shadow-lg border-0 rounded-4 p-4 bg-white" id="employeeTable">
     <div class="card-body">
-        <div class="d-flex align-items-center mr-3">
+     <!--   <div class="d-flex align-items-center mr-3">
             <h1 class="h3 fw-bold text-primary">📌 Job Offers</h1>
             <button 
                 [appModalTrigger]="'addOfferModal'" 
                 class="ml-auto text-white btn bg-custom-500 border-custom-500 hover:text-white hover:bg-custom-600 hover:border-custom-600 focus:text-white focus:bg-custom-600 focus:border-custom-600 focus:ring focus:ring-custom-100 active:text-white active:bg-custom-600 active:border-custom-600 active:ring active:ring-custom-100 dark:ring-custom-400/20">
                 <lucide-angular name="plus" [class]="'inline-block size-4'"></lucide-angular> Add Offer
             </button>
-        </div>
+        </div>-->
         <ng-modals id="addOfferModal" [placement]="'modal-center'" className="fixed flex flex-col transition-all duration-300 ease-in-out left-2/4 z-drawer -translate-x-2/4 -translate-y-2/4">
             <div class="w-screen md:w-[30rem] bg-white shadow rounded-md dark:bg-zink-600">
                 <div class="flex items-center justify-between p-4 border-b dark:border-zink-500">
@@ -68,44 +68,209 @@
             </div>
         </ng-modals>
 
-        <div *ngIf="loading" class="text-center py-4">
-            <div class="spinner-grow text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-indigo-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                            Our Job Opportunities
+                        </span>
+                    </h1>
+                </div>
+                <button 
+                    [appModalTrigger]="'addOfferModal'"
+                    class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 transform hover:-translate-y-1">
+                    <lucide-angular name="plus-circle" [class]="'inline-block size-5'"></lucide-angular>
+                    <span class="font-medium">Post New Offer</span>
+                </button>
             </div>
-        </div>
+            <div *ngIf="loading" class="flex justify-center items-center py-20">
+                <div class="relative">
+                    <div class="h-16 w-16 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="!loading && offers.length === 0" class="text-center py-16 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200">
+                <div class="max-w-md mx-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-6 text-xl font-medium text-gray-700">No active job offers</h3>
+                    <p class="mt-2 text-gray-500">Currently there are no published job opportunities. Check back later or create a new offer.</p>
+                    <button 
+                        [appModalTrigger]="'addOfferModal'"
+                        class="mt-6 inline-flex items-center px-5 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+                        <lucide-angular name="plus" [class]="'inline-block size-4 mr-2'"></lucide-angular>
+                        Create First Offer
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="!loading && offers.length > 0" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <div *ngFor="let offer of offers" class="relative group">
+                    <div class="absolute -top-3 -right-3 bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+                        #{{offer.id}}
+                    </div>
+                    
+                    <div class="h-full flex flex-col bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 hover:shadow-xl transition-shadow duration-300 transform group-hover:-translate-y-2">
+                        <div class="p-6 pb-0">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-xl font-bold text-gray-800">
+                                    {{ offer.title }}
+                                </h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 capitalize">
+                                    {{ offer.contractType || 'N/A' }}
+                                </span>
+                            </div>
+                            <div class="mt-4 flex items-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    ${{ offer.salary.toLocaleString() }}/year
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-grow p-6 pt-4">
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Experience</p>
+                                        <p class="text-sm font-medium">{{ offer.experience || 0 }}+ years</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div>
+                                        <p class="text-xs text-gray-500">Education</p>
+                                        <p class="text-sm font-medium">{{ offer.educationLevel || 'N/A' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
 
-         <div *ngIf="!loading" class="row g-4">
-            <div *ngFor="let offer of offers" class="col-md-4">
-                <div class="card offer-card shadow-lg border-0 rounded-4 transition-all position-relative hover:shadow-xl">
-                    <div class="card-body p-4">
-                        <h5 class="card-title text-primary fw-bold d-flex align-items-center">
-                            <i class="bi bi-briefcase me-2"></i> {{ offer.title }}
-                        </h5>
-                        <div class="d-flex align-items-center my-3 text-muted">
-                            <span class="badge bg-secondary">🏷️ {{ offer.contractType ? offer.contractType : 'N/A' }}</span>
-                            <span class="ms-3 fw-medium">💰 ${{ offer.salary.toLocaleString() }}/year</span>
-                            <span class="ms-3">🕒 {{ offer.experience || 0 }} years exp.</span>
+                            <div class="mt-4">
+                                <p class="text-gray-600 text-sm line-clamp-3">
+                                    {{ offer.description || 'No description provided' }}
+                                </p>
+                            </div>
                         </div>
-                        <p class="text-muted small">🎓 {{ offer.educationLevel }}</p>
-                        <p class="text-muted small line-clamp-3">{{ offer.description }}</p>
-                        <div class="d-flex justify-content-between text-muted small mt-4">
-                            <span>📅 <strong>Posted:</strong> {{ formatDate(offer.publicationDate) }}</span>
-                            <span>⏳ <strong>Expires:</strong> {{ formatDate(offer.expirationDate) }}</span>
-                        </div>
-                        <div class="d-grid mt-4">
-                            <button 
-                                (click)="deleteOffer(offer.id)" 
-                                class="text-white btn bg-red-600 border-red-600 hover:bg-red-700 hover:border-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 rounded-lg shadow-md py-2 px-4 transition duration-300 transform hover:scale-105 active:scale-95">
-                                <lucide-angular name="trash" [class]="'inline-block size-4 mr-2'"></lucide-angular> Delete 
-                            </button>
+
+                        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <div class="text-xs text-gray-500">
+                                    <div class="flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>Posted {{ formatDate(offer.publicationDate) }}</span>
+                                    </div>
+                                    <div class="flex items-center mt-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Expires {{ formatDate(offer.expirationDate) }}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button
+                                      (click)="showMatchResults(offer.id)"
+                                      class="flex items-center gap-1 px-4 py-2 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200 shadow-sm"
+                                    >
+                                      <lucide-angular name="user-check" class="inline-block size-4"></lucide-angular>
+                                      <span>View</span>
+                                    </button>
+                                
+                                    <button
+                                      (click)="deleteOffer(offer.id)"
+                                      class="flex items-center gap-1 px-4 py-2 text-xs font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors duration-200 shadow-sm"
+                                    >
+                                      <lucide-angular name="trash-2" class="inline-block size-4"></lucide-angular>
+                                      <span>Delete</span>
+                                    </button>
+                                  </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div *ngIf="!loading && offers.length === 0" class="text-center py-4 text-muted">
-            🚀 No job offers available at the moment.
-        </div>
-    </div>
-</div>
+        <div *ngIf="showMatchModal" class="fixed inset-0 flex items-center justify-center z-30">
+            <div class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" (click)="closeMatchModal()"></div>
+          
+            <div class="relative bg-white w-full max-w-lg rounded-xl shadow-2xl overflow-hidden transform transition-all max-h-[80vh] flex flex-col">
+              <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-3 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white flex items-center">
+                  <lucide-angular name="user-check" class="inline-block size-5 mr-2"></lucide-angular>
+                  Top Scoring Candidates
+                </h3>
+                <button (click)="closeMatchModal()" class="text-white hover:text-gray-200 focus:outline-none">
+                  <lucide-angular name="x" class="size-5"></lucide-angular>
+                </button>
+              </div>
+          
+              <div class="p-4 overflow-y-auto flex-1">
+                <div *ngIf="isMatchLoading" class="py-8 flex flex-col items-center justify-center">
+                  <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+                  <p class="mt-3 text-sm text-gray-600">Analyzing candidates...</p>
+                </div>
+          
+                <div *ngIf="!isMatchLoading && matchError" class="py-8 text-center">
+                  <lucide-angular name="alert-circle" class="size-12 text-red-500 mx-auto mb-3"></lucide-angular>
+                  <h4 class="text-base font-medium text-red-800">Matching Error</h4>
+                  <p class="mt-2 text-sm text-gray-600">{{ matchError }}</p>
+                </div>
+          
+                <div *ngIf="!isMatchLoading && !matchError" class="space-y-4">
+                  <div *ngFor="let candidate of allCandidates" class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 flex items-start space-x-4">
+                      <div class="relative">
+                        <div class="h-16 w-16 rounded-full bg-indigo-100 flex items-center justify-center">
+                          <lucide-angular name="user" class="size-8 text-indigo-600"></lucide-angular>
+                        </div>
+                        <div class="absolute -bottom-1 -right-1 bg-indigo-600 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-md">
+                          {{ candidate.globalScore }}% 
+                        </div>
+                      </div>
+          
+                      <div class="flex-1">
+                        <h3 class="text-base font-bold text-gray-800">{{ candidate.name }}</h3>
+                        <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div class="flex items-start space-x-2">
+                            <div class="p-1.5 bg-indigo-50 rounded-lg">
+                              <lucide-angular name="mail" class="size-4 text-indigo-600"></lucide-angular>
+                            </div>
+                            <div>
+                              <p class="text-xs text-gray-500">Email</p>
+                              <p class="text-xs font-medium">{{ candidate.email }}</p>
+                            </div>
+                          </div>
+                          <div class="flex items-start space-x-2">
+                            <div class="p-1.5 bg-indigo-50 rounded-lg">
+                              <lucide-angular name="phone" class="size-4 text-indigo-600"></lucide-angular>
+                            </div>
+                            <div>
+                              <p class="text-xs text-gray-500">Phone</p>
+                              <p class="text-xs font-medium">{{ candidate.phone }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
