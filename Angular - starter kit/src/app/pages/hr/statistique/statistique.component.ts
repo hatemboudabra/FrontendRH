@@ -37,11 +37,11 @@ export class StatistiqueComponent implements OnInit {
           this.currentUser = user;
           this.getUserIdByUsername(user.username);
         } else {
-          console.error(' Utilisateur non connecté ou username manquant.');
+          console.error('Utilisateur non connecté ou username manquant.');
         }
       },
       error: (error) => {
-        console.error(" Erreur lors du chargement de l'utilisateur :", error);
+        console.error("Erreur lors du chargement de l'utilisateur :", error);
       },
     });
   }
@@ -50,14 +50,14 @@ export class StatistiqueComponent implements OnInit {
     this.authService.getUserByUsername(username).subscribe({
       next: (userDetails) => {
         if (userDetails && userDetails.id) {
-          console.log(' ID utilisateur reçu :', userDetails.id);
+          console.log('ID utilisateur reçu :', userDetails.id);
           this.loadStats(userDetails.id);
         } else {
-          console.error(' Données utilisateur invalides ou ID manquant');
+          console.error('Données utilisateur invalides ou ID manquant');
         }
       },
       error: (error) => {
-        console.error(' Erreur lors de la récupération des données utilisateur :', error);
+        console.error('Erreur lors de la récupération des données utilisateur :', error);
       },
     });
   }
@@ -85,152 +85,323 @@ export class StatistiqueComponent implements OnInit {
       },
       (error) => console.error('Erreur lors de la récupération des stats des demandes', error)
     );
-    
   }
 
   initRoleChart(roleCounts: Record<string, number>): void {
     const roles = Object.keys(roleCounts);
     const counts = Object.values(roleCounts);
-    const cumulativeData = counts.map((_, i) => counts.slice(0, i + 1).reduce((a, b) => a + b, 0));
-  
+    
+    // Données principales
+    const primaryData = counts;
+    // Données secondaires (simulées pour l'effet visuel comme dans l'image)
+    const secondaryData = counts.map(count => count * 1.5);
+    
     this.roleChartOptions = {
       series: [
         {
-          name: 'Nombre d\'utilisateurs',
-          type: 'bar',
-          data: counts,
+          name: 'Utilisateurs',
+          type: 'area',
+          data: primaryData,
         },
         {
-          name: 'Cumul des utilisateurs',
+          name: 'Total',
           type: 'area',
-          data: cumulativeData,
-        },
+          data: secondaryData,
+        }
       ],
       chart: {
-        type: 'line',
         height: 350,
+        type: 'area',
         toolbar: {
           show: true,
         },
+        zoom: {
+          enabled: true
+        }
       },
-      colors: ['#3b82f6', '#10b981'],
+      colors: ['#10b981', '#3b82f6'], // Vert et bleu comme dans l'image
+      stroke: {
+        curve: 'smooth',
+        width: 2
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.3,
+          stops: [0, 90, 100]
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
       xaxis: {
         categories: roles,
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        }
       },
       yaxis: {
-        title: {
-          text: 'Nombre d\'utilisateurs',
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
         },
+        min: 0,
+        max: Math.max(...secondaryData) * 1.2,
+        tickAmount: 4
+      },
+      grid: {
+        borderColor: '#f1f1f1',
+        strokeDashArray: 4,
+        yaxis: {
+          lines: {
+            show: true
+          }
+        },
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 10
+        }
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left'
       },
       tooltip: {
         shared: true,
-      },
+        intersect: false,
+        y: {
+          formatter: function (val: number) {
+            return val.toString();
+          }
+        }
+      }
     };
   }
-initTeamChart(teams: { teamName: string, userCount: number }[]): void {
-  const teamNames = teams.map(team => team.teamName);
-  const userCounts = teams.map(team => team.userCount);
-  const average = userCounts.reduce((a, b) => a + b, 0) / userCounts.length;
 
-  this.teamChartOptions = {
-    series: [
-      {
-        name: 'Nombre de collaborateurs',
-        type: 'bar',
-        data: userCounts,
+  initTeamChart(teams: { teamName: string, userCount: number }[]): void {
+    const teamNames = teams.map(team => team.teamName);
+    const userCounts = teams.map(team => team.userCount);
+    
+    // Données principales
+    const primaryData = userCounts;
+    // Données secondaires (simulées pour l'effet visuel comme dans l'image)
+    const secondaryData = userCounts.map(count => count * 1.3);
+
+    this.teamChartOptions = {
+      series: [
+        {
+          name: 'Collaborateurs',
+          type: 'area',
+          data: primaryData,
+        },
+        {
+          name: 'Total',
+          type: 'area',
+          data: secondaryData
+        }
+      ],
+      chart: {
+        height: 350,
+        type: 'area',
+        toolbar: {
+          show: true,
+        },
+        zoom: {
+          enabled: true
+        }
       },
-      {
-        name: 'Moyenne',
-        type: 'line',
-        data: Array(teamNames.length).fill(average),
+      colors: ['#10b981', '#3b82f6'], // Vert et bleu comme dans l'image
+      stroke: {
+        curve: 'smooth',
+        width: 2
       },
-    ],
-    chart: {
-      type: 'line',
-      height: 350,
-      toolbar: {
-        show: true,
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.3,
+          stops: [0, 90, 100]
+        }
       },
-    },
-    stroke: {
-      width: [0, 4],
-      dashArray: [0, 5], 
-    },
-    colors: ['#3b82f6', '#ef4444'],
-    xaxis: {
-      categories: teamNames,
-    },
-    yaxis: {
-      title: {
-        text: 'Nombre de collaborateurs',
+      dataLabels: {
+        enabled: false
       },
-    },
-    tooltip: {
-      shared: true,
-    },
-  };
-}
+      xaxis: {
+        categories: teamNames,
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        }
+      },
+      yaxis: {
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
+        },
+        min: 0,
+        max: Math.max(...secondaryData) * 1.2,
+        tickAmount: 4
+      },
+      grid: {
+        borderColor: '#f1f1f1',
+        strokeDashArray: 4,
+        yaxis: {
+          lines: {
+            show: true
+          }
+        },
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 10
+        }
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left'
+      },
+      tooltip: {
+        shared: true,
+        intersect: false,
+        y: {
+          formatter: function (val: number) {
+            return val.toString();
+          }
+        }
+      }
+    };
+  }
 
   initDemandeChart(demandes: { status: string, count: number }[]): void {
     const statuses = demandes.map(d => d.status);
     const counts = demandes.map(d => d.count);
-    const trendData = this.calculateTrend(counts);
+    
+    // Données principales
+    const primaryData = counts;
+    // Données secondaires (simulées pour l'effet visuel comme dans l'image)
+    const secondaryData = counts.map(count => count * 1.4);
   
     this.demandeChartOptions = {
       series: [
         {
-          name: 'Nombre de demandes',
-          type: 'bar',
-          data: counts,
+          name: 'Demandes',
+          type: 'area',
+          data: primaryData,
         },
         {
-          name: 'Tendance',
-          type: 'line',
-          data: trendData,
-        },
+          name: 'Total',
+          type: 'area',
+          data: secondaryData
+        }
       ],
       chart: {
-        type: 'line',
         height: 350,
+        type: 'area',
         toolbar: {
           show: true,
         },
-        animations: {
-          enabled: true,
-          easing: 'easeinout',
-          speed: 800,
-        },
+        zoom: {
+          enabled: true
+        }
       },
-      plotOptions: {
-        bar: {
-          borderRadius: 10,
-          columnWidth: '40%',
-        },
+      colors: ['#10b981', '#3b82f6'], // Vert et bleu comme dans l'image
+      stroke: {
+        curve: 'smooth',
+        width: 2
       },
-      colors: ['#10b981', '#f59e0b'],
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shadeIntensity: 1,
+          opacityFrom: 0.7,
+          opacityTo: 0.3,
+          stops: [0, 90, 100]
+        }
+      },
       dataLabels: {
-        enabled: true,
+        enabled: false
       },
       xaxis: {
         categories: statuses,
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
+        },
+        axisBorder: {
+          show: false
+        },
+        axisTicks: {
+          show: false
+        }
       },
-      yaxis: [
-        {
-          title: {
-            text: 'Nombre de demandes',
-          },
+      yaxis: {
+        labels: {
+          style: {
+            colors: '#9ca3af',
+            fontSize: '12px'
+          }
         },
-        {
-          opposite: true,
-          title: {
-            text: 'Tendance',
-          },
+        min: 0,
+        max: Math.max(...secondaryData) * 1.2,
+        tickAmount: 4
+      },
+      grid: {
+        borderColor: '#f1f1f1',
+        strokeDashArray: 4,
+        yaxis: {
+          lines: {
+            show: true
+          }
         },
-      ],
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 10
+        }
+      },
+      legend: {
+        position: 'top',
+        horizontalAlign: 'left'
+      },
       tooltip: {
         shared: true,
         intersect: false,
-      },
+        y: {
+          formatter: function (val: number) {
+            return val.toString();
+          }
+        }
+      }
     };
   }
 

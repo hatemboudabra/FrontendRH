@@ -1,67 +1,105 @@
 <br>
 <br>
-<br>
 <div class="grid grid-cols-1 gap-5 xl:grid-cols-3">
-    <!-- Statistiques par rôle -->
-    <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
-      <div class="card-body p-5">
-        <h6 class="mb-4 text-16 font-medium text-gray-800">Distribution des Rôles</h6>
-        <div id="chartRole" class="apex-charts">
-          <apx-chart
-            [series]="roleChartOptions.series"
-            [chart]="roleChartOptions.chart"
-            [labels]="roleChartOptions.labels"
-            [colors]="roleChartOptions.colors"
-            [fill]="roleChartOptions.fill"
-            [stroke]="roleChartOptions.stroke"
-            [plotOptions]="roleChartOptions.plotOptions"
-            [legend]="roleChartOptions.legend"
-            [tooltip]="roleChartOptions.tooltip"
-            [responsive]="roleChartOptions.responsive"
-            [yaxis]="roleChartOptions.yaxis"
-          ></apx-chart>
+  <!-- Distribution des Rôles -->
+  <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="card-body p-5">
+      <div class="flex justify-between items-center mb-4">
+        <h6 class="text-16 font-medium text-gray-800">Distribution des Rôles</h6>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-green-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Utilisateurs</span>
+          </span>
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-blue-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Total</span>
+          </span>
         </div>
       </div>
-    </div>
-  
-    <!-- Statistiques des équipes -->
-    <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
-      <div class="card-body p-5">
-        <h6 class="mb-4 text-16 font-medium text-gray-800">Collaborateurs par Équipe</h6>
-        <div id="chartTeam" class="apex-charts">
-          <apx-chart
-            [series]="teamChartOptions.series"
-            [chart]="teamChartOptions.chart"
-            [xaxis]="teamChartOptions.xaxis"
-            [yaxis]="teamChartOptions.yaxis"
-            [colors]="teamChartOptions.colors"
-            [plotOptions]="teamChartOptions.plotOptions"
-            [fill]="teamChartOptions.fill"
-            [stroke]="teamChartOptions.stroke"
-            [grid]="teamChartOptions.grid"
-            [legend]="teamChartOptions.legend"
-            [tooltip]="teamChartOptions.tooltip"
-          ></apx-chart>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Statistiques des demandes -->
-    <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
-      <div class="card-body p-5">
-        <h6 class="mb-4 text-16 font-medium text-gray-800">Flux des Demandes</h6>
-        <div id="chartDemande" class="apex-charts">
-          <apx-chart
-            [series]="demandeChartOptions.series"
-            [chart]="demandeChartOptions.chart"
-            [labels]="demandeChartOptions.labels"
-            [colors]="demandeChartOptions.colors"
-            [plotOptions]="demandeChartOptions.plotOptions"
-            [dataLabels]="demandeChartOptions.dataLabels"
-            [title]="demandeChartOptions.title"
-            [tooltip]="demandeChartOptions.tooltip"
-          ></apx-chart>
-        </div>
+      <div id="chartRole" class="apex-charts" style="height: 280px">
+        <apx-chart
+          [series]="roleChartOptions.series"
+          [chart]="roleChartOptions.chart"
+          [colors]="roleChartOptions.colors"
+          [labels]="roleChartOptions.labels"
+          [stroke]="roleChartOptions.stroke"
+          [dataLabels]="roleChartOptions.dataLabels"
+          [fill]="roleChartOptions.fill"
+          [xaxis]="roleChartOptions.xaxis"
+          [yaxis]="roleChartOptions.yaxis"
+          [grid]="roleChartOptions.grid"
+          [tooltip]="roleChartOptions.tooltip"
+        ></apx-chart>
       </div>
     </div>
   </div>
+
+  <!-- Collaborateurs par Équipe -->
+  <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="card-body p-5">
+      <div class="flex justify-between items-center mb-4">
+        <h6 class="text-16 font-medium text-gray-800">Collaborateurs par Équipe</h6>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-green-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Collaborateurs</span>
+          </span>
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-blue-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Total</span>
+          </span>
+        </div>
+      </div>
+      <div id="chartTeam" class="apex-charts" style="height: 280px">
+        <apx-chart
+          [series]="teamChartOptions.series"
+          [chart]="teamChartOptions.chart"
+          [colors]="teamChartOptions.colors"
+          [labels]="teamChartOptions.labels"
+          [stroke]="teamChartOptions.stroke"
+          [dataLabels]="teamChartOptions.dataLabels"
+          [fill]="teamChartOptions.fill"
+          [xaxis]="teamChartOptions.xaxis"
+          [yaxis]="teamChartOptions.yaxis"
+          [grid]="teamChartOptions.grid"
+          [tooltip]="teamChartOptions.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Flux des Demandes -->
+  <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="card-body p-5">
+      <div class="flex justify-between items-center mb-4">
+        <h6 class="text-16 font-medium text-gray-800">Flux des Demandes</h6>
+        <div class="flex items-center gap-3">
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-green-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Demandes</span>
+          </span>
+          <span class="inline-flex items-center">
+            <span class="h-3 w-3 rounded-full bg-blue-500 mr-1"></span>
+            <span class="text-xs text-gray-600">Total</span>
+          </span>
+        </div>
+      </div>
+      <div id="chartDemande" class="apex-charts" style="height: 280px">
+        <apx-chart
+          [series]="demandeChartOptions.series"
+          [chart]="demandeChartOptions.chart"
+          [colors]="demandeChartOptions.colors"
+          [labels]="demandeChartOptions.labels"
+          [stroke]="demandeChartOptions.stroke"
+          [dataLabels]="demandeChartOptions.dataLabels"
+          [fill]="demandeChartOptions.fill"
+          [xaxis]="demandeChartOptions.xaxis"
+          [yaxis]="demandeChartOptions.yaxis"
+          [grid]="demandeChartOptions.grid"
+          [tooltip]="demandeChartOptions.tooltip"
+        ></apx-chart>
+      </div>
+    </div>
+  </div>
+</div>

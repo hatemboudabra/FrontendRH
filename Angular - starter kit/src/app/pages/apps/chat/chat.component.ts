@@ -66,7 +66,7 @@ export class ChatComponent implements OnInit {
   teamId: string = '0'; 
   currentUserTeamId: number | null = null;
   currentUserTeamName: string | null = null;
-  
+  selectedFile: File | null = null;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private chatService: ChatService,
@@ -402,5 +402,87 @@ if (this.chatMode === 'private') {
     const collaborator = this.collaborators.find(c => c.id.toString() === userId);
     return collaborator?.username || 'Utilisateur';
   }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    }
+  }
+
+  uploadFile(): void {
+    if (!this.selectedFile || !this.currentUserId) {
+      return;
+    }
+
+    const file = this.selectedFile;
+    if (this.chatMode === 'team' && this.teamId !== '0') {
+      this.messageService.uploadTeamFile(Number(this.teamId), file, this.currentUserId)
+        .subscribe((msg) => {
+          if (msg) {
+            this.allMessages.push(msg);
+            this.filterMessages();
+          }
+        });
+    } else if (this.chatMode === 'private' && this.selectedCollaboratorId) {
+      this.messageService.uploadPrivateFile(this.selectedCollaboratorId, file, this.currentUserId)
+        .subscribe((msg) => {
+          if (msg) {
+            this.allMessages.push(msg);
+            this.filterMessages();
+          }
+        });
+    }
+    this.selectedFile = null;
+  } 
+
+
+  downloadFile(fileUrl: string): void {
+    if (!fileUrl) {
+        console.error('No file URL provided');
+        this.showErrorNotification('No file URL provided');
+        return;
+    }
+    const rawName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+    const fileName = decodeURIComponent(rawName).replace(/^File:\s*/i, '');
+    console.log('Final filename to download:', fileName);
+    this.messageService.downloadFile(fileName).subscribe({
+        next: (blob) => {
+            console.log('Received blob:', {
+                size: blob.size,
+                type: blob.type
+            });
+            
+            if (blob.size === 0) {
+                this.showErrorNotification('Received empty file');
+                return;
+            }
+            
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                // this.isLoading = false;
+            }, 100);
+        },
+        error: (err) => {
+            console.error('Detailed download error:', err);
+            this.showErrorNotification(err.message || 'Unknown download error');
+        }
+    });
+}
+
+
+private showErrorNotification(message: string): void {
+    console.error('Error notification:', message);
+    alert(`Download Error: ${message}`);
+}
   
 }
