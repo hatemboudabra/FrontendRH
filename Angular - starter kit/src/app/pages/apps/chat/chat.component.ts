@@ -435,7 +435,10 @@ if (this.chatMode === 'private') {
     }
     this.selectedFile = null;
   } 
-
+  getCleanFileName(filePath: string): string {
+    const fileName = filePath.split('/').pop() || filePath;
+    return fileName.replace(/^File:\s*/i, '');
+}
 
   downloadFile(fileUrl: string): void {
     if (!fileUrl) {
@@ -444,7 +447,8 @@ if (this.chatMode === 'private') {
         return;
     }
     const rawName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-    const fileName = decodeURIComponent(rawName).replace(/^File:\s*/i, '');
+    const fileName = rawName.replace(/^File:\s*/i, '');
+   // const fileName = decodeURIComponent(rawName).replace(/^File:\s*/i, '');
     console.log('Final filename to download:', fileName);
     this.messageService.downloadFile(fileName).subscribe({
         next: (blob) => {

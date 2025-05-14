@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { catchError, Observable } from "rxjs";
 
 @Injectable({
     providedIn: 'root',
@@ -19,5 +19,27 @@ deleteCandidat(id: number): Observable<void> {
   return this.http.delete<void>(`${this.apiUrl}/Candidat/${id}`);
 }
 
+    scheduleInterview(
+        candidatId: number,
+        interviewDate: string,
+        interviewTime: string,
+        meetingLink: string
+    ): Observable<void> {
+        console.log('Scheduling interview for candidate ID:', candidatId);
+        
+        const params = new HttpParams()
+            .set('candidatId', candidatId.toString())
+            .set('interviewDate', interviewDate)
+            .set('interviewTime', interviewTime)
+            .set('meetingLink', meetingLink);
+
+        return this.http.post<void>(`${this.apiUrl}/schedule`, null, { params })
+            .pipe(
+                catchError(error => {
+                    console.error('Error scheduling interview:', error);
+                    throw error;
+                })
+            );
+    }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { icons, LUCIDE_ICONS, LucideAngularModule, LucideIconProvider } from 'lucide-angular';
 import { MDModalModule } from '../../../Component/modals';
 import { CommonModule } from '@angular/common';
@@ -10,249 +10,300 @@ import { Subscription } from 'rxjs';
 import { User } from '../../../store/Authentication/auth.models';
 import { AuthenticationService } from '../../../core/services/auth.service';
 import { MatchingService } from '../../../core/services/matching.service';
+import { CandidatService } from '../../../core/services/candidat.service';
 
 @Component({
-  selector: 'app-listoffers',
-  standalone: true,
-  imports: [
-      CommonModule,
+    selector: 'app-listoffers',
+    standalone: true,
+    imports: [
+        CommonModule,
         ReactiveFormsModule,
         LucideAngularModule,
         MDModalModule,
         FlatpickrModule,
-  ],
-  templateUrl: './listoffers.component.html',
-  styleUrl: './listoffers.component.scss',
-  providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
-  
+        FormsModule
+    ],
+    templateUrl: './listoffers.component.html',
+    styleUrl: './listoffers.component.scss',
+    providers: [{ provide: LUCIDE_ICONS, multi: true, useValue: new LucideIconProvider(icons) }]
 })
-export class ListoffersComponent implements OnInit  {
-  offers: Offers[] = [];
+export class ListoffersComponent implements OnInit {
+    offers: Offers[] = [];
     offerForm: FormGroup;
     isAddingOffer = false;
     loading = true;
     error: string | null = null;
-    //readonly STATIC_CREATED_BY_ID = 13;
     currentUser: User | null = null;
-    // pour matching_cv
+    
+    // Match modal properties
     showMatchModal = false;
     matchResults: string = '';
     currentOfferId: number | null = null;
     isMatchLoading = false;
     matchError: string | null = null;
-    extractedName: string = '';
-    extractedScore: string = '';
-    extractedEmail: string = '';
-    extractedPhone: string = '';
     allCandidates: any[] = [];
-
-      private subscriptions: Subscription = new Subscription();
     
-     constructor(
+    // Interview modal properties
+    showInterviewModal = false;
+    selectedCandidate: any = null;
+    interviewDate: string = '';
+    interviewTime: string = '';
+    meetingLink: string = '';
+    isSendingEmail = false;
+    emailSent = false;
+    emailError: string | null = null;
+    
+    private subscriptions: Subscription = new Subscription();
+
+    constructor(
         private offersService: OffersService,
         private fb: FormBuilder,
-        private authService:AuthenticationService,
-        private matching : MatchingService
-      ) {
+        private authService: AuthenticationService,
+        private matching: MatchingService,
+        private candidatService: CandidatService
+    ) {
         this.offerForm = this.fb.group({
-          title: ['', Validators.required],
-          description: ['', Validators.required],
-          salary: ['', [Validators.required, Validators.min(0)]],
-          contractType: ['', Validators.required],
-          publicationDate: ['', Validators.required],
-          expirationDate: ['', Validators.required],
-          educationLevel: ['', Validators.required],
-          experience: ['', [Validators.required, Validators.min(0)]]
+            title: ['', Validators.required],
+            description: ['', Validators.required],
+            salary: ['', [Validators.required, Validators.min(0)]],
+            contractType: ['', Validators.required],
+            publicationDate: ['', Validators.required],
+            expirationDate: ['', Validators.required],
+            educationLevel: ['', Validators.required],
+            experience: ['', [Validators.required, Validators.min(0)]]
         });
-    
-
-
-}
-ngOnInit(): void {
-  this.loadCurrentUser();
-}
-
-loadCurrentUser(): void {
-  this.authService.getCurrentUser().subscribe({
-    next: (user) => {
-      if (user && user.username) {
-        this.currentUser = user;
-        this.getUserIdByUsername(user.username); 
-      } else {
-        console.error('Utilisateur non connecté ou username manquant.');
-      }
-    },
-    error: (error) => {
-      console.error('Erreur lors du chargement de l\'utilisateur :', error);
-    },
-  });
-}
-
-getUserIdByUsername(username: string): void {
-  this.authService.getUserByUsername(username).subscribe({
-    next: (userDetails) => {
-      if (userDetails && userDetails.id) {
-        console.log(' ID utilisateur reçu :', userDetails.id);
-        this.currentUser = { ...this.currentUser, id: userDetails.id }; 
-        this.loadOffers(userDetails.id);
-      } else {
-        console.error(' Données utilisateur invalides ou ID manquant');
-      }
-    },
-    error: (error) => {
-      console.error(' Erreur lors de la récupération des données utilisateur :', error);
-    },
-  });
-}
-
-ngOnDestroy(): void {
-  this.subscriptions.unsubscribe();
-}
-
-loadOffers(userId: number): void {
-  this.loading = true;
-  this.subscriptions.add(
-    this.offersService.getAllOffers().subscribe({
-      next: (data) => {
-        const currentDate = new Date();
-        this.offers = data.filter(offer => new Date(offer.expirationDate) > currentDate);
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Error loading offers. Please try again later.';
-        this.loading = false;
-      }
-    })
-  );
-}
-
-toggleAddOffer(): void {
-  this.isAddingOffer = !this.isAddingOffer;
-  if (!this.isAddingOffer) {
-    this.offerForm.reset();
-  }
-}
-
-onSubmit(): void {
-  if (this.offerForm.valid && this.currentUser?.id) {
-    const newOffer: Offers = {
-      ...this.offerForm.value,
-      createdById: this.currentUser.id
-    };
-    if (new Date(newOffer.expirationDate) < new Date()) {
-      this.error = 'Expiration date must in future.';
-      return;
     }
-    console.log('New Offer:', newOffer);
-    this.subscriptions.add(
-      this.offersService.addOffer(newOffer).subscribe({
-        next: (response) => {
-          console.log('Offer added successfully:', response);
-          this.offers.unshift(response);
-          this.toggleAddOffer();
-        },
-        error: (err) => {
-          console.error('Error adding offer:', err);
-          this.error = 'Error adding offer. Please try again.';
+
+    ngOnInit(): void {
+        this.loadCurrentUser();
+    }
+
+    loadCurrentUser(): void {
+        this.authService.getCurrentUser().subscribe({
+            next: (user) => {
+                if (user && user.username) {
+                    this.currentUser = user;
+                    this.getUserIdByUsername(user.username); 
+                } else {
+                    console.error('User not logged in or username missing.');
+                }
+            },
+            error: (error) => {
+                console.error('Error loading user:', error);
+            },
+        });
+    }
+
+    getUserIdByUsername(username: string): void {
+        this.authService.getUserByUsername(username).subscribe({
+            next: (userDetails) => {
+                if (userDetails && userDetails.id) {
+                    this.currentUser = { ...this.currentUser, id: userDetails.id }; 
+                    this.loadOffers(userDetails.id);
+                } else {
+                    console.error('Invalid user data or missing ID');
+                }
+            },
+            error: (error) => {
+                console.error('Error fetching user data:', error);
+            },
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.unsubscribe();
+    }
+
+    loadOffers(userId: number): void {
+        this.loading = true;
+        this.subscriptions.add(
+            this.offersService.getAllOffers().subscribe({
+                next: (data) => {
+                    const currentDate = new Date();
+                    this.offers = data.filter(offer => new Date(offer.expirationDate) > currentDate);
+                    this.loading = false;
+                },
+                error: (err) => {
+                    this.error = 'Error loading offers. Please try again later.';
+                    this.loading = false;
+                }
+            })
+        );
+    }
+
+    toggleAddOffer(): void {
+        this.isAddingOffer = !this.isAddingOffer;
+        if (!this.isAddingOffer) {
+            this.offerForm.reset();
         }
-      })
-    );
-  } else {
-    console.error('Form is invalid or current user ID is missing');
-    if (!this.offerForm.valid) {
-      console.log('Form validation errors:', this.offerForm.errors);
-      console.log('Form control errors:');
-      Object.keys(this.offerForm.controls).forEach(key => {
-        const controlErrors = this.offerForm.get(key)?.errors;
-        if (controlErrors) {
-          console.log(`Control: ${key}, Errors:`, controlErrors);
+    }
+
+    onSubmit(): void {
+        if (this.offerForm.valid && this.currentUser?.id) {
+            const newOffer: Offers = {
+                ...this.offerForm.value,
+                createdById: this.currentUser.id
+            };
+            if (new Date(newOffer.expirationDate) < new Date()) {
+                this.error = 'Expiration date must be in the future.';
+                return;
+            }
+            this.subscriptions.add(
+                this.offersService.addOffer(newOffer).subscribe({
+                    next: (response) => {
+                        this.offers.unshift(response);
+                        this.toggleAddOffer();
+                    },
+                    error: (err) => {
+                        console.error('Error adding offer:', err);
+                        this.error = 'Error adding offer. Please try again.';
+                    }
+                })
+            );
         }
-      });
     }
-    if (!this.currentUser?.id) {
-      console.error('Current user ID is missing:', this.currentUser);
-    }
-  }
-}
 
-formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString();
-}
-deleteOffer(id: number): void {
-  if (confirm('Are you sure you want to delete this offer?')) {
-    this.loading = true;
-    this.subscriptions.add(
-      this.offersService.deleteOffer(id).subscribe({
-        next: () => {
-          this.offers = this.offers.filter(offer => offer.id !== id); 
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Error deleting offer. Please try again later.';
-          this.loading = false;
+    formatDate(date: Date): string {
+        return new Date(date).toLocaleDateString();
+    }
+
+    deleteOffer(id: number): void {
+        if (confirm('Are you sure you want to delete this offer?')) {
+            this.loading = true;
+            this.subscriptions.add(
+                this.offersService.deleteOffer(id).subscribe({
+                    next: () => {
+                        this.offers = this.offers.filter(offer => offer.id !== id); 
+                        this.loading = false;
+                    },
+                    error: (err) => {
+                        this.error = 'Error deleting offer. Please try again later.';
+                        this.loading = false;
+                    }
+                })
+            );
         }
-      })
-    );
-  }
-}
-deleteExpiredOffers(): void {
-  const currentDate = new Date();
-  this.offers.forEach(offer => {
-    if (new Date(offer.expirationDate) < currentDate) {
-      this.subscriptions.add(
-        this.offersService.deleteOffer(offer.id).subscribe({
-          next: () => {
-            this.offers = this.offers.filter(o => o.id !== offer.id);
-          },
-          error: (err) => {
-            console.error('Error deleting expired offer:', err);
-          }
-        })
-      );
     }
-  });
-}
 
-showMatchResults(offerId: number): void {
-  this.currentOfferId = offerId;
-  this.isMatchLoading = true;
-  this.matchError = null;
-  this.showMatchModal = true;
-  this.allCandidates = [];
+    showMatchResults(offerId: number): void {
+        this.currentOfferId = offerId;
+        this.isMatchLoading = true;
+        this.matchError = null;
+        this.showMatchModal = true;
+        this.allCandidates = [];
 
-  this.matching.getFormattedMatchResults(offerId).subscribe({
-    next: (results) => {
-      this.matchResults = results;
-      this.allCandidates = this.extractSimpleCandidates(results);
-      this.isMatchLoading = false;
-    },
-    error: (err) => {
-      this.matchError = 'Error loading match results';
-      this.isMatchLoading = false;
-      console.error(err);
+        this.matching.getFormattedMatchResults(offerId).subscribe({
+            next: (results) => {
+                this.matchResults = results;
+                this.allCandidates = this.extractSimpleCandidates(results);
+                this.isMatchLoading = false;
+            },
+            error: (err) => {
+                this.matchError = 'Error loading match results';
+                this.isMatchLoading = false;
+                console.error(err);
+            }
+        });
     }
-  });
-}
-closeMatchModal(): void {
-  this.showMatchModal = false;
-  this.matchResults = '';
-  this.currentOfferId = null;
-}
+
+    closeMatchModal(): void {
+        this.showMatchModal = false;
+        this.matchResults = '';
+        this.currentOfferId = null;
+    }
+
 private extractSimpleCandidates(results: string): any[] {
-  const candidates: any[] = [];
-  const candidateSections = results.split(/\d+\.\s+/).filter(s => s.trim().length > 0);
+    const candidates: any[] = [];
+    if (!results) return candidates;
 
-  candidateSections.forEach(section => {
-    const candidate = {
-      name: section.match(/^(.+?)\n/)?.[1]?.trim() || 'N/A',
-      globalScore: section.match(/Score global:\s+([\d.]+)%/)?.[1] || '0',
-      email: section.match(/Email:\s+(.+?)\n/)?.[1]?.trim() || 'N/A',
-      phone: section.match(/Téléphone:\s+(.+?)(\n|$)/)?.[1]?.trim() || 'N/A'
-    };
-    candidates.push(candidate);
-  });
+    const pattern = /(\d+)\.\s+(.+?)\s+\(ID:\s*(\d+)\)[\s\S]*?Score global:\s*([\d.]+)%[\s\S]*?Email:\s*(.+?)\n[\s\S]*?Téléphone:\s*(\d+)/g;
+    
+    let match;
+    while ((match = pattern.exec(results)) !== null) {
+        candidates.push({
+            id: parseInt(match[3]),  
+            name: match[2].trim(),
+            globalScore: match[4],
+            email: match[5].trim(),
+            phone: match[6].trim()
+        });
+    }
 
-  return candidates;
+    console.log('Extracted candidates:', candidates);
+    return candidates;
 }
 
+
+
+    selectCandidateForInterview(candidate: any): void {
+        this.selectedCandidate = candidate;
+        const today = new Date();
+        this.interviewDate = today.toISOString().split('T')[0];
+        this.interviewTime = '10:00';
+        this.showInterviewModal = true;
+    }
+
+    closeInterviewModal(): void {
+        this.showInterviewModal = false;
+        this.selectedCandidate = null;
+        this.interviewDate = '';
+        this.interviewTime = '';
+        this.meetingLink = '';
+        this.emailSent = false;
+        this.emailError = null;
+    }
+
+scheduleInterview(): void {
+    if (!this.selectedCandidate?.id || isNaN(this.selectedCandidate.id)) {
+        this.emailError = 'Invalid candidate selection - ID missing or invalid';
+        return;
+    }
+
+    if (this.selectedCandidate.id === 0) {
+        this.emailError = 'Cannot schedule interview - candidate ID is 0';
+        return;
+    }
+
+    console.log('Scheduling interview with valid ID:', this.selectedCandidate.id);
+
+    this.isSendingEmail = true;
+    this.emailSent = false;
+    this.emailError = null;
+
+    this.candidatService.scheduleInterview(
+        this.selectedCandidate.id,
+        this.interviewDate,
+        this.interviewTime,
+        this.meetingLink
+    ).subscribe({
+        next: () => {
+            this.isSendingEmail = false;
+            this.emailSent = true;
+            setTimeout(() => {
+                this.closeInterviewModal();
+                this.closeMatchModal();
+            }, 2000);
+        },
+        error: (err) => {
+            this.isSendingEmail = false;
+            this.emailError = this.getErrorMessage(err);
+            console.error('Scheduling error:', {
+                error: err,
+                candidate: this.selectedCandidate,
+                request: {
+                    date: this.interviewDate,
+                    time: this.interviewTime,
+                    link: this.meetingLink
+                }
+            });
+        }
+    });
+}
+
+private getErrorMessage(err: any): string {
+    if (err.status === 404) {
+        return 'Candidate not found. Please verify the candidate ID.';
+    }
+    return err.error?.message || err.message || 'Unknown error occurred during scheduling';
+}
 }

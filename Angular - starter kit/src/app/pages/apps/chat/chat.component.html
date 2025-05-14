@@ -195,7 +195,7 @@
                                  [class.fa-file-word]="message.content.includes('.doc')"
                                  [class.fa-file-excel]="message.content.includes('.xls')"
                                  [class.fa-file-alt]="!message.content.includes('.png') && !message.content.includes('.jpg') && !message.content.includes('.jpeg') && !message.content.includes('.pdf') && !message.content.includes('.doc') && !message.content.includes('.xls')"></i>
-                              <span class="flex-1 truncate">{{ message.content.split('/').pop() }}</span>
+                                 <span class="flex-1 truncate">{{ getCleanFileName(message.content) }}</span>
                             </div>
                             
                             <div class="flex items-center gap-2">

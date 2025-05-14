@@ -131,7 +131,7 @@ export const MENU: MenuItem[] = [
             label: 'Calendrier',
             icon: 'calendar',
             link: '/calendar',
-            roles: ['ROLE_CHEF', 'ROLE_RESPONSABLE_RH']
+            roles: ['ROLE_RESPONSABLE_RH']
         },
         
 

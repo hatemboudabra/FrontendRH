@@ -1,5 +1,3 @@
-<br>
-<br>
 <div class="grid grid-cols-1 gap-5 xl:grid-cols-3">
   <!-- Distribution des Rôles -->
   <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
@@ -69,7 +67,7 @@
     </div>
   </div>
   
-  <!-- Flux des Demandes -->
+  <!-- Flux des Demandes (modifié pour utiliser un graphique en ligne) -->
   <div class="card bg-white rounded-lg shadow-lg overflow-hidden">
     <div class="card-body p-5">
       <div class="flex justify-between items-center mb-4">
@@ -79,10 +77,6 @@
             <span class="h-3 w-3 rounded-full bg-green-500 mr-1"></span>
             <span class="text-xs text-gray-600">Demandes</span>
           </span>
-          <span class="inline-flex items-center">
-            <span class="h-3 w-3 rounded-full bg-blue-500 mr-1"></span>
-            <span class="text-xs text-gray-600">Total</span>
-          </span>
         </div>
       </div>
       <div id="chartDemande" class="apex-charts" style="height: 280px">
@@ -90,14 +84,14 @@
           [series]="demandeChartOptions.series"
           [chart]="demandeChartOptions.chart"
           [colors]="demandeChartOptions.colors"
-          [labels]="demandeChartOptions.labels"
           [stroke]="demandeChartOptions.stroke"
-          [dataLabels]="demandeChartOptions.dataLabels"
-          [fill]="demandeChartOptions.fill"
+          [markers]="demandeChartOptions.markers"
+          [grid]="demandeChartOptions.grid"
           [xaxis]="demandeChartOptions.xaxis"
           [yaxis]="demandeChartOptions.yaxis"
-          [grid]="demandeChartOptions.grid"
+          [dataLabels]="demandeChartOptions.dataLabels"
           [tooltip]="demandeChartOptions.tooltip"
+          [annotations]="demandeChartOptions.annotations"
         ></apx-chart>
       </div>
     </div>

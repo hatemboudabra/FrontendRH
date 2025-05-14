@@ -303,50 +303,49 @@ export class StatistiqueComponent implements OnInit {
     const statuses = demandes.map(d => d.status);
     const counts = demandes.map(d => d.count);
     
-    // Données principales
-    const primaryData = counts;
-    // Données secondaires (simulées pour l'effet visuel comme dans l'image)
-    const secondaryData = counts.map(count => count * 1.4);
-  
+    // Graphique en ligne avec des marqueurs prononcés
     this.demandeChartOptions = {
-      series: [
-        {
-          name: 'Demandes',
-          type: 'area',
-          data: primaryData,
-        },
-        {
-          name: 'Total',
-          type: 'area',
-          data: secondaryData
-        }
-      ],
+      series: [{
+        name: 'Demandes',
+        data: counts
+      }],
       chart: {
         height: 350,
-        type: 'area',
+        type: 'line',
         toolbar: {
-          show: true,
+          show: true
         },
         zoom: {
           enabled: true
         }
       },
-      colors: ['#10b981', '#3b82f6'], // Vert et bleu comme dans l'image
+      colors: ['#10b981'],
       stroke: {
-        curve: 'smooth',
-        width: 2
+        curve: 'straight',
+        width: 3
       },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shadeIntensity: 1,
-          opacityFrom: 0.7,
-          opacityTo: 0.3,
-          stops: [0, 90, 100]
+      markers: {
+        size: 7,
+        colors: ['#10b981'],
+        strokeColors: '#fff',
+        strokeWidth: 3,
+        hover: {
+          size: 9
         }
       },
-      dataLabels: {
-        enabled: false
+      grid: {
+        borderColor: '#f1f1f1',
+        strokeDashArray: 4,
+        row: {
+          colors: ['#f3f3f3', 'transparent'],
+          opacity: 0.5
+        },
+        padding: {
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: 10
+        }
       },
       xaxis: {
         categories: statuses,
@@ -368,39 +367,55 @@ export class StatistiqueComponent implements OnInit {
           style: {
             colors: '#9ca3af',
             fontSize: '12px'
+          },
+          formatter: function(val: number) {
+            return val.toFixed(0);
           }
         },
         min: 0,
-        max: Math.max(...secondaryData) * 1.2,
+        max: Math.max(...counts) * 1.2,
         tickAmount: 4
       },
-      grid: {
-        borderColor: '#f1f1f1',
-        strokeDashArray: 4,
-        yaxis: {
-          lines: {
-            show: true
-          }
+      dataLabels: {
+        enabled: true,
+        offsetY: -10,
+        style: {
+          fontSize: '12px',
+          colors: ['#304758']
         },
-        padding: {
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 10
+        background: {
+          enabled: true,
+          borderRadius: 2,
+          padding: 4,
+          opacity: 0.9,
+          borderWidth: 1,
+          borderColor: '#fff'
         }
       },
-      legend: {
-        position: 'top',
-        horizontalAlign: 'left'
-      },
       tooltip: {
-        shared: true,
-        intersect: false,
         y: {
-          formatter: function (val: number) {
+          formatter: function(val: number) {
             return val.toString();
           }
         }
+      },
+      annotations: {
+        points: counts.map((count, index) => ({
+          x: statuses[index],
+          y: count,
+          marker: {
+            size: 0
+          },
+          label: {
+            borderColor: '#10b981',
+            style: {
+              color: '#fff',
+              background: '#10b981'
+            },
+            offsetY: 0,
+            text: count.toString()
+          }
+        }))
       }
     };
   }
